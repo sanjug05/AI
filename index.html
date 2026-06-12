@@ -1030,21 +1030,51 @@ input,textarea{cursor:text}
    AUDIO ENGINE
 ===================================================== */
 let _aCtx=null,_vol=0.5,_muted=false;
-function aCtx(){if(!_aCtx)_aCtx=new(window.AudioContext||window.webkitAudioContext)();if(_aCtx.state==='suspended')_aCtx.resume();return _aCtx;}
-function setVolume(v){_vol=parseFloat(v);document.getElementById('vol-icon').textContent=_vol===0?'🔇':_vol<0.5?'🔉':'🔊';}
-function toggleMute(){_muted=!_muted;document.getElementById('vol-icon').textContent=_muted?'🔇':'🔊';}
+async function aCtxReady(){
+  if(!_aCtx)_aCtx=new(window.AudioContext||window.webkitAudioContext)();
+  if(_aCtx.state==='suspended'){try{await _aCtx.resume();}catch(e){}}
+  return _aCtx;
+}
+function aCtx(){if(!_aCtx)_aCtx=new(window.AudioContext||window.webkitAudioContext)();return _aCtx;}
+document.addEventListener('click',async()=>{if(_aCtx&&_aCtx.state==='suspended')await _aCtx.resume();},{once:true,passive:true});
+document.addEventListener('touchend',async()=>{if(_aCtx&&_aCtx.state==='suspended')await _aCtx.resume();},{once:true,passive:true});
+function setVolume(v){
+  _vol=parseFloat(v);
+  document.getElementById('vol-icon').textContent=_vol===0?'🔇':_vol<0.5?'🔉':'🔊';
+  if(window.speechSynthesis){
+    /* Changing volume mid-speech: cancel and re-speak is handled by next call */
+  }
+}
+function toggleMute(){
+  _muted=!_muted;
+  document.getElementById('vol-icon').textContent=_muted?'🔇':_vol<0.5?'🔉':'🔊';
+  if(_muted&&window.speechSynthesis)window.speechSynthesis.cancel();
+  toast(_muted?'🔇 Audio muted':'🔊 Audio enabled','i');
+}
 function playSound(type){
   if(_muted||_vol===0)return;
-  try{
-    const c=aCtx(),o=c.createOscillator(),g=c.createGain(),t=c.currentTime;
-    o.connect(g);g.connect(c.destination);
-    const v=_vol*0.12;
-    if(type==='send'){o.type='sine';o.frequency.setValueAtTime(660,t);o.frequency.exponentialRampToValueAtTime(880,t+0.07);g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.18);o.start(t);o.stop(t+0.18);}
-    else if(type==='recv'){o.type='sine';o.frequency.setValueAtTime(440,t);o.frequency.setValueAtTime(660,t+0.1);g.gain.setValueAtTime(v*0.8,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.3);o.start(t);o.stop(t+0.3);}
-    else if(type==='click'){o.type='triangle';o.frequency.setValueAtTime(1100,t);g.gain.setValueAtTime(v*0.5,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.06);o.start(t);o.stop(t+0.06);}
-    else if(type==='notif'){o.type='sine';o.frequency.setValueAtTime(523,t);o.frequency.setValueAtTime(659,t+0.1);g.gain.setValueAtTime(v*0.7,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.35);o.start(t);o.stop(t+0.35);}
-    else if(type==='modal'){o.type='sine';o.frequency.setValueAtTime(392,t);o.frequency.setValueAtTime(523,t+0.08);g.gain.setValueAtTime(v*0.6,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.28);o.start(t);o.stop(t+0.28);}
-  }catch(e){}
+  if(typeof audioSettings!=='undefined'&&audioSettings[type]===false)return;
+  aCtxReady().then(ctx=>{
+    try{
+      const now=ctx.currentTime;
+      const v=Math.min(1,_vol*0.55);
+      function tone(freq1,freq2,dur,wave='sine',gain=v){
+        const o=ctx.createOscillator(),g=ctx.createGain();
+        o.connect(g);g.connect(ctx.destination);
+        o.type=wave;o.frequency.setValueAtTime(freq1,now);
+        if(freq2)o.frequency.exponentialRampToValueAtTime(freq2,now+dur*0.5);
+        g.gain.setValueAtTime(gain,now);g.gain.exponentialRampToValueAtTime(0.001,now+dur);
+        o.start(now);o.stop(now+dur+0.05);
+      }
+      if(type==='send'){tone(700,1000,0.18);}
+      else if(type==='recv'){tone(480,720,0.3);}
+      else if(type==='click'){tone(1100,null,0.07,'triangle',v*0.5);}
+      else if(type==='notif'){tone(523,null,0.35,undefined,v*0.7);setTimeout(()=>tone(659,null,0.3,undefined,v*0.6),140);}
+      else if(type==='modal'){tone(400,560,0.28,undefined,v*0.6);}
+      else if(type==='typing'){tone(500+Math.random()*250,null,0.045,'square',v*0.12);}
+      else if(type==='success'){tone(440,880,0.25,undefined,v*0.65);setTimeout(()=>tone(660,null,0.2,undefined,v*0.5),200);}
+    }catch(e){}
+  }).catch(()=>{});
 }
 
 /* =====================================================
@@ -1769,37 +1799,35 @@ const VOICE={
     const clean=speechSanitizer(text);
     if(!clean.trim())return;
     this.setState('speaking');
-    const u=new SpeechSynthesisUtterance(clean);
-    u.lang='en-IN';u.rate=0.93;u.pitch=1.05;
+    const doSpeak=(voices)=>{
+      const u=new SpeechSynthesisUtterance(clean);
+      u.lang='en-IN';u.rate=0.91;u.pitch=1.05;u.volume=Math.min(1,_vol*1.8);
+      const pref=voices.find(v=>v.lang.startsWith('en')&&(v.name.includes('Female')||v.name.includes('Google')||v.name.includes('Samantha')||v.name.includes('Karen')||v.name.includes('Moira')));
+      if(pref)u.voice=pref;
+      u.onend=()=>{
+        this.setState('idle');
+        if(continuousVoiceActive&&document.getElementById('vwo')?.classList.contains('on')){
+          setTimeout(()=>{if(continuousVoiceActive){this.start();}},600);
+        }
+      };
+      u.onerror=(e)=>{if(e.error!=='interrupted')this.setState('idle');};
+      window.speechSynthesis.speak(u);
+      /* Chrome TTS bug workaround: resume if paused */
+      setTimeout(()=>{if(window.speechSynthesis.paused)window.speechSynthesis.resume();},200);
+    };
     const voices=window.speechSynthesis.getVoices();
-    const pref=voices.find(v=>v.lang.startsWith('en')&&(v.name.includes('Female')||v.name.includes('Google')||v.name.includes('Samantha')));
-    if(pref)u.voice=pref;
-    u.onend=()=>{this.setState('idle');};
-    u.onerror=()=>{this.setState('idle');};
-    window.speechSynthesis.speak(u);
+    if(voices.length){doSpeak(voices);}
+    else{
+      window.speechSynthesis.onvoiceschanged=()=>{doSpeak(window.speechSynthesis.getVoices());window.speechSynthesis.onvoiceschanged=null;};
+      setTimeout(()=>doSpeak(window.speechSynthesis.getVoices()),800);
+    }
   },
   interrupt(){window.speechSynthesis&&window.speechSynthesis.cancel();this.setState('idle');}
 };
 
-/* =====================================================
-   EMOJI / SYMBOL SANITIZER FOR SPEECH
-===================================================== */
-function speechSanitizer(text){
-  return text
-    .replace(/[\u{1F000}-\u{1FFFF}]/gu,'')
-    .replace(/[\u2600-\u27BF]/g,'')
-    .replace(/[\u2B00-\u2BFF]/g,'')
-    .replace(/\*\*(.*?)\*\*/g,'$1')
-    .replace(/\*(.*?)\*/g,'$1')
-    .replace(/#{1,6}\s/g,'')
-    .replace(/\|/g,' ')
-    .replace(/---+/g,'')
-    .replace(/[✅❌✓•◆→←↔️]/g,'')
-    .replace(/\n{2,}/g,'. ')
-    .replace(/\n/g,' ')
-    .replace(/\s{2,}/g,' ')
-    .trim();
-}
+
+/* speechSanitizer: safe v4 version defined in V4 FEATURES section */
+
 
 /* Voice mode controls */
 function openVoiceMode(){
@@ -2615,6 +2643,15 @@ function initApp(){
   renderCatGrid();
   setTimeout(()=>toast('ARIA v3.0 online — Neural Consultant Mode active','i'),700);
   document.getElementById('mi2').focus();
+  /* Pre-load speech synthesis voices */
+  if(window.speechSynthesis){
+    window.speechSynthesis.getVoices();
+    if(!window.speechSynthesis.getVoices().length){
+      window.speechSynthesis.addEventListener('voiceschanged',()=>{window.speechSynthesis.getVoices();},{once:true});
+    }
+    /* Chrome long-utterance bug fix: resume every 10s */
+    setInterval(()=>{if(window.speechSynthesis.speaking)window.speechSynthesis.resume();},10000);
+  }
   // Keyboard nav for product cards
   document.querySelectorAll('.pc[tabindex]').forEach(el=>{
     el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();el.click();}});
@@ -2689,61 +2726,42 @@ function toggleContinuousVoice(){
   playSound('click');
 }
 
-/* Patch VOICE.speak to auto-restart listening in continuous mode */
-const _origSpeak=VOICE.speak.bind(VOICE);
-VOICE.speak=function(text){
-  _origSpeak(text);
-  /* intercept speech end for continuous mode */
-  const tryRestart=()=>{
-    if(continuousVoiceActive&&this.state==='idle'&&document.getElementById('vwo').classList.contains('on')){
-      setTimeout(()=>{
-        if(continuousVoiceActive){
-          this.setState('listening');
-          document.getElementById('vwt').textContent='Speak now, I\'m listening…';
-          document.getElementById('vs').classList.add('on');
-          document.getElementById('iw').classList.add('lst');
-          try{this.recog&&this.recog.start();}catch(e){}
-        }
-      },700);
-    }
-  };
-  /* Poll until speaking stops */
-  const poll=setInterval(()=>{
-    if(!window.speechSynthesis||!window.speechSynthesis.speaking){clearInterval(poll);this.setState('idle');tryRestart();}
-  },300);
-};
+/* V4 Continuous Voice Mode — handled cleanly inside VOICE.speak above */
 
 /* =====================================================
-   V4 ENHANCED SPEECH SANITIZER
+   V4 ENHANCED SPEECH SANITIZER (fixed)
 ===================================================== */
 function speechSanitizer(text){
+  if(!text)return'';
   return text
-    /* Emoji ranges */
-    .replace(/[\u{1F000}-\u{1FFFF}]/gu,'')
-    .replace(/[\u{2600}-\u{27BF}]/gu,'')
-    .replace(/[\u{2B00}-\u{2BFF}]/gu,'')
-    .replace(/[\u{FE00}-\u{FEFF}]/gu,'')
-    /* Specific symbols */
-    .replace(/[✅❌✓✗•◆◇→←↔↑↓⬆⬇➡🔶🔷★☆✨🎯💡⚡🌟🔥💎🏆🥇🎖️]/g,' ')
-    .replace(/[₹$€£¥]/g,' ')
-    /* Markdown syntax */
-    .replace(/\*{1,3}(.*?)\*{1,3}/g,'$1')
-    .replace(/_{1,2}(.*?)_{1,2}/g,'$1')
+    /* Remove emoji (safe unicode ranges) */
+    .replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g,' ')
+    /* Common symbols */
+    .replace(/[\u2600-\u27BF\u2B00-\u2BFF\uFE00-\uFE0F]/g,' ')
+    /* Markdown bold/italic */
+    .replace(/\*{1,3}([^*]+)\*{1,3}/g,'$1')
+    .replace(/_{1,2}([^_]+)_{1,2}/g,'$1')
+    /* Inline code and code blocks */
     .replace(/`{1,3}[^`]*`{1,3}/g,'')
-    .replace(/#{1,6}\s+/g,'')
+    /* Headings */
+    .replace(/^#{1,6}\s+/gm,'')
+    /* Table separators */
+    .replace(/\|[-: ]+\|[-: |]+/g,' ')
     .replace(/\|/g,' ')
-    .replace(/---+/g,'. ')
+    /* Horizontal rules */
+    .replace(/^---+$/gm,'. ')
+    /* Markdown links */
     .replace(/\[([^\]]+)\]\([^)]+\)/g,'$1')
-    /* Table artifacts */
-    .replace(/:-{3,}:?/g,'')
-    /* Bullet/number list markers */
-    .replace(/^\s*[-*+]\s+/gm,'')
-    .replace(/^\s*\d+\.\s+/gm,'')
-    /* Cleanup */
+    /* Bullet and numbered list markers */
+    .replace(/^[\s]*[-*+]\s+/gm,' ')
+    .replace(/^[\s]*\d+\.\s+/gm,' ')
+    /* Currency/special chars that TTS mangles */
+    .replace(/₹/g,' rupees ')
+    /* Collapse whitespace */
     .replace(/\n{2,}/g,'. ')
     .replace(/\n/g,' ')
     .replace(/\s{2,}/g,' ')
-    .replace(/\.{2,}/g,'.')
+    .replace(/\.\s*\./g,'.')
     .trim();
 }
 
@@ -3294,13 +3312,7 @@ window.initApp=function(){
   });
 };
 
-/* Override playSound to respect per-sound settings */
-const _origPlaySound=typeof playSound==='function'?playSound:null;
-window.playSound=function(type){
-  if(!audioSettings[type]&&!audioSettings.click)return;
-  if(!audioSettings[type])return;
-  if(_origPlaySound)_origPlaySound(type);
-};
+/* V4: Per-sound audio settings check is now inside playSound() directly */
 
 </script>
 </body>
