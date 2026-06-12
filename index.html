@@ -492,6 +492,136 @@ input,textarea{cursor:text}
   .cr-ratings{grid-template-columns:1fr}
 }
 
+
+/* =====================================================
+   V4 ADDITIONS — NEW FEATURES CSS
+===================================================== */
+/* CONTINUOUS VOICE MODE badge */
+.cv-mode-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:var(--r-full);background:linear-gradient(135deg,rgba(255,45,120,.15),rgba(123,47,255,.15));border:1px solid rgba(255,45,120,.3);color:var(--ac3);font-size:11px;font-weight:700;cursor:pointer;transition:all var(--tn);animation:cvPulse 2s ease-in-out infinite}
+.cv-mode-badge.off{background:var(--glass);border-color:var(--glass-b);color:var(--txt-2);animation:none}
+@keyframes cvPulse{0%,100%{box-shadow:0 0 0 0 rgba(255,45,120,.3)}50%{box-shadow:0 0 0 6px rgba(255,45,120,0)}}
+.cv-dot{width:7px;height:7px;border-radius:50%;background:var(--ac3);animation:lp 1s ease-in-out infinite}
+.cv-mode-badge.off .cv-dot{background:var(--txt-3);animation:none}
+
+/* MICROPHONE STATUS */
+.mic-status-bar{display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:var(--r-md);border:1px solid var(--glass-b);background:var(--glass);margin:0 18px 0;font-size:11px;color:var(--txt-2);transition:all var(--tn)}
+.mic-status-bar.granted{border-color:rgba(0,255,136,.2);color:var(--ac4)}
+.mic-status-bar.denied{border-color:rgba(255,45,120,.2);color:var(--ac3)}
+.mic-status-bar.prompt{border-color:rgba(255,170,0,.2);color:#ffaa00}
+.mic-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.mic-status-bar.granted .mic-dot{background:var(--ac4);animation:sp 2s ease-in-out infinite}
+.mic-status-bar.denied .mic-dot{background:var(--ac3)}
+.mic-status-bar.prompt .mic-dot{background:#ffaa00;animation:sp 1s ease-in-out infinite}
+
+/* CIRCULAR CONFIDENCE DASHBOARD */
+.conf-dash{padding:14px 18px}
+.conf-dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.conf-circ-wrap{text-align:center;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r-md);padding:12px 8px}
+.conf-circ-wrap svg{width:72px;height:72px;display:block;margin:0 auto 6px}
+.conf-circ-lbl{font-size:9px;color:var(--txt-3);text-transform:uppercase;letter-spacing:1px}
+.conf-circ-num{font-size:13px;font-weight:700;fill:var(--txt-1);dominant-baseline:middle;text-anchor:middle}
+
+/* COMPARISON MODAL */
+.cmp-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
+.cmp-card{background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r-lg);padding:18px;text-align:center;transition:all .15s ease;transform-style:preserve-3d}
+.cmp-card:hover{border-color:var(--ac1);box-shadow:var(--glow1)}
+.cmp-img{width:100%;height:90px;border-radius:var(--r-md);background:linear-gradient(135deg,rgba(0,212,255,.1),rgba(123,47,255,.1));display:flex;align-items:center;justify-content:center;font-size:38px;margin-bottom:12px}
+.cmp-name{font-size:13px;font-weight:700;color:var(--txt-1);margin-bottom:4px}
+.cmp-badge{font-size:9px;background:rgba(0,212,255,.1);color:var(--ac1);padding:2px 8px;border-radius:var(--r-full);border:1px solid rgba(0,212,255,.18);display:inline-block;margin-bottom:10px}
+.cmp-ratings{display:flex;flex-direction:column;gap:6px;text-align:left;margin-bottom:12px}
+.cmp-rating-row{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:11px}
+.cmp-rating-name{color:var(--txt-2);width:70px;flex-shrink:0}
+.cmp-rating-track{flex:1;height:4px;background:rgba(255,255,255,.08);border-radius:var(--r-full);overflow:hidden}
+.cmp-rating-fill{height:100%;border-radius:var(--r-full);transition:width 1s ease}
+.cmp-rating-val{color:var(--txt-1);font-weight:700;width:24px;text-align:right;flex-shrink:0}
+.cmp-warranty{font-size:10px;color:var(--txt-3);margin-bottom:8px}
+.cmp-best{font-size:10px;background:rgba(123,47,255,.1);color:var(--ac2);padding:3px 8px;border-radius:var(--r-full);border:1px solid rgba(123,47,255,.18);display:inline-block}
+.cmp-select-wrap{display:flex;gap:8px;margin-bottom:14px}
+.cmp-select{flex:1;padding:8px 10px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r-md);color:var(--txt-1);font-size:12px;outline:none;cursor:pointer}
+.cmp-select:focus{border-color:var(--ac1)}
+.cmp-select option{background:#0c0c1e}
+
+/* REPORT OVERLAY */
+#report-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(16px);z-index:2000;display:none;overflow-y:auto;padding:30px 20px}
+#report-overlay.open{display:block}
+.report-doc{max-width:700px;margin:0 auto;background:rgba(8,8,24,.98);border:1px solid var(--glass-b);border-radius:var(--r-xl);padding:40px;position:relative}
+.report-header{text-align:center;margin-bottom:32px;padding-bottom:24px;border-bottom:1px solid var(--glass-b)}
+.report-logo{width:52px;height:52px;background:var(--grad1);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:900;color:#fff;margin:0 auto 12px}
+.report-title{font-size:22px;font-weight:800;color:var(--txt-1);margin-bottom:4px}
+.report-sub{font-size:12px;color:var(--txt-3)}
+.report-date{font-size:11px;color:var(--txt-3);margin-top:6px}
+.report-section{margin-bottom:24px}
+.report-section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--ac1);margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid var(--glass-b)}
+.report-item{display:flex;justify-content:space-between;align-items:flex-start;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.report-item-label{font-size:12px;color:var(--txt-3);flex-shrink:0;width:140px}
+.report-item-value{font-size:12px;color:var(--txt-1);font-weight:600;text-align:right;flex:1}
+.report-actions{display:flex;gap:10px;position:absolute;top:20px;right:20px}
+.report-act-btn{padding:8px 14px;border-radius:var(--r-md);border:1px solid var(--glass-b);background:var(--glass);color:var(--txt-2);font-size:11px;cursor:pointer;transition:all var(--tn)}
+.report-act-btn:hover{border-color:var(--ac1);color:var(--ac1)}
+.report-act-btn.primary{background:var(--grad1);border-color:transparent;color:#fff}
+@media print{
+  body{background:#fff!important;color:#000!important}
+  #report-overlay{background:#fff!important;padding:0}
+  .report-doc{background:#fff!important;border:none!important;padding:20px!important;border-radius:0!important}
+  .report-actions,.report-act-btn{display:none!important}
+  *{color:#000!important}
+}
+
+/* WINDOW CONFIGURATOR */
+#cfg-result{margin-top:16px;display:none}
+.cfg-result-card{background:linear-gradient(135deg,rgba(0,212,255,.06),rgba(123,47,255,.04));border:1px solid rgba(0,212,255,.2);border-radius:var(--r-md);padding:16px;animation:wi .4s ease}
+.cfg-result-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--ac1);margin-bottom:10px}
+.cfg-result-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px}
+.cfg-result-row:last-child{border-bottom:none}
+.cfg-row-label{color:var(--txt-3)}
+.cfg-row-value{color:var(--txt-1);font-weight:600}
+.cfg-budget{font-size:15px;font-weight:800;background:var(--grad1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-top:8px}
+.cfg-dims-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+
+/* LEAD CAPTURE */
+.lead-panel{padding:0 18px}
+.lead-mini-form{background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r-md);padding:14px}
+.lead-mini-title{font-size:11px;font-weight:700;color:var(--ac1);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.lead-input{width:100%;padding:8px 11px;background:rgba(0,0,0,.2);border:1px solid var(--glass-b);border-radius:var(--r-sm);color:var(--txt-1);font-size:12px;outline:none;margin-bottom:7px;font-family:inherit;transition:border-color var(--tn)}
+.lead-input:focus{border-color:var(--ac1)}
+.lead-input::placeholder{color:var(--txt-3)}
+.lead-btns{display:flex;flex-direction:column;gap:5px;margin-top:8px}
+.lead-btn{width:100%;padding:8px;border-radius:var(--r-md);font-size:11px;font-weight:600;cursor:pointer;transition:all var(--tn);border:1px solid var(--glass-b);background:var(--glass);color:var(--txt-1)}
+.lead-btn:hover{border-color:var(--ac1);background:rgba(0,212,255,.08);color:var(--ac1)}
+.lead-btn.primary{background:var(--grad1);border-color:transparent;color:#fff}
+.lead-btn.primary:hover{opacity:.88;box-shadow:var(--glow1)}
+.lead-saved{font-size:10px;color:var(--ac4);margin-top:6px;display:none;text-align:center}
+
+/* AUDIO SETTINGS */
+.audio-settings-wrap{padding:0 18px}
+.audio-row{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r-md);margin-bottom:7px}
+.audio-row-label{font-size:11px;color:var(--txt-2)}
+.audio-toggle{width:36px;height:20px;border-radius:var(--r-full);background:var(--glass-b);border:none;cursor:pointer;position:relative;transition:background .2s ease;flex-shrink:0}
+.audio-toggle.on{background:var(--grad1)}
+.audio-toggle::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left .2s ease}
+.audio-toggle.on::after{left:18px}
+
+/* PDF CATALOGUE */
+.pdf-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.pdf-nav-btn{width:32px;height:32px;border-radius:var(--r-sm);border:1px solid var(--glass-b);background:var(--glass);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--txt-2);transition:all var(--tn)}
+.pdf-nav-btn:hover{border-color:var(--ac1);color:var(--ac1)}
+.pdf-nav-info{font-size:12px;color:var(--txt-2)}
+.pdf-zoom{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--txt-2)}
+.pdf-zoom-btn{width:24px;height:24px;border-radius:var(--r-sm);border:1px solid var(--glass-b);background:var(--glass);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--txt-2);transition:all var(--tn)}
+.pdf-zoom-btn:hover{border-color:var(--ac1);color:var(--ac1)}
+.pdf-viewer{background:rgba(0,0,0,.3);border:1px solid var(--glass-b);border-radius:var(--r-md);padding:20px;min-height:180px;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:transform .3s ease;transform-origin:top center}
+.pdf-product-page{width:100%;animation:wi .35s ease}
+.pdf-prod-row{display:flex;align-items:center;gap:12px;padding:9px 12px;border-radius:var(--r-md);border:1px solid var(--glass-b);background:var(--glass);margin-bottom:7px;cursor:pointer;transition:all var(--tn)}
+.pdf-prod-row:hover{border-color:var(--ac1);background:var(--glass-h)}
+.pdf-prod-ico{width:36px;height:36px;border-radius:8px;background:var(--grad1);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.pdf-prod-info{flex:1}
+.pdf-prod-name{font-size:12px;font-weight:600;color:var(--txt-1)}
+.pdf-prod-sub{font-size:10px;color:var(--txt-3)}
+.pdf-thumbnails{display:flex;gap:6px;overflow-x:auto;padding:8px 0;margin-bottom:10px}
+.pdf-thumb{width:44px;height:58px;flex-shrink:0;border-radius:5px;border:1px solid var(--glass-b);background:rgba(255,255,255,.04);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all var(--tn);font-size:16px}
+.pdf-thumb.active{border-color:var(--ac1);background:rgba(0,212,255,.08)}
+.pdf-thumb span{font-size:8px;color:var(--txt-3);margin-top:3px;text-align:center;line-height:1.2}
+
 </style>
 </head>
 <body>
@@ -820,6 +950,77 @@ input,textarea{cursor:text}
       <button class="mbtn sec" onclick="closeM('wizm')" id="wiz-cancel">Cancel</button>
       <button class="mbtn p" id="wiz-next" onclick="wizNext()" disabled>Next →</button>
     </div>
+  </div>
+</div>
+
+
+<!-- ============ V4 NEW MODALS ============ -->
+
+<!-- COMPARISON MODAL -->
+<div class="mo" id="compare-modal" role="dialog" aria-modal="true" aria-label="Product comparison">
+  <div class="moc" style="max-width:680px">
+    <div class="mot">⚖️ Product Comparison</div>
+    <div class="mos">Select two products to compare side-by-side across all performance metrics.</div>
+    <div class="cmp-select-wrap">
+      <select class="cmp-select" id="cmp-sel-1" onchange="renderComparison()" aria-label="First product">
+        <option value="" style="background:#0c0c1e">Select Product 1…</option>
+      </select>
+      <select class="cmp-select" id="cmp-sel-2" onchange="renderComparison()" aria-label="Second product">
+        <option value="" style="background:#0c0c1e">Select Product 2…</option>
+      </select>
+    </div>
+    <div class="cmp-grid" id="cmp-grid"></div>
+    <div class="ma2">
+      <button class="mbtn sec" onclick="closeM('compare-modal')">Close</button>
+      <button class="mbtn p" onclick="openM('cm');closeM('compare-modal')">📅 Book Consultation</button>
+    </div>
+  </div>
+</div>
+
+<!-- WINDOW CONFIGURATOR MODAL -->
+<div class="mo" id="config-modal" role="dialog" aria-modal="true" aria-label="Window configurator">
+  <div class="moc">
+    <div class="mot">⚙️ Window Configurator</div>
+    <div class="mos">Enter your window dimensions and requirements for a precise product and price recommendation.</div>
+    <div class="cfg-dims-row">
+      <input type="number" class="fi" placeholder="Width (mm)" id="cfg-w" min="300" max="8000" aria-label="Window width in millimetres">
+      <input type="number" class="fi" placeholder="Height (mm)" id="cfg-h" min="300" max="4000" aria-label="Window height in millimetres">
+    </div>
+    <select class="fi" id="cfg-prop" style="cursor:pointer;margin-bottom:12px" aria-label="Property type">
+      <option value="" style="background:#0c0c1e">Select Property Type</option>
+      <option value="villa" style="background:#0c0c1e">Luxury Villa</option>
+      <option value="apartment" style="background:#0c0c1e">Apartment / Home</option>
+      <option value="office" style="background:#0c0c1e">Office / Commercial</option>
+      <option value="coastal" style="background:#0c0c1e">Coastal Property</option>
+    </select>
+    <select class="fi" id="cfg-noise" style="cursor:pointer;margin-bottom:16px" aria-label="Noise priority">
+      <option value="" style="background:#0c0c1e">Noise Priority</option>
+      <option value="high" style="background:#0c0c1e">High — near highway / airport</option>
+      <option value="medium" style="background:#0c0c1e">Medium — urban area</option>
+      <option value="low" style="background:#0c0c1e">Low — quiet location</option>
+    </select>
+    <div class="ma2" style="margin-bottom:0">
+      <button class="mbtn sec" onclick="closeM('config-modal')">Cancel</button>
+      <button class="mbtn p" onclick="calcWindow()">⚙️ Calculate</button>
+    </div>
+    <div id="cfg-result"></div>
+  </div>
+</div>
+
+<!-- REPORT OVERLAY -->
+<div id="report-overlay" role="dialog" aria-modal="true" aria-label="Recommendation report">
+  <div class="report-doc" id="report-doc">
+    <div class="report-actions">
+      <button class="report-act-btn" onclick="printReport()" aria-label="Print report">🖨️ Print</button>
+      <button class="report-act-btn primary" onclick="document.getElementById('report-overlay').classList.remove('open')" aria-label="Close report">✕ Close</button>
+    </div>
+    <div class="report-header">
+      <div class="report-logo">A</div>
+      <div class="report-title">AIS Windows — Personalised Recommendation</div>
+      <div class="report-sub">Neural Consultant Platform · Powered by ARIA v3</div>
+      <div class="report-date" id="report-date"></div>
+    </div>
+    <div id="report-body"></div>
   </div>
 </div>
 
@@ -2426,6 +2627,680 @@ function initApp(){
    STARTUP
 ===================================================== */
 document.addEventListener('DOMContentLoaded',()=>{initPts();drawPts();bootSeq();});
+
+
+/* ============ V4 FEATURES ============ */
+
+/* =====================================================
+   V4 PERMISSION MANAGER
+===================================================== */
+const PermManager={
+  status:'unknown',
+  async check(){
+    try{
+      const r=await navigator.permissions.query({name:'microphone'});
+      this.status=r.state;
+      r.onchange=()=>{this.status=r.state;this.updateUI();};
+    }catch(e){this.status='unknown';}
+    this.updateUI();
+  },
+  async request(){
+    if(this.status==='granted'||sessionStorage.getItem('mic_ok')==='1'){
+      this.status='granted';this.updateUI();return true;
+    }
+    try{
+      const s=await navigator.mediaDevices.getUserMedia({audio:true});
+      s.getTracks().forEach(t=>t.stop());
+      this.status='granted';sessionStorage.setItem('mic_ok','1');
+      this.updateUI();return true;
+    }catch(e){this.status='denied';this.updateUI();return false;}
+  },
+  updateUI(){
+    const bar=document.getElementById('mic-status-bar');
+    if(!bar)return;
+    bar.className='mic-status-bar '+this.status;
+    const icons={granted:'🎙️ Microphone ready',denied:'🚫 Microphone blocked',prompt:'🔔 Permission needed',unknown:'❓ Microphone status unknown'};
+    bar.querySelector('.mic-lbl').textContent=icons[this.status]||icons.unknown;
+  }
+};
+
+/* =====================================================
+   V4 CONTINUOUS VOICE MODE
+===================================================== */
+let continuousVoiceActive=false;
+
+function toggleContinuousVoice(){
+  continuousVoiceActive=!continuousVoiceActive;
+  const badge=document.getElementById('cv-badge');
+  if(badge){
+    badge.className='cv-mode-badge'+(continuousVoiceActive?'':' off');
+    badge.querySelector('.cv-label').textContent=continuousVoiceActive?'Voice Mode ON':'Voice Mode OFF';
+  }
+  const hdr=document.getElementById('voice-mode-status');
+  if(continuousVoiceActive){
+    toast('🎙️ Continuous Voice Mode enabled — speak freely!','s');
+    openVoiceMode();
+  }else{
+    stopVoiceMode();
+    toast('Voice mode disabled','i');
+    if(hdr)hdr.textContent='Neural Consultant · Multi-Intent · Context-Aware';
+  }
+  localStorage.setItem('ais_cv',continuousVoiceActive?'1':'0');
+  playSound('click');
+}
+
+/* Patch VOICE.speak to auto-restart listening in continuous mode */
+const _origSpeak=VOICE.speak.bind(VOICE);
+VOICE.speak=function(text){
+  _origSpeak(text);
+  /* intercept speech end for continuous mode */
+  const tryRestart=()=>{
+    if(continuousVoiceActive&&this.state==='idle'&&document.getElementById('vwo').classList.contains('on')){
+      setTimeout(()=>{
+        if(continuousVoiceActive){
+          this.setState('listening');
+          document.getElementById('vwt').textContent='Speak now, I\'m listening…';
+          document.getElementById('vs').classList.add('on');
+          document.getElementById('iw').classList.add('lst');
+          try{this.recog&&this.recog.start();}catch(e){}
+        }
+      },700);
+    }
+  };
+  /* Poll until speaking stops */
+  const poll=setInterval(()=>{
+    if(!window.speechSynthesis||!window.speechSynthesis.speaking){clearInterval(poll);this.setState('idle');tryRestart();}
+  },300);
+};
+
+/* =====================================================
+   V4 ENHANCED SPEECH SANITIZER
+===================================================== */
+function speechSanitizer(text){
+  return text
+    /* Emoji ranges */
+    .replace(/[\u{1F000}-\u{1FFFF}]/gu,'')
+    .replace(/[\u{2600}-\u{27BF}]/gu,'')
+    .replace(/[\u{2B00}-\u{2BFF}]/gu,'')
+    .replace(/[\u{FE00}-\u{FEFF}]/gu,'')
+    /* Specific symbols */
+    .replace(/[✅❌✓✗•◆◇→←↔↑↓⬆⬇➡🔶🔷★☆✨🎯💡⚡🌟🔥💎🏆🥇🎖️]/g,' ')
+    .replace(/[₹$€£¥]/g,' ')
+    /* Markdown syntax */
+    .replace(/\*{1,3}(.*?)\*{1,3}/g,'$1')
+    .replace(/_{1,2}(.*?)_{1,2}/g,'$1')
+    .replace(/`{1,3}[^`]*`{1,3}/g,'')
+    .replace(/#{1,6}\s+/g,'')
+    .replace(/\|/g,' ')
+    .replace(/---+/g,'. ')
+    .replace(/\[([^\]]+)\]\([^)]+\)/g,'$1')
+    /* Table artifacts */
+    .replace(/:-{3,}:?/g,'')
+    /* Bullet/number list markers */
+    .replace(/^\s*[-*+]\s+/gm,'')
+    .replace(/^\s*\d+\.\s+/gm,'')
+    /* Cleanup */
+    .replace(/\n{2,}/g,'. ')
+    .replace(/\n/g,' ')
+    .replace(/\s{2,}/g,' ')
+    .replace(/\.{2,}/g,'.')
+    .trim();
+}
+
+/* =====================================================
+   V4 COMPARISON ENGINE
+===================================================== */
+const CMP_PRODUCTS={
+  'AcousticPro 45':{icon:'🔇',badge:'UPVC Premium',ratings:{acoustic:5,thermal:4,security:4,luxury:3},warranty:'10 years',bestFor:'Urban homes, highway-adjacent properties',tagline:'45 dB isolation — best-in-class noise reduction'},
+  'SolarShield Low-E':{icon:'☀️',badge:'Glass Tech',ratings:{acoustic:3,thermal:5,security:3,luxury:4},warranty:'10 years',bestFor:'Hot climates, south-facing buildings',tagline:'70% solar heat blocked, UV protection'},
+  'GrandSlide XL':{icon:'🏰',badge:'Villa Premium',ratings:{acoustic:4,thermal:4,security:5,luxury:5},warranty:'15 years',bestFor:'Luxury villas, penthouses, estate homes',tagline:'7m panoramic spans, single-touch operation'},
+  'SlimLine Pro 30':{icon:'🏢',badge:'Alu Commercial',ratings:{acoustic:4,thermal:5,security:4,luxury:4},warranty:'15 years',bestFor:'Offices, commercial buildings, high-rise',tagline:'30mm ultra-slim, BEE 5-star certified'},
+  'ThermaGuard UPVC+':{icon:'🪟',badge:'UPVC Standard',ratings:{acoustic:4,thermal:4,security:4,luxury:3},warranty:'10 years',bestFor:'Homes, apartments, renovations',tagline:'Best value, 200+ colours, 30-yr lifespan'},
+  'ArchForm Alu Elite':{icon:'🚪',badge:'Alu Premium',ratings:{acoustic:3,thermal:4,security:5,luxury:5},warranty:'15 years',bestFor:'Villas, premium apartments, architects',tagline:'Any RAL colour, thermal break, 50-yr life'},
+  'SilkGlide Lift & Slide':{icon:'↔️',badge:'Sliding System',ratings:{acoustic:4,thermal:4,security:4,luxury:5},warranty:'10 years',bestFor:'Open-plan living, terraces, gardens',tagline:'6m+ spans, German rollers, flush threshold'},
+  'MarineGuard Coastal':{icon:'🌊',badge:'Coastal Specialist',ratings:{acoustic:3,thermal:4,security:4,luxury:4},warranty:'25 years',bestFor:'Sea-facing, coastal, high-humidity areas',tagline:'Marine anodising, salt-air resistant 25 yrs'},
+  'EcoFrame Triple Glaze':{icon:'🌿',badge:'Energy Premium',ratings:{acoustic:4,thermal:5,security:4,luxury:4},warranty:'12 years',bestFor:'Green buildings, cold climates, LEED projects',tagline:'U-value 0.7, BEE 5-star, GRIHA eligible'},
+  'SecureCore SmartLock':{icon:'🔒',badge:'Security',ratings:{acoustic:3,thermal:3,security:5,luxury:4},warranty:'5 years',bestFor:'High-security homes, smart homes, villas',tagline:'RC2 certified, 7-point, fingerprint+app'},
+};
+const RATING_COLORS={acoustic:'#00d4ff',thermal:'#ff9500',security:'#7b2fff',luxury:'#ffaa00'};
+
+function populateCompareSelects(){
+  const prods=Object.keys(CMP_PRODUCTS);
+  ['cmp-sel-1','cmp-sel-2'].forEach((id,i)=>{
+    const sel=document.getElementById(id);if(!sel)return;
+    const saved=sel.value;
+    while(sel.options.length>1)sel.remove(1);
+    prods.forEach(p=>{const o=document.createElement('option');o.value=p;o.textContent=p;o.style.background='#0c0c1e';sel.appendChild(o);});
+    if(saved)sel.value=saved;
+    else sel.value=prods[i]||'';
+  });
+}
+
+function renderComparison(){
+  const v1=document.getElementById('cmp-sel-1')?.value;
+  const v2=document.getElementById('cmp-sel-2')?.value;
+  const grid=document.getElementById('cmp-grid');
+  if(!grid)return;
+  grid.innerHTML='';
+  if(!v1&&!v2)return;
+  [v1,v2].forEach(name=>{
+    if(!name)return;
+    const p=CMP_PRODUCTS[name];
+    if(!p)return;
+    const card=document.createElement('div');card.className='cmp-card';
+    const ratingRows=Object.entries(p.ratings).map(([k,v])=>`
+      <div class="cmp-rating-row">
+        <span class="cmp-rating-name">${k.charAt(0).toUpperCase()+k.slice(1)}</span>
+        <div class="cmp-rating-track"><div class="cmp-rating-fill" style="width:${v*20}%;background:${RATING_COLORS[k]||'var(--ac1)'}"></div></div>
+        <span class="cmp-rating-val">${v}/5</span>
+      </div>`).join('');
+    card.innerHTML=`
+      <div class="cmp-img">${p.icon}</div>
+      <div class="cmp-name">${name}</div>
+      <span class="cmp-badge">${p.badge}</span>
+      <div class="cmp-ratings" style="margin-top:10px">${ratingRows}</div>
+      <div class="cmp-warranty">Warranty: ${p.warranty}</div>
+      <span class="cmp-best">Best for: ${p.bestFor}</span>
+      <button class="cr-cta" style="margin-top:10px;width:100%" onclick="ask('Tell me more about ${name}');closeM('compare-modal')">Learn More</button>`;
+    /* Tilt effect */
+    card.addEventListener('mousemove',e=>{
+      const r=card.getBoundingClientRect();
+      const x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;
+      card.style.transform=`perspective(500px) rotateX(${-y*7}deg) rotateY(${x*7}deg) scale(1.02)`;
+    });
+    card.addEventListener('mouseleave',()=>{card.style.transform='';});
+    grid.appendChild(card);
+  });
+}
+function openCompare(){
+  populateCompareSelects();renderComparison();
+  openM('compare-modal');playSound('modal');
+}
+
+/* =====================================================
+   V4 REPORT GENERATOR
+===================================================== */
+let lastConsultData=null;
+
+function openReport(data){
+  if(!data&&!lastConsultData){toast('Complete a consultation or wizard first to generate a report','i');return;}
+  const d=data||lastConsultData;
+  document.getElementById('report-date').textContent='Generated: '+new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'})+' at '+new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+  const body=document.getElementById('report-body');
+  body.innerHTML='';
+
+  const sections=[
+    {title:'Property Profile',items:[
+      {label:'Property Type',value:d.propertyType||'—'},
+      {label:'Priority',value:d.priority||'—'},
+      {label:'Budget Range',value:d.budget||'—'},
+      {label:'Climate',value:d.climate||'Mixed / Moderate'},
+    ]},
+    {title:'Recommended Solution',items:[
+      {label:'Window System',value:d.system||'—'},
+      {label:'Glass Specification',value:d.glass||'—'},
+      {label:'Hardware',value:d.hardware||'Multi-point locking, Grade 6'},
+      {label:'Mesh Solution',value:d.mesh||'Retractable stainless steel fly screen'},
+      {label:'Security Level',value:d.security||'Standard multi-point locking'},
+    ]},
+    {title:'Investment Estimate',items:[
+      {label:'Budget Range (per sq.ft)',value:d.budgetRange||'₹550–800/sq.ft'},
+      {label:'Estimated ROI',value:'3–5 years through energy savings'},
+      {label:'Warranty Coverage',value:'10–15 years on profiles + 10 years glazing'},
+    ]},
+    {title:'Next Steps',items:[
+      {label:'Recommended Action',value:'Free site survey + detailed quote'},
+      {label:'Typical Lead Time',value:'3–4 weeks survey to installation'},
+      {label:'Contact',value:'Book via AIS Windows — 1800-XXX-XXXX'},
+    ]},
+  ];
+
+  sections.forEach(sec=>{
+    const secEl=document.createElement('div');secEl.className='report-section';
+    const title=document.createElement('div');title.className='report-section-title';title.textContent=sec.title;
+    secEl.appendChild(title);
+    sec.items.forEach(item=>{
+      const row=document.createElement('div');row.className='report-item';
+      const lbl=document.createElement('div');lbl.className='report-item-label';lbl.textContent=item.label;
+      const val=document.createElement('div');val.className='report-item-value';val.textContent=item.value;
+      row.appendChild(lbl);row.appendChild(val);secEl.appendChild(row);
+    });
+    body.appendChild(secEl);
+  });
+  document.getElementById('report-overlay').classList.add('open');
+  playSound('modal');
+}
+
+function printReport(){window.print();}
+
+/* =====================================================
+   V4 WINDOW CONFIGURATOR
+===================================================== */
+function calcWindow(){
+  const w=parseInt(document.getElementById('cfg-w').value)||0;
+  const h=parseInt(document.getElementById('cfg-h').value)||0;
+  const prop=document.getElementById('cfg-prop').value;
+  const noise=document.getElementById('cfg-noise').value;
+  if(!w||!h){toast('Please enter width and height','e');return;}
+  if(w<300||h<300){toast('Minimum dimension is 300mm','e');return;}
+  if(w>8000||h>4000){toast('Please contact us for oversized specifications','i');return;}
+  const sqft=((w/304.8)*(h/304.8)).toFixed(2);
+  const isLarge=w>2000||h>2000;
+  const system=prop==='villa'?(isLarge?'GrandSlide XL Lift & Slide':'ArchForm Alu Elite Casement'):prop==='office'?'SlimLine Pro 30 Aluminium':prop==='coastal'?'MarineGuard Coastal Aluminium':'ThermaGuard UPVC+ '+(isLarge?'Sliding':'Casement');
+  const glass=noise==='high'?'Acoustic Laminated Double Glazing (45 dB)':noise==='medium'?'Solar Control Double Glazing (argon-filled)':'Low-E Double Glazing (thermal + UV)';
+  const basePriceMap={villa:900,office:850,coastal:1000,apartment:600};
+  const basePrice=basePriceMap[prop]||600;
+  const noiseAdder=noise==='high'?150:noise==='medium'?80:0;
+  const sizeAdder=isLarge?120:0;
+  const totalPricePerSqft=basePrice+noiseAdder+sizeAdder;
+  const totalLow=Math.round(parseFloat(sqft)*totalPricePerSqft*0.85);
+  const totalHigh=Math.round(parseFloat(sqft)*totalPricePerSqft*1.15);
+  const fmt=n=>'₹'+n.toLocaleString('en-IN');
+
+  const resultDiv=document.getElementById('cfg-result');
+  resultDiv.style.display='block';
+  resultDiv.innerHTML=`<div class="cfg-result-card">
+    <div class="cfg-result-title">Your Window Specification</div>
+    <div class="cfg-result-row"><span class="cfg-row-label">Dimensions</span><span class="cfg-row-value">${w}mm × ${h}mm (${sqft} sq.ft)</span></div>
+    <div class="cfg-result-row"><span class="cfg-row-label">Recommended System</span><span class="cfg-row-value">${system}</span></div>
+    <div class="cfg-result-row"><span class="cfg-row-label">Glass Specification</span><span class="cfg-row-value">${glass}</span></div>
+    <div class="cfg-result-row"><span class="cfg-row-label">Hardware</span><span class="cfg-row-value">Multi-point locking, Grade 6 certified</span></div>
+    <div class="cfg-result-row"><span class="cfg-row-label">Mesh</span><span class="cfg-row-value">Integrated retractable fly screen</span></div>
+    <div class="cfg-budget">Estimated: ${fmt(totalLow)} – ${fmt(totalHigh)}</div>
+    <button class="cr-cta" style="width:100%;margin-top:12px" onclick="closeM('config-modal');openM('cm')">📅 Get Precise Quote</button>
+  </div>`;
+  playSound('recv');
+  const data={propertyType:prop,system,glass,mesh:'Retractable stainless fly screen',hardware:'Multi-point locking Grade 6',budgetRange:`${fmt(totalLow)} – ${fmt(totalHigh)}`,budget:`${fmt(totalLow)} – ${fmt(totalHigh)}`,priority:noise==='high'?'Noise Reduction':noise==='medium'?'Energy Efficiency':'Thermal Comfort'};
+  lastConsultData=data;
+}
+
+
+/* =====================================================
+   V4 LEAD CAPTURE ENGINE
+===================================================== */
+const LeadCapture={
+  data:JSON.parse(localStorage.getItem('ais_leads')||'[]'),
+  save(entry){
+    entry.ts=new Date().toISOString();
+    this.data.push(entry);
+    localStorage.setItem('ais_leads',JSON.stringify(this.data));
+  },
+  getLast(){return this.data.length?this.data[this.data.length-1]:null;}
+};
+
+function submitLead(action){
+  const name=document.getElementById('lead-name')?.value.trim();
+  const phone=document.getElementById('lead-phone')?.value.trim();
+  const email=document.getElementById('lead-email')?.value.trim();
+  const proj=document.getElementById('lead-proj')?.value;
+  if(!name&&!phone&&!email){toast('Please enter at least your name or phone','e');return;}
+  LeadCapture.save({name,phone,email,proj,action});
+  const savedEl=document.getElementById('lead-saved');
+  if(savedEl){savedEl.style.display='block';savedEl.textContent='✅ Saved! Our team will contact you shortly.';}
+  playSound('notif');
+  toast('Details saved! Team will contact you within 24 hours','s');
+  if(action==='consultation')openM('cm');
+  else if(action==='visit')openM('svm');
+  else if(action==='catalogue')openM('catm');
+}
+
+/* Pre-fill consultation modal from lead form */
+function prefillFromLead(){
+  const last=LeadCapture.getLast();
+  if(!last)return;
+  const cn=document.getElementById('c-name');const ce=document.getElementById('c-email');const cp=document.getElementById('c-phone');
+  if(cn&&last.name)cn.value=last.name;
+  if(ce&&last.email)ce.value=last.email;
+  if(cp&&last.phone)cp.value=last.phone;
+}
+
+/* =====================================================
+   V4 CIRCULAR CONFIDENCE DASHBOARD
+===================================================== */
+let confData={intent:97,memory:88,recommendation:92,overall:94};
+
+function buildCircle(pct,color,label,id){
+  const r=32,circ=2*Math.PI*r;
+  const offset=circ*(1-pct/100);
+  const wrap=document.createElement('div');wrap.className='conf-circ-wrap';
+  const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+  svg.setAttribute('viewBox','0 0 80 80');svg.setAttribute('role','img');svg.setAttribute('aria-label',label+' '+pct+'%');
+  const bg=document.createElementNS('http://www.w3.org/2000/svg','circle');
+  bg.setAttribute('cx','40');bg.setAttribute('cy','40');bg.setAttribute('r',String(r));
+  bg.setAttribute('fill','none');bg.setAttribute('stroke','rgba(255,255,255,0.06)');bg.setAttribute('stroke-width','7');
+  const fg=document.createElementNS('http://www.w3.org/2000/svg','circle');
+  fg.setAttribute('cx','40');fg.setAttribute('cy','40');fg.setAttribute('r',String(r));
+  fg.setAttribute('fill','none');fg.setAttribute('stroke',color);fg.setAttribute('stroke-width','7');
+  fg.setAttribute('stroke-dasharray',String(circ));fg.setAttribute('stroke-dashoffset',String(circ));
+  fg.setAttribute('stroke-linecap','round');fg.setAttribute('transform','rotate(-90 40 40)');
+  fg.style.transition='stroke-dashoffset 1.2s ease';fg.id=id+'-circle';
+  const txt=document.createElementNS('http://www.w3.org/2000/svg','text');
+  txt.setAttribute('x','40');txt.setAttribute('y','45');txt.setAttribute('text-anchor','middle');
+  txt.setAttribute('fill','#eaeaff');txt.setAttribute('font-size','14');txt.setAttribute('font-weight','700');
+  txt.id=id+'-txt';txt.textContent=pct+'%';
+  svg.appendChild(bg);svg.appendChild(fg);svg.appendChild(txt);
+  const lbl=document.createElement('div');lbl.className='conf-circ-lbl';lbl.textContent=label;
+  wrap.appendChild(svg);wrap.appendChild(lbl);
+  setTimeout(()=>{fg.setAttribute('stroke-dashoffset',String(circ*(1-pct/100)));},50);
+  return wrap;
+}
+
+function renderConfDash(){
+  const grid=document.getElementById('conf-dash-grid');
+  if(!grid)return;grid.innerHTML='';
+  const items=[
+    {key:'intent',label:'Intent',color:'#00d4ff'},
+    {key:'memory',label:'Memory',color:'#7b2fff'},
+    {key:'recommendation',label:'Recommend',color:'#00ff88'},
+    {key:'overall',label:'Overall',color:'#ff9500'},
+  ];
+  items.forEach(item=>{
+    const c=buildCircle(confData[item.key],item.color,item.label,'cd-'+item.key);
+    grid.appendChild(c);
+  });
+}
+
+function updateConfData(intentScore){
+  const ic=Math.min(99,Math.round(intentScore>50?93+intentScore/100:intentScore>20?78+intentScore/5:50+intentScore));
+  const mc=Math.min(99,Math.round(75+(MEM.turns.length*3)));
+  const rc=Math.min(99,Math.round((ic+mc)/2+4));
+  const ov=Math.round((ic*0.4+mc*0.25+rc*0.35));
+  confData={intent:ic,memory:mc,recommendation:rc,overall:ov};
+  /* Update main confidence bar */
+  const cvEl=document.getElementById('cv'),cfEl=document.getElementById('cf');
+  const acEl=document.getElementById('a-conf');
+  if(cvEl)cvEl.textContent=ov+'%';if(cfEl)cfEl.style.width=ov+'%';if(acEl)acEl.textContent=ov+'%';
+  /* Animate circles if visible */
+  const grid=document.getElementById('conf-dash-grid');
+  if(grid&&grid.children.length){renderConfDash();}
+}
+
+/* =====================================================
+   V4 ENHANCED PDF CATALOGUE VIEWER
+===================================================== */
+const CATALOGUE_PAGES=[
+  {title:'Windows Collection',icon:'🪟',products:['ThermaGuard UPVC Casement','ThermaGuard UPVC Sliding','ThermaGuard Tilt & Turn','ThermaGuard Bay Window','AcousticPro 45 UPVC']},
+  {title:'Doors & Entrances',icon:'🚪',products:['ArchForm Alu Pivot Door','ArchForm Alu French Door','UPVC French Door','SecureCore Entry Door','Villa Grand Entrance']},
+  {title:'Sliding Systems',icon:'↔️',products:['GrandSlide XL Lift & Slide','SilkGlide Standard Sliding','BiGlide Bi-fold System','CornerSlide Frameless','TerracaSlide Flush']},
+  {title:'Aluminium Systems',icon:'🏗️',products:['SlimLine Pro 30','ArchForm Alu Elite','MarineGuard Coastal','StormShield High-Wind','CurtainWall CW-50']},
+  {title:'Glass Solutions',icon:'💎',products:['SolarShield Low-E','AcousticLam 52dB','EcoFrame Triple Glaze','SmartGlass Switchable','ToughPlus Safety Glass']},
+  {title:'Premium Finishes',icon:'🎨',products:['Brushed Gold Anodised','Matte Black Collection','Wood Grain Series','Champagne Anodised','Custom RAL Service']},
+];
+let pdfPage=0,pdfZoom=1;
+
+function renderPdfViewer(){
+  const viewer=document.getElementById('pdf-viewer-body');
+  const info=document.getElementById('pdf-page-info');
+  const thumbRow=document.getElementById('pdf-thumbs');
+  if(!viewer)return;
+  const page=CATALOGUE_PAGES[pdfPage];
+  /* Thumbnails */
+  if(thumbRow){
+    thumbRow.innerHTML='';
+    CATALOGUE_PAGES.forEach((p,i)=>{
+      const th=document.createElement('div');th.className='pdf-thumb'+(i===pdfPage?' active':'');
+      th.innerHTML=`${p.icon}<span>${p.title.split(' ')[0]}</span>`;
+      th.onclick=()=>{pdfPage=i;renderPdfViewer();playSound('click');};
+      thumbRow.appendChild(th);
+    });
+  }
+  if(info)info.textContent=`Page ${pdfPage+1} of ${CATALOGUE_PAGES.length} — ${page.title}`;
+  viewer.style.transform=`scale(${pdfZoom})`;
+  viewer.innerHTML='';
+  const titleEl=document.createElement('div');
+  titleEl.style.cssText='font-size:13px;font-weight:700;color:var(--ac1);margin-bottom:12px;text-align:center;letter-spacing:1px;text-transform:uppercase';
+  titleEl.textContent=page.title;
+  viewer.appendChild(titleEl);
+  page.products.forEach(name=>{
+    const row=document.createElement('div');row.className='pdf-prod-row';
+    const ico=document.createElement('div');ico.className='pdf-prod-ico';ico.textContent=page.icon;
+    const info2=document.createElement('div');info2.className='pdf-prod-info';
+    const nm=document.createElement('div');nm.className='pdf-prod-name';nm.textContent=name;
+    const sub=document.createElement('div');sub.className='pdf-prod-sub';sub.textContent='Click to learn more';
+    info2.appendChild(nm);info2.appendChild(sub);row.appendChild(ico);row.appendChild(info2);
+    row.onclick=()=>{closeM('catm');ask('Tell me about '+name);};
+    viewer.appendChild(row);
+  });
+}
+function pdfNext(){if(pdfPage<CATALOGUE_PAGES.length-1){pdfPage++;renderPdfViewer();playSound('click');}}
+function pdfPrev(){if(pdfPage>0){pdfPage--;renderPdfViewer();playSound('click');}}
+function pdfZoomIn(){pdfZoom=Math.min(1.4,pdfZoom+0.1);const v=document.getElementById('pdf-viewer-body');if(v)v.style.transform=`scale(${pdfZoom})`;const zl=document.getElementById('pdf-zoom-level');if(zl)zl.textContent=Math.round(pdfZoom*100)+'%';}
+function pdfZoomOut(){pdfZoom=Math.max(0.7,pdfZoom-0.1);const v=document.getElementById('pdf-viewer-body');if(v)v.style.transform=`scale(${pdfZoom})`;const zl=document.getElementById('pdf-zoom-level');if(zl)zl.textContent=Math.round(pdfZoom*100)+'%';}
+
+/* =====================================================
+   V4 AUDIO SETTINGS
+===================================================== */
+const audioSettings={click:true,send:true,recv:true,modal:true,notif:true};
+function toggleAudioSetting(key,btn){
+  audioSettings[key]=!audioSettings[key];
+  btn.className='audio-toggle'+(audioSettings[key]?' on':'');
+  playSound('click');
+}
+
+/* =====================================================
+   V4 SIDEBAR HTML INJECTOR (runs after DOM ready)
+===================================================== */
+function injectV4Sidebar(){
+  const ssc=document.querySelector('.ssc');
+  if(!ssc||document.getElementById('v4-sidebar-injected'))return;
+  const marker=document.createElement('div');marker.id='v4-sidebar-injected';ssc.appendChild(marker);
+
+  /* Continuous voice badge */
+  const cvSection=document.createElement('div');cvSection.className='ss';
+  cvSection.innerHTML=`<div class="sst">Voice Mode</div>
+    <div id="cv-badge" class="cv-mode-badge off" onclick="toggleContinuousVoice()" role="button" tabindex="0" aria-label="Toggle continuous voice mode" style="width:100%;justify-content:center;margin-bottom:8px">
+      <div class="cv-dot"></div><span class="cv-label">Voice Mode OFF</span>
+    </div>
+    <div id="mic-status-bar" class="mic-status-bar unknown">
+      <div class="mic-dot"></div><span class="mic-lbl">Microphone status unknown</span>
+    </div>`;
+  ssc.insertBefore(cvSection,ssc.children[2]||ssc.firstChild);
+
+  /* Confidence dashboard */
+  const confSection=document.createElement('div');confSection.className='conf-dash';
+  confSection.innerHTML=`<div class="sst">AI Confidence Breakdown</div>
+    <div class="conf-dash-grid" id="conf-dash-grid"></div>`;
+  /* Insert after live activity card */
+  const vcCard=document.querySelector('.vc');
+  if(vcCard&&vcCard.closest('.ss'))vcCard.closest('.ss').after(confSection);
+  else ssc.appendChild(confSection);
+
+  /* Lead capture */
+  const leadSection=document.createElement('div');leadSection.className='lead-panel';
+  leadSection.innerHTML=`<div class="sst">Quick Enquiry</div>
+    <div class="lead-mini-form">
+      <div class="lead-mini-title">📞 Get a Callback</div>
+      <input type="text" class="lead-input" id="lead-name" placeholder="Your Name" aria-label="Name">
+      <input type="tel" class="lead-input" id="lead-phone" placeholder="Phone Number" aria-label="Phone">
+      <input type="email" class="lead-input" id="lead-email" placeholder="Email (optional)" aria-label="Email">
+      <select class="lead-input" id="lead-proj" aria-label="Project type" style="cursor:pointer">
+        <option value="" style="background:#0c0c1e">Project Type</option>
+        <option value="villa" style="background:#0c0c1e">Luxury Villa</option>
+        <option value="apartment" style="background:#0c0c1e">Home / Apartment</option>
+        <option value="office" style="background:#0c0c1e">Commercial Office</option>
+        <option value="renovation" style="background:#0c0c1e">Renovation</option>
+      </select>
+      <div class="lead-btns">
+        <button class="lead-btn primary" onclick="submitLead('consultation')">📅 Book Consultation</button>
+        <button class="lead-btn" onclick="submitLead('catalogue')">📋 Request Catalogue</button>
+        <button class="lead-btn" onclick="submitLead('visit')">🏠 Schedule Site Visit</button>
+      </div>
+      <div class="lead-saved" id="lead-saved"></div>
+    </div>`;
+  /* Insert before CTAs */
+  const saDiv=document.querySelector('.sa');
+  if(saDiv)saDiv.before(leadSection);
+
+  /* Audio settings */
+  const audioSection=document.createElement('div');audioSection.className='audio-settings-wrap';
+  audioSection.innerHTML=`<div class="sst">Audio Settings</div>
+    ${Object.keys(audioSettings).map(k=>`
+    <div class="audio-row">
+      <span class="audio-row-label">${k.charAt(0).toUpperCase()+k.slice(1)} sound</span>
+      <button class="audio-toggle on" onclick="toggleAudioSetting('${k}',this)" aria-label="Toggle ${k} sound" aria-pressed="true"></button>
+    </div>`).join('')}`;
+  const sfDiv=document.querySelector('.sf');
+  if(sfDiv)sfDiv.before(audioSection);
+
+  /* Add compare + configurator buttons to CTA list */
+  const saList=document.querySelector('.sa');
+  if(saList){
+    const cmpBtn=document.createElement('button');cmpBtn.className='ab';
+    cmpBtn.innerHTML='<div class="abi" aria-hidden="true">⚖️</div>Compare Products';
+    cmpBtn.onclick=openCompare;saList.appendChild(cmpBtn);
+    const cfgBtn=document.createElement('button');cfgBtn.className='ab';
+    cfgBtn.innerHTML='<div class="abi" aria-hidden="true">⚙️</div>Window Configurator';
+    cfgBtn.onclick=()=>openM('config-modal');saList.appendChild(cfgBtn);
+    const repBtn=document.createElement('button');repBtn.className='ab';
+    repBtn.innerHTML='<div class="abi" aria-hidden="true">📄</div>View Report';
+    repBtn.onclick=()=>openReport(lastConsultData);saList.appendChild(repBtn);
+  }
+
+  /* Update header actions */
+  const haDiv=document.querySelector('.ha');
+  if(haDiv&&!document.getElementById('hdr-cmp-btn')){
+    const btn=document.createElement('button');btn.className='hb';btn.id='hdr-cmp-btn';
+    btn.textContent='⚖️ Compare';btn.onclick=openCompare;
+    haDiv.insertBefore(btn,haDiv.firstChild);
+  }
+
+  /* Restore continuous voice state */
+  if(localStorage.getItem('ais_cv')==='1'){
+    continuousVoiceActive=false;toggleContinuousVoice();
+  }
+
+  /* Init permission check */
+  PermManager.check();
+
+  /* Render confidence circles */
+  setTimeout(renderConfDash,300);
+}
+
+/* =====================================================
+   V4 CATALOGUE MODAL PATCH — replace inner content
+===================================================== */
+function initV4Catalogue(){
+  const catm=document.getElementById('catm');if(!catm)return;
+  const moc=catm.querySelector('.moc');if(!moc||moc.dataset.v4)return;
+  moc.dataset.v4='1';
+
+  /* Find and replace the catalogue content area */
+  const existingDlRows=moc.querySelector('.dl-rows');
+  const existingPdf=moc.querySelector('.cat-pdf-wrap');
+  const catGrid=document.getElementById('cat-grid');
+
+  /* Inject thumbnail strip above PDF area */
+  if(existingPdf&&!document.getElementById('pdf-thumbs')){
+    const thumbDiv=document.createElement('div');thumbDiv.className='pdf-thumbnails';thumbDiv.id='pdf-thumbs';
+    existingPdf.before(thumbDiv);
+  }
+
+  /* Replace existing PDF preview with enhanced viewer */
+  if(existingPdf){
+    existingPdf.innerHTML=`
+      <div class="pdf-nav">
+        <button class="pdf-nav-btn" onclick="pdfPrev()" aria-label="Previous page">◀</button>
+        <span class="pdf-nav-info" id="pdf-page-info">Page 1 of 6</span>
+        <button class="pdf-nav-btn" onclick="pdfNext()" aria-label="Next page">▶</button>
+      </div>
+      <div class="pdf-zoom" style="justify-content:center;margin-bottom:10px">
+        <button class="pdf-zoom-btn" onclick="pdfZoomOut()" aria-label="Zoom out">−</button>
+        <span id="pdf-zoom-level">100%</span>
+        <button class="pdf-zoom-btn" onclick="pdfZoomIn()" aria-label="Zoom in">+</button>
+      </div>
+      <div class="pdf-viewer" style="overflow:hidden;min-height:200px">
+        <div id="pdf-viewer-body" style="width:100%;transform-origin:top left;transition:transform .3s ease"></div>
+      </div>`;
+    renderPdfViewer();
+  }
+}
+
+/* =====================================================
+   V4 KNOWLEDGE BASE ADDITIONS (10 more intents to hit 50+)
+===================================================== */
+const KB_V4_EXTRA=[
+  {id:'fixed_windows',k:['picture window','fixed frame','non-opening window','view window'],r:`**Fixed Windows — Uninterrupted Views & Maximum Light**\n\nFixed (non-opening) windows are designed purely to maximise light, views, and thermal performance:\n\n- **Frameless or ultra-slim options** — pure glass aesthetic, no visible sightlines\n- **Any custom shape** — circular, arched, triangular, trapezoidal, or completely bespoke\n- **Optimum thermal performance** — no moving parts means no air infiltration\n- **Available in all glass types** — Low-E, solar control, acoustic, toughened, or smart glass\n- **Lower cost per sq.ft** than equivalent opening windows\n- **Perfect for feature walls, stairwells**, and double-height spaces\n\nIdeal where ventilation isn't required but natural light and views are priorities.`},
+  {id:'bay_windows',k:['bay window','bow window','angled window','projecting window'],r:`**Bay & Bow Windows — Architectural Character**\n\nBay and bow windows project outward from the building, creating additional space and a distinctive exterior:\n\n- **Bay windows** — typically 3 panels at 45° or 90° angles\n- **Bow windows** — 4–6 panels forming a gentle curve\n- **Creates additional floor space** inside — popular for seating nooks\n- **Maximises natural light** from multiple angles simultaneously\n- **Available in UPVC or aluminium** — both in premium finishes\n- **Can include opening vents** in side panels for ventilation\n\nAdds significant kerb appeal and interior character to any home.`},
+  {id:'skylight',k:['skylight','roof window','roof light','velux','overhead glazing'],r:`**Skylights & Roof Windows — Bring the Sky Inside**\n\nRoof glazing transforms dark interiors with natural overhead light:\n\n- **Fixed skylights** — pure light wells, excellent thermal performance\n- **Opening roof windows** — electric or manual, adds ventilation\n- **Walk-on glazing** — structural glass floors and roof terraces\n- **Solar-control glass** — prevents summer overheating from above\n- **Automated rain sensors** — auto-close when rain detected\n- **Available sizes** from 500×500mm to custom large-format\n\nParticularly popular in loft conversions, flat-roof extensions, and modern villas.`},
+  {id:'partition',k:['glass partition','office partition','internal glazing','room divider','internal wall'],r:`**Glass Partitions — Open, Light-Filled Spaces**\n\nInternal glass partitions transform offices and homes:\n\n- **Single or double-glazed** options for acoustic privacy\n- **Frameless systems** — minimal visible structure, maximum openness\n- **Switchable smart glass** — frosted on-demand for privacy\n- **Full-height** from floor to ceiling slab\n- **Integrated blinds** — venetian or fabric blinds sealed between panes\n- **Compliant with IS 2553** safety glass standards\n\nPopular for home offices, meeting rooms, and open-plan living spaces.`},
+  {id:'louvers',k:['louvre','louver','solar shading','external blind','brise-soleil'],r:`**Solar Louvre Systems — Dynamic Sun Control**\n\nAutomated louvre systems actively manage solar gain:\n\n- **Motorised aluminium fins** — adjust angle throughout the day\n- **Responds to sun intensity sensors** — fully automated\n- **Reduces solar gain by up to 85%** when fully closed\n- **Maintains diffused natural light** — not a blackout system\n- **Integrates with building management systems** and smart home\n- **Available in all RAL colours** — architectural statement element\n\nEssential for ECBC compliance and LEED/GRIHA green building ratings.`},
+  {id:'acoustics_detail',k:['rw rating','stc rating','sound transmission','acoustic certification','decibel rating'],r:`**Acoustic Performance — Technical Specifications**\n\nUnderstanding acoustic ratings helps you choose the right system:\n\n| System | Rw Rating | Best Application |\n|---|---|---|\n| Single glazed 6mm | 28 dB | Basic noise reduction |\n| UPVC standard DG | 32–35 dB | Suburban residential |\n| Acoustic UPVC | 38–42 dB | Urban areas |\n| AcousticPro 45 | 45 dB | Highway/airport adjacent |\n| Secondary glazing | 48–52 dB | Maximum isolation |\n\n**Rw = Weighted Sound Reduction Index** — higher is better.\n\nFor perspective: 10 dB reduction halves the perceived loudness.`},
+  {id:'thermal_detail',k:['u value','r value','thermal transmittance','heat loss coefficient','thermal break detail'],r:`**Thermal Performance — Technical Deep Dive**\n\nU-value (thermal transmittance) measures heat loss — lower is better:\n\n| System | U-Value | Energy Class |\n|---|---|---|\n| Single glazed aluminium | 5.8 W/m²K | F |\n| Standard UPVC DG | 2.8 W/m²K | C |\n| Low-E argon DG | 1.4 W/m²K | B |\n| Triple glazed | 0.8–1.0 W/m²K | A+ |\n| Our premium system | 0.7 W/m²K | A++ |\n\n**Thermal break aluminium** uses polyamide inserts to interrupt the metal path and reduce conductivity by 80%.\n\nAll our systems comply with IS 11197 and exceed ECBC requirements.`},
+  {id:'doors_general',k:['front door','entrance door','external door','main door','entry door'],r:`**Premium Entrance Doors — First Impressions Count**\n\nOur entrance door range combines security, thermal performance, and architectural impact:\n\n- **Pivot doors** — dramatic statement entries up to 3.2m tall, 1.5m wide\n- **Double leaf doors** — traditional symmetry with modern performance\n- **UPVC panel doors** — superior thermal and security performance\n- **Aluminium slim-frame doors** — sleek contemporary aesthetics\n- **Smart entry systems** — fingerprint, PIN, Bluetooth, app control\n\n**All doors include:** multi-point locking, RC2 burglar resistance, toughened safety glass, and weather-seal as standard.\n\nAvailable with 1, 2, 3 or full-glass panel configurations.`},
+  {id:'bifold',k:['bifold','bi fold','bi-fold','folding door','accordion door'],r:`**Bi-Fold Door Systems — Maximum Opening, Maximum Impact**\n\nBi-fold doors fold back completely to create a full-width opening:\n\n- **2 to 8 panel configurations** — opens virtually the entire wall\n- **Stacks neatly to one or both sides** — choice of stacking direction\n- **Flush threshold option** — seamless indoor-outdoor flow\n- **Thermally broken aluminium** — no cold bridging in winter\n- **Multi-point locking** — secure even in folded position\n- **Available in UPVC or aluminium** — both in all premium finishes\n\nIdeal for kitchen-garden connections, living rooms opening to terraces, and entertainment spaces.`},
+  {id:'smart_glass_detail',k:['switchable glass','electrochromic','pdlc','smart glass detail','privacy glass electric'],r:`**Smart Glass Technology — Intelligence in Every Pane**\n\nOur smart glass systems use PDLC (Polymer Dispersed Liquid Crystal) technology:\n\n**How it works:**\n- Off (no power): glass appears frosted/opaque — privacy\n- On (12V DC): glass becomes clear — transparency\n- Switches in under 1 second\n\n**Applications:** bathroom windows, conference room partitions, skylights, entrance doors\n\n**Technical specs:**\n- Visible light transmission: 0% (off) → 72% (on)\n- Power consumption: 5 W/m² — very low\n- UV blocking: 99% in both states\n- Available as laminated safety glass (both states)\n\nCan be integrated with smart home systems and automated on timer or sensor.`},
+];
+
+/* Merge extra KB into main KB array */
+if(typeof KB!=='undefined'){KB.push(...KB_V4_EXTRA);}
+
+/* =====================================================
+   V4 RESPONSE ENGINE PATCH — capture data for report
+===================================================== */
+const _origShowResult=typeof showConsultResult==='function'?showConsultResult:null;
+if(_origShowResult){
+  window.showConsultResult=function(){
+    _origShowResult();
+    const recs=CONSULT.buildRecommendation();
+    lastConsultData={
+      propertyType:{villa:'Luxury Villa',apartment:'Home/Apartment',office:'Commercial Office',renovation:'Renovation'}[CONSULT.answers.propertyType]||'—',
+      priority:{noise:'Noise Reduction',heat:'Heat Control',security:'Security',luxury:'Luxury Aesthetics'}[CONSULT.answers.priority]||'—',
+      budget:{budget:'Value Range',standard:'Standard Range',premium:'Premium Range',luxury:'Luxury Range'}[CONSULT.answers.budget]||'—',
+      system:recs.system,glass:recs.glass,mesh:recs.mesh,security:recs.security,
+      hardware:'Multi-point locking, Grade 6 certified',
+      budgetRange:recs.budgetRange,
+      climate:'Mixed / Moderate (adjust for your city)'
+    };
+  };
+}
+
+/* Also capture wizard report data */
+const _origGenReport=typeof generateWizReport==='function'?generateWizReport:null;
+if(_origGenReport){
+  window.generateWizReport=function(){
+    _origGenReport();
+    /* lastConsultData is set inside calcWindow too — wizard sets its own */
+    setTimeout(()=>{
+      const a=WIZ.answers;
+      const propMap={villa:'Luxury Villa',apartment:'Home/Apartment',office:'Commercial Office',coastal:'Coastal Property'};
+      const noiseMap={very_noisy:'Very Noisy',moderate:'Moderate',quiet:'Quiet',city:'City Centre'};
+      lastConsultData={
+        propertyType:propMap[a[0]]||'—',
+        climate:{hot:'Hot & Sunny',cold:'Cold Winters',monsoon:'Heavy Monsoon',mixed:'Mixed'}[a[1]]||'Mixed',
+        priority:noiseMap[a[2]]||'Moderate',
+        budget:{budget:'Value Range',standard:'Standard Range',premium:'Premium Range',luxury:'Luxury Range'}[a[3]]||'—',
+        system:'See chat for details',glass:'See chat for details',
+        mesh:'Retractable stainless steel fly screen',
+        hardware:'Multi-point locking Grade 6',
+        security:'Multi-point locking + Grade 6 hardware',
+        budgetRange:{budget:'₹350–550/sq.ft',standard:'₹550–800/sq.ft',premium:'₹800–1,300/sq.ft',luxury:'₹1,300+/sq.ft'}[a[3]]||'₹550–800/sq.ft'
+      };
+    },500);
+  };
+}
+
+/* =====================================================
+   V4 INIT PATCH
+===================================================== */
+const _origInitApp=typeof initApp==='function'?initApp:null;
+window.initApp=function(){
+  if(_origInitApp)_origInitApp();
+  setTimeout(injectV4Sidebar,100);
+  setTimeout(initV4Catalogue,200);
+  /* keyboard shortcut: Ctrl+Shift+C = Compare */
+  document.addEventListener('keydown',e=>{
+    if((e.ctrlKey||e.metaKey)&&e.shiftKey&&e.key==='C'){e.preventDefault();openCompare();}
+    if((e.ctrlKey||e.metaKey)&&e.shiftKey&&e.key==='W'){e.preventDefault();openM('config-modal');}
+  });
+};
+
+/* Override playSound to respect per-sound settings */
+const _origPlaySound=typeof playSound==='function'?playSound:null;
+window.playSound=function(type){
+  if(!audioSettings[type]&&!audioSettings.click)return;
+  if(!audioSettings[type])return;
+  if(_origPlaySound)_origPlaySound(type);
+};
 
 </script>
 </body>
