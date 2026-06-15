@@ -622,6 +622,103 @@ input,textarea{cursor:text}
 .pdf-thumb.active{border-color:var(--ac1);background:rgba(0,212,255,.08)}
 .pdf-thumb span{font-size:8px;color:var(--txt-3);margin-top:3px;text-align:center;line-height:1.2}
 
+
+/* =====================================================
+   PHASE G — NEW CSS
+===================================================== */
+/* DIAGNOSTICS PANEL */
+#diag-panel{position:fixed;bottom:20px;right:20px;width:360px;background:rgba(4,4,16,.97);border:1px solid rgba(0,212,255,.22);border-radius:var(--r-lg);padding:18px;z-index:9000;display:none;backdrop-filter:blur(24px);box-shadow:0 0 40px rgba(0,212,255,.12)}
+#diag-panel.on{display:block;animation:wi .3s ease}
+.diag-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--ac1);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
+.diag-close{cursor:pointer;color:var(--txt-3);font-size:14px;transition:color var(--tf)}
+.diag-close:hover{color:var(--ac3)}
+.diag-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:11px}
+.diag-row:last-child{border-bottom:none}
+.diag-label{color:var(--txt-3)}
+.diag-val{color:var(--ac1);font-weight:600;font-family:'SF Mono','Fira Code',monospace;font-size:10.5px;max-width:200px;text-align:right;word-break:break-all}
+.diag-val.green{color:var(--ac4)}.diag-val.amber{color:#ffaa00}.diag-val.red{color:var(--ac3)}
+.diag-bar{margin-top:10px}
+.diag-bar-label{font-size:10px;color:var(--txt-3);margin-bottom:3px;display:flex;justify-content:space-between}
+.diag-bar-track{height:3px;background:rgba(255,255,255,.06);border-radius:var(--r-full);overflow:hidden}
+.diag-bar-fill{height:100%;background:var(--grad1);border-radius:var(--r-full);transition:width .8s ease}
+.diag-section{font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:var(--txt-3);margin:10px 0 5px;padding-top:8px;border-top:1px solid rgba(255,255,255,.04)}
+
+/* ENHANCED CONSULT STEPS */
+.consult-step-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.consult-step-num{width:28px;height:28px;border-radius:50%;background:var(--grad1);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0}
+.consult-step-q{font-size:14px;font-weight:600;color:var(--txt-1)}
+.consult-step-hint{font-size:11px;color:var(--txt-2);margin-bottom:14px;line-height:1.55}
+.consult-opts-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.consult-opt-card{padding:12px;border-radius:var(--r-md);border:1px solid var(--glass-b);background:var(--glass);cursor:pointer;transition:all var(--tn);text-align:center}
+.consult-opt-card:hover{border-color:var(--ac1);background:rgba(0,212,255,.07)}
+.consult-opt-card.selected{border-color:var(--ac1);background:rgba(0,212,255,.13);box-shadow:var(--glow1)}
+.consult-opt-icon{font-size:22px;margin-bottom:6px}
+.consult-opt-label{font-size:12px;font-weight:600;color:var(--txt-1)}
+.consult-opt-sub{font-size:10px;color:var(--txt-3);margin-top:2px}
+.consult-progress{display:flex;gap:5px;margin-bottom:18px}
+.consult-prog-step{flex:1;height:3px;border-radius:var(--r-full);background:var(--glass-b);transition:background .4s ease}
+.consult-prog-step.done{background:var(--ac4)}
+.consult-prog-step.active{background:var(--ac1);box-shadow:var(--glow1)}
+
+/* PREMIUM COMPARE CARDS */
+.compare-wrapper{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.compare-card{background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r-lg);padding:18px;transition:all .15s ease;position:relative;overflow:hidden}
+.compare-card::before{content:'';position:absolute;inset:0;border-radius:var(--r-lg);background:linear-gradient(135deg,rgba(0,212,255,.04),transparent);pointer-events:none}
+.compare-card:hover{border-color:var(--ac1);box-shadow:var(--glow1)}
+.cc-img{width:100%;height:80px;border-radius:var(--r-md);background:linear-gradient(135deg,rgba(0,212,255,.1),rgba(123,47,255,.1));display:flex;align-items:center;justify-content:center;font-size:36px;margin-bottom:12px}
+.cc-name{font-size:14px;font-weight:700;color:var(--txt-1);margin-bottom:2px}
+.cc-cat{font-size:10px;color:var(--txt-3);margin-bottom:10px}
+.cc-badge{font-size:9px;padding:2px 8px;border-radius:var(--r-full);background:rgba(0,212,255,.1);color:var(--ac1);border:1px solid rgba(0,212,255,.18);display:inline-block;margin-bottom:12px}
+.cc-ratings{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+.cc-rating-row{display:flex;align-items:center;gap:8px}
+.cc-rating-lbl{font-size:10px;color:var(--txt-2);width:68px;flex-shrink:0}
+.cc-rating-track{flex:1;height:4px;background:rgba(255,255,255,.07);border-radius:var(--r-full);overflow:hidden}
+.cc-rating-fill{height:100%;border-radius:var(--r-full);transition:width 1.2s cubic-bezier(.34,1.56,.64,1)}
+.cc-rating-num{font-size:10px;font-weight:700;color:var(--txt-1);width:22px;text-align:right;flex-shrink:0}
+.cc-warranty{font-size:10px;color:var(--txt-3);margin-bottom:6px}
+.cc-best{font-size:10px;color:var(--ac2);padding:3px 8px;border-radius:var(--r-full);background:rgba(123,47,255,.1);border:1px solid rgba(123,47,255,.18);display:inline-block}
+.cc-winner{position:absolute;top:12px;right:12px;background:var(--grad1);color:#fff;font-size:9px;font-weight:700;padding:3px 8px;border-radius:var(--r-full)}
+.cc-price-cat{font-size:11px;font-weight:600;margin-top:8px}
+.price-standard{color:#00ff88}.price-premium{color:#00d4ff}.price-luxury{color:#ffaa00}
+
+/* ADVANCED ANALYTICS */
+.anl-chart-wrap{background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r-md);padding:14px;margin-bottom:12px}
+.anl-chart-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--txt-3);margin-bottom:12px}
+.anl-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:7px;font-size:11px}
+.anl-bar-name{width:90px;color:var(--txt-2);text-align:right;flex-shrink:0;font-size:10px}
+.anl-bar-track{flex:1;height:5px;background:rgba(255,255,255,.06);border-radius:var(--r-full);overflow:hidden}
+.anl-bar-fill{height:100%;border-radius:var(--r-full);background:var(--grad1);transition:width 1s ease}
+.anl-bar-val{color:var(--txt-1);font-weight:600;font-size:10px;width:28px;text-align:right;flex-shrink:0}
+.anl-pills{display:flex;flex-wrap:wrap;gap:6px}
+.anl-pill{font-size:10px;padding:3px 9px;border-radius:var(--r-full);background:rgba(0,212,255,.08);color:var(--ac1);border:1px solid rgba(0,212,255,.15)}
+.anl-timeline{display:flex;align-items:flex-end;gap:4px;height:60px;padding:0 4px}
+.anl-t-bar{flex:1;background:linear-gradient(to top,rgba(0,212,255,.5),rgba(123,47,255,.3));border-radius:2px 2px 0 0;min-height:4px;transition:height .8s ease}
+
+/* PDF EXPORT BUTTON */
+.export-pdf-btn{width:100%;padding:10px;border-radius:var(--r-md);background:linear-gradient(135deg,rgba(255,45,120,.15),rgba(123,47,255,.15));border:1px solid rgba(255,45,120,.3);color:var(--ac3);font-size:12px;font-weight:600;cursor:pointer;transition:all var(--tn);margin-top:8px}
+.export-pdf-btn:hover{background:linear-gradient(135deg,rgba(255,45,120,.25),rgba(123,47,255,.25));box-shadow:var(--glow3)}
+
+/* ARCHITECT SPEC PANEL */
+.arch-spec-panel{background:rgba(0,212,255,.04);border:1px solid rgba(0,212,255,.15);border-radius:var(--r-md);padding:14px;margin-top:12px;font-family:'SF Mono','Fira Code',monospace;font-size:11px;color:var(--ac1);animation:wi .4s ease}
+.arch-spec-row{display:grid;grid-template-columns:160px 1fr;gap:6px;padding:4px 0;border-bottom:1px solid rgba(0,212,255,.06)}
+.arch-spec-row:last-child{border-bottom:none}
+.arch-spec-key{color:rgba(0,212,255,.55)}
+.arch-spec-val{color:var(--txt-1);font-family:inherit}
+.arch-spec-title{font-size:10px;text-transform:uppercase;letter-spacing:2px;color:rgba(0,212,255,.4);margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid rgba(0,212,255,.1)}
+
+/* CONFIGURATOR PRO */
+.cfg-pro-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+
+/* CURSOR TRAIL */
+.cursor-dot{position:fixed;width:4px;height:4px;border-radius:50%;background:var(--ac1);pointer-events:none;z-index:99998;opacity:0.5;transition:none}
+
+/* PREMIUM SCROLL */
+.smooth-scroll{scroll-behavior:smooth}
+#mc{scroll-behavior:smooth}
+
+/* MOTION PHYSICS on cards */
+.motion-card{transform-style:preserve-3d;will-change:transform}
+
 </style>
 </head>
 <body>
@@ -1022,6 +1119,36 @@ input,textarea{cursor:text}
     </div>
     <div id="report-body"></div>
   </div>
+</div>
+
+
+<!-- ============ PHASE G NEW HTML ============ -->
+
+<!-- DIAGNOSTICS PANEL -->
+<div id="diag-panel" role="complementary" aria-label="AI Diagnostics">
+  <div class="diag-title">
+    <span>⚡ AI Diagnostics</span>
+    <span class="diag-close" onclick="toggleDiag()" aria-label="Close diagnostics">✕</span>
+  </div>
+  <div class="diag-section">Intent Engine</div>
+  <div class="diag-row"><span class="diag-label">Last Intent</span><span class="diag-val" id="dg-intent">—</span></div>
+  <div class="diag-row"><span class="diag-label">Intent Score</span><span class="diag-val" id="dg-score">—</span></div>
+  <div class="diag-row"><span class="diag-label">Confidence</span><span class="diag-val green" id="dg-conf">—</span></div>
+  <div class="diag-row"><span class="diag-label">KB Intents</span><span class="diag-val green" id="dg-kb">—</span></div>
+  <div class="diag-section">Memory Engine</div>
+  <div class="diag-row"><span class="diag-label">Context Turns</span><span class="diag-val" id="dg-turns">0</span></div>
+  <div class="diag-row"><span class="diag-label">Profile Match</span><span class="diag-val" id="dg-mem">none</span></div>
+  <div class="diag-row"><span class="diag-label">Property Type</span><span class="diag-val" id="dg-prop">—</span></div>
+  <div class="diag-section">Session</div>
+  <div class="diag-row"><span class="diag-label">Persona</span><span class="diag-val amber" id="dg-persona">homeowner</span></div>
+  <div class="diag-row"><span class="diag-label">Voice State</span><span class="diag-val" id="dg-voice">idle</span></div>
+  <div class="diag-row"><span class="diag-label">Continuous</span><span class="diag-val" id="dg-cv">off</span></div>
+  <div class="diag-row"><span class="diag-label">Questions</span><span class="diag-val" id="dg-q">0</span></div>
+  <div class="diag-bar">
+    <div class="diag-bar-label"><span>Overall Confidence</span><span id="dg-ov">—</span></div>
+    <div class="diag-bar-track"><div class="diag-bar-fill" id="dg-bar" style="width:0%"></div></div>
+  </div>
+  <div style="font-size:9px;color:var(--txt-3);margin-top:10px;text-align:center">Press Ctrl+Shift+D to toggle</div>
 </div>
 
 <script>
@@ -3313,6 +3440,851 @@ window.initApp=function(){
 };
 
 /* V4: Per-sound audio settings check is now inside playSound() directly */
+
+
+/* ============ PHASE G ============ */
+
+/* =====================================================
+   PHASE G — COMPLETE 65+ INTENT KNOWLEDGE BASE
+   (Replaces all previous KB arrays — no duplicates)
+===================================================== */
+const KB_COMPLETE=[
+/* WINDOW TYPES */
+{id:'upvc',k:['upvc','uPVC','pvc window','plastic window','unplasticised'],r:`**UPVC Windows — The Nation's Favourite Premium Solution**\n\nUPVC (Unplasticised Polyvinyl Chloride) delivers exceptional performance with virtually zero maintenance:\n\n- **Thermal insulation** — reduces heat transfer by up to **70%**\n- **Noise reduction** — attenuates external sound by **30–45 dB**\n- **100% waterproof** — tested for Indian monsoon and coastal conditions\n- **30–40 year lifespan** — virtually maintenance-free throughout\n- **200+ colour options** — including authentic wood-grain and matte finishes\n- **Eco-friendly** — BIS-certified, fully recyclable at end of life\n\nAvailable as: casement, sliding, tilt & turn, bay, and fixed window styles.`},
+{id:'aluminum',k:['aluminum','aluminium','metal window','al window','slim profile','alu'],r:`**Aluminum Systems — The Architect's Premium Choice**\n\nOur aluminium systems are specified by leading architects across India:\n\n- **Ultra-slim profiles from 30mm** — maximises glass area and views\n- **Exceptional structural strength** — handles large-format openings\n- **Full RAL colour range** — UV-stable powder coating lasting 20+ years\n- **Thermal break technology** — polyamide inserts eliminate cold bridging\n- **Marine-grade options** — for coastal and high-humidity properties\n- **50+ year design life** — outstanding long-term investment\n\nSuitable for: high-rises, villas, curtain walls, and commercial facades.`},
+{id:'casement',k:['casement','hinged window','outward opening','side hung'],r:`**Casement Windows — Timeless Design, Modern Performance**\n\n- **Maximum ventilation** — opens fully outward or inward\n- **Triple EPDM gasket seal** — weathertight in any monsoon condition\n- **Energy rating A++** — among the best available in India\n- **Tilt & Turn variant** — gentle tilt for ventilation + full open for cleaning\n- **Anti-trap finger protection** — essential for families with children\n- **Multi-point locking** — standard across all profiles\n\nMost popular choice for bedrooms and living rooms.`},
+{id:'sliding',k:['sliding','slide','glide','patio door','sliding door','sliding window'],r:`**Sliding Systems — Space Meets Elegance**\n\n- **German-engineered stainless steel rollers** — glide with one fingertip\n- **5–7 locking points** per panel — multi-point security standard\n- **Up to 6 metres wide** in a single panel — dramatic visual impact\n- **Lift & Slide option** — panels up to 400 kg moved effortlessly\n- **Flush floor threshold** — seamless indoor-outdoor connection\n- **Acoustic seals** — maintain noise reduction even when ajar\n\nPerfect for terraces, gardens, and open-plan living spaces.`},
+{id:'fixed',k:['fixed window','picture window','non-opening','view window'],r:`**Fixed Windows — Uninterrupted Views & Maximum Light**\n\n- **Any custom shape** — circular, arched, triangular, or fully bespoke\n- **Optimal thermal performance** — no moving parts, zero air infiltration\n- **Frameless or ultra-slim options** — pure glass aesthetic\n- **All glass types available** — Low-E, solar, acoustic, toughened, smart\n- **Lower cost per sq.ft** than equivalent opening windows\n\nIdeal for: feature walls, stairwells, and double-height spaces.`},
+{id:'bay_bow',k:['bay window','bow window','angled window','projecting window'],r:`**Bay & Bow Windows — Architectural Character**\n\nBay and bow windows project outward, creating additional floor space:\n\n- **Bay windows** — 3 panels at 45° or 90° angles\n- **Bow windows** — 4–6 panels forming a gentle outward curve\n- **Creates interior seating nook** — adds usable floor area\n- **Maximises natural light** from multiple directions simultaneously\n- **Available in UPVC or aluminium** — all premium finishes\n- **Opening side panels** — for ventilation while maintaining the look\n\nSignificantly increases kerb appeal and interior character.`},
+{id:'tilt_turn',k:['tilt and turn','tilt & turn','tilt turn','turn and tilt'],r:`**Tilt & Turn Windows — European Engineering Excellence**\n\nThe most versatile window profile available:\n\n- **Two modes in one frame** — tilt inward for gentle ventilation, swing fully open for cleaning and maximum airflow\n- **Secure tilt position** — ventilation even when you're not home\n- **Safety first** — cannot be fully opened accidentally from tilt\n- **Easy interior cleaning** — no need to go outside\n- **Superior airtightness** — three sealing positions\n- **Premium hardware** — single handle controls both modes\n\nEspecially popular for upper-floor apartments and high-rise buildings.`},
+{id:'french_door',k:['french door','french window','double door','bifold door','bi fold'],r:`**French Doors & Bi-Fold Systems — Maximum Opening Impact**\n\n- **French doors** — elegant paired doors, classic proportions\n- **Bi-fold systems** — 2–8 panels that fold back completely to create a full-width opening\n- **Stacks neatly** to one or both sides — your choice of stacking direction\n- **Flush threshold** — no step, seamless indoor-outdoor flow\n- **Multi-point locking** — secure even in folded position\n- **Available in UPVC or aluminium** — all premium finishes\n\nIdeal for kitchen-garden connections and entertainment spaces.`},
+{id:'lift_slide',k:['lift and slide','lift slide','lift & slide','panoramic door'],r:`**Lift & Slide Systems — Grand Panoramic Living**\n\nEngineered for the most dramatic openings:\n\n- **Panels up to 7 metres wide** — single uninterrupted view\n- **Lifts 3–5mm on rollers** — then glides effortlessly with minimal force\n- **Panels up to 400 kg** — moved with a single finger\n- **Maximum airtight seal** — pressed firmly into frame when closed\n- **Motorised option** — fully automated with smart home integration\n\nThe defining feature of luxury villas and penthouses.`},
+{id:'skylight',k:['skylight','roof window','roof light','overhead glazing','roof lantern'],r:`**Skylights & Roof Windows — Bring the Sky Inside**\n\n- **Fixed skylights** — pure light wells, optimal thermal performance\n- **Electric roof windows** — rain-sensor auto-close standard\n- **Flat glass rooflights** — frameless flush-to-roof aesthetic\n- **Pyramid skylights** — architectural feature for double-height spaces\n- **Solar-control glass** — prevents summer overheating from above\n- **Walk-on glazing** — structural glass floors and roof terraces\n\nTransforms dark interiors with natural overhead light.`},
+/* GLASS TYPES */
+{id:'toughened',k:['toughened glass','tempered glass','safety glass','shatterproof'],r:`**Toughened Safety Glass — Non-Negotiable Protection**\n\n- **5× stronger** than ordinary float glass of the same thickness\n- **Shatters safely** — into small blunt pebbles, not dangerous shards\n- **IS 2553 certified** — mandatory Indian safety standard\n- **Thermal resistance** — from −20°C to +300°C\n- **Available 4mm to 19mm** — for every application\n\nStandard in all our ground-floor and door units as non-negotiable safety.`},
+{id:'laminated',k:['laminated glass','pvb glass','laminate','safety laminate','interlayer glass'],r:`**Laminated Glass — Safety, Acoustic & Security**\n\nTwo panes bonded with a PVB interlayer that holds glass in place if broken:\n\n- **Safety** — fragments stay bonded to the film\n- **Acoustic** — PVB dampens vibrations, reducing noise by **35–42 dB**\n- **Security** — resists forced entry far longer than standard glass\n- **UV protection** — blocks **99% of UV radiation**, protecting furniture\n- **Anti-intrusion variants** — multiple PVB layers for RC2/RC3 security\n\nStandard for all external doors and ground-floor applications.`},
+{id:'double_glazed',k:['double glazing','double glazed','insulated glass','dual pane','igu'],r:`**Double Glazing — The Smart Investment**\n\nTwo panes separated by an insulating air or argon gap, hermetically sealed:\n\n- **3–5°C cooler** interiors in summer, noticeably warmer in winter\n- **25–35 dB** sound reduction from the insulating gap\n- **Eliminates condensation** on interior glass surfaces completely\n- **25–30% reduction** in heating and cooling energy bills\n- **10-year hermetic seal warranty** — guaranteed no fogging\n\nThree performance levels: air-filled (standard) · argon gas (superior) · krypton (premium).`},
+{id:'triple_glazed',k:['triple glazing','triple glazed','triple pane','3 pane glass'],r:`**Triple Glazing — Ultimate Thermal Performance**\n\nThree panes with two insulating gas gaps:\n\n- **U-values as low as 0.6 W/m²K** — passive house standard\n- **Superior noise reduction** vs double glazing\n- **Suitable for extreme climates** — harsh winters or very hot summers\n- **Qualifies for maximum GRIHA/LEED credits**\n- **Argon or krypton filled** — highest efficiency in thinnest profile\n\nRecommended for: cold-climate villas, north-facing facades, and green building projects.`},
+{id:'lowE',k:['low-e glass','low emissivity','lowe glass','energy glass','infrared glass'],r:`**Low-E Glass — The Invisible Energy Shield**\n\nA microscopically thin metallic coating that manages heat invisibly:\n\n- **Reflects infrared radiation** — heat out in summer, heat in during winter\n- **Completely transparent** to visible light — no colour change\n- **U-values as low as 1.0 W/m²K** — in double glazing units\n- **SHGC selectable** from 0.2 to 0.7 — for each climate zone\n- **UV blocking** — protects furniture, floors, and art from fading\n- **Energy savings** — 25–40% reduction in HVAC running costs\n\nHard-coat (pyrolytic) and soft-coat (sputter-coated) variants available.`},
+{id:'reflective',k:['reflective glass','mirror glass','solar reflective','tinted reflective'],r:`**Reflective Glass — Solar Control & Privacy**\n\n- **Mirror-like exterior** reflects direct sunlight before it enters\n- **70% solar heat rejection** in dark tinted variants\n- **External privacy** during daylight hours\n- **Dramatic architectural aesthetic** — especially on commercial facades\n- **Available in:** silver, bronze, blue, green, and neutral tints\n\nBest for: south-facing facades, hot-climate offices, and glass curtain walls.`},
+{id:'acoustic_glass',k:['acoustic glass','soundproof glass','noise glass','sound reduction glass'],r:`**Acoustic Laminated Glass — Engineered Silence**\n\n| Configuration | Rw Rating |\n|---|---|\n| Standard 6mm float | 28 dB |\n| Standard UPVC double glaze | 32 dB |\n| Acoustic UPVC system | 38–42 dB |\n| AcousticPro 45 system | 45 dB |\n| Secondary glazing added | 48–52 dB |\n\nThe PVB acoustic interlayer in laminated glass dampens the vibrations that carry sound through the pane — fundamentally different from simply thickening the glass.`},
+{id:'smart_glass',k:['smart glass','switchable glass','electrochromic','pdlc','privacy glass electric'],r:`**Smart Switchable Glass — Intelligence in Every Pane**\n\nPDLC (Polymer Dispersed Liquid Crystal) technology:\n\n- **Off (no power):** frosted/opaque — instant privacy\n- **On (12V DC):** completely clear — full transparency\n- **Switches in under 1 second** — instantaneous response\n- **Power consumption:** 5 W/m² — extremely low operating cost\n- **UV blocking:** 99% in both states\n- **Smart home integration** — timer, sensor, or voice controlled\n\nApplications: bathroom windows, conference partitions, skylights, entrance doors.`},
+{id:'solar_control',k:['solar control glass','solar glass','heat control glass','sun control'],r:`**Solar Control Glass — Cool Interiors All Year**\n\n- **Blocks up to 70% of solar heat** while maintaining clear views\n- **Keeps interiors 4–5°C cooler** compared to clear glass\n- **Multiple shades available** — neutral, bronze, blue, grey\n- **Low internal reflection** — no mirror effect from inside\n- **Reduces AC load by 30–50%** — significant running cost saving\n\nEssential in: south-facing rooms, conservatories, and glass-heavy buildings in hot climates.`},
+/* PERFORMANCE */
+{id:'noise_reduction',k:['noise','sound','acoustic','soundproof','traffic noise','quiet','silent','decibel'],r:`**Noise Reduction — Engineered Peace & Quiet**\n\nOur ranked noise reduction solutions:\n\n1. **Secondary Glazing** — up to **52 dB** isolation (the absolute maximum)\n2. **AcousticPro 45 UPVC** — up to **45 dB** reduction — eliminates traffic noise\n3. **Laminated Acoustic Glass** — PVB interlayer dampens vibrations\n4. **Double Glazing 16mm+ gap** — air pocket acts as sound buffer\n\n**Context:** 10 dB reduction halves perceived loudness. At 45 dB, highway noise becomes imperceptible. Clients near airports consistently report sleeping through night flights after installation.`},
+{id:'heat_reduction',k:['heat','hot','solar gain','cool','summer heat','temperature control'],r:`**Heat Reduction — Cool Interiors All Summer**\n\nManaging solar heat is critical in the Indian climate:\n\n1. **Solar Control Glass** — blocks up to **70% of solar heat**\n2. **Low-E Coating** — keeps interiors up to **5°C cooler**\n3. **Double Glazing** — air gap prevents thermal conduction\n4. **Reflective Glass** — mirror exterior reflects direct sun\n\n**ROI:** Reduces AC costs by **30–50%** annually. Typical payback **3–4 years** on premium glazing. Protects furniture, flooring, and artwork from UV fading.`},
+{id:'thermal',k:['thermal insulation','u-value','heat loss','cold climate','winter warmth','r-value'],r:`**Thermal Insulation — Technical Performance**\n\n| System | U-Value | Energy Class |\n|---|---|---|\n| Single glazed aluminium | 5.8 W/m²K | F |\n| Standard UPVC double glaze | 2.8 W/m²K | C |\n| Low-E argon double glaze | 1.4 W/m²K | B |\n| Triple glazed | 0.8–1.0 W/m²K | A+ |\n| Our premium system | 0.7 W/m²K | A++ |\n\nThermal break aluminium uses polyamide inserts to reduce conductivity by 80%. All our systems comply with IS 11197 and exceed ECBC requirements.`},
+{id:'security',k:['security','burglar','break in','theft','intrusion','smart lock','forced entry'],r:`**Security Systems — Multi-Layer Protection**\n\n- **5–7 locking points** distributed across the full height of every door\n- **RC2 certified cylinders** — anti-drill, anti-pick, anti-snap\n- **Smart locks** — fingerprint, PIN, Bluetooth, NFC, app-controlled\n- **Anti-intrusion laminated glass** — holds under sustained attack\n- **Steel-reinforced frames** — prevents lever or crowbar attacks\n\n✓ Amazon Alexa · ✓ Google Home · ✓ Apple HomeKit compatible\n\nCertified to PAS 24 and RC2 — the two highest available ratings.`},
+{id:'weather',k:['weather resistance','waterproof','rain','monsoon','storm','water ingress','leak'],r:`**Weather Resistance — Built for Indian Conditions**\n\nAll systems tested to exceed Indian climate requirements:\n\n- **Water resistance** — 300 Pa (sustained monsoon downpour)\n- **Wind resistance** — AW Class 4 (120+ km/h winds)\n- **Multi-chamber drainage** — self-draining sills prevent water ponding\n- **Triple EPDM gasket** — three lines of defence against water ingress\n- **Stainless steel hardware** — Grade 316 marine stainless available\n\n**Guarantee:** Water ingress through frames within 5 years = free repair, no questions asked.`},
+{id:'waterproofing',k:['waterproofing','water seal','monsoon proof','watertight'],r:`**Waterproofing Technology — Zero Compromise**\n\nOur waterproofing is engineered at every level:\n\n- **Factory-applied primary EPDM seal** — pressed into frame during manufacture\n- **Site-applied secondary sealant** — neutral-cure silicone, not acetone\n- **Sloped drainage channels** — gravity-driven, no pooling\n- **Thermal break drainage** — prevents water bridging through insulation\n- **5-year installation waterproofing warranty** — covers the seal to the building\n\nOur standard exceeds IS 1521 waterproofing test requirements by 40%.`},
+{id:'wind_resistance',k:['wind load','high wind','storm resistance','cyclone','gale force'],r:`**High-Wind Systems — Storm-Grade Resistance**\n\n- **AW Class 5 wind load testing** — 150+ km/h sustained wind\n- **Reinforced UPVC profiles** — steel cores for structural rigidity\n- **Heavy-wall aluminium** — structural grade 6063-T5\n- **Enhanced multi-point locking** — distributes load across the frame\n- **Impact-resistant glass** — withstands airborne debris\n- **Structural silicone bonding** — eliminates frame flex under load\n\nCertified to IS 875 Part 3 and AW wind resistance class system.`},
+{id:'energy_efficiency',k:['energy efficiency','green building','eco','leed','griha','bec','ecbc','sustainable'],r:`**Energy Efficiency — Certified Performance**\n\n- **U-values as low as 0.7 W/m²K** — industry-leading in India\n- **BEE 5-star rated systems** — highest available energy certification\n- **ECBC compliant** — Energy Conservation Building Code\n- **GRIHA/LEED credits** — contributes toward green building ratings\n- **Optimised SHGC** for each Indian climate zone\n\n**Annual savings:** Heating/cooling bills reduced 30–50%. Typical ROI: 3–5 years. Significant ongoing carbon reduction for the building's lifetime.`},
+/* PROJECT TYPES */
+{id:'villa',k:['villa','luxury home','bungalow','mansion','estate','premium home'],r:`**Luxury Villa Solutions — Architectural Statements**\n\nOur villa portfolio represents the pinnacle of what we offer:\n\n- **Lift & Slide Grand Doors** — panels up to 7m wide, single-touch operation\n- **Frameless Corner Glass** — zero vertical framing, uninterrupted 180° views\n- **Floor-to-ceiling glazing** — dramatic proportions and light\n- **Pivot Entrance Doors** — statement entries up to 3.2m tall\n- **Full smart home integration** — motorised, scene control, auto-lock\n\n**Signature Finishes:** Oak, Walnut, Teak, Ebony, Brushed Gold, Champagne, Space Grey, Custom RAL\n\nPortfolio: 200+ luxury villas across Punjab, Delhi NCR, Chandigarh, and Goa.`},
+{id:'apartment',k:['apartment','flat','condo','residential complex','housing society'],r:`**Residential Complex Solutions — Consistency at Scale**\n\nPreferred partner for India's leading developers:\n\n- **Space-efficient systems** — optimised for apartment floor plans\n- **Sound-attenuating UPVC** — essential for party walls and street fronts\n- **Weather-resistant for all orientations** — every floor level tested\n- **Fire-rated glass** — NBC 2016 compliance options\n- **Standardised sizing** — consistent aesthetic across the development\n\n**Developer advantages:** Free CAD drawings · Project manager · 10–25% bulk pricing · Complex-wide warranty\n\nDelivered for: Godrej, Prestige, DLF, and leading Punjab developers.`},
+{id:'office',k:['office','corporate','commercial building','workplace','business centre'],r:`**Commercial & Office Solutions — Precision at Scale**\n\n- **Curtain Wall Systems** — structural glass facades for towers\n- **Glass Partition Systems** — open, collaborative, light-filled workplaces\n- **Automated Solar Louvres** — motorised shading by light intensity\n- **Fire-rated glazing** — 30, 60, 90-minute certified resistance\n- **Conference room acoustic glazing** — speech privacy guaranteed\n\n✓ GRIHA/LEED · ✓ BEE certified · ✓ NBC 2016 · ✓ IS 875 wind load\n\nProjects: 500 to 50,000 sq.m with dedicated project management.`},
+{id:'hotel',k:['hotel','hospitality','resort','guest rooms','hotel project'],r:`**Hospitality Solutions — Where Luxury Meets Performance**\n\nHotels demand the highest standards across every room:\n\n- **Acoustic casement windows** — guest room noise isolation from 38 dB\n- **Electric curtain-track integration** — motorised windows + blinds on single control\n- **Easy-clean glass coatings** — self-cleaning glass for housekeeping efficiency\n- **Fire-rated door sets** — compliant with NBC hotel fire safety requirements\n- **Durable hardware** — commercial-grade rated for 50,000+ cycles\n- **Consistent aesthetic** — matched across all room types and facades\n\nDelivered for 5-star properties across Punjab, Chandigarh, and Delhi NCR.`},
+{id:'hospital',k:['hospital','healthcare','clinic','medical facility','laboratory'],r:`**Healthcare Facility Solutions — Sterile, Safe, Quiet**\n\nHealthcare environments demand specialist performance:\n\n- **Acoustic glazing** — noise isolation essential for patient recovery\n- **Easy-clean, anti-bacterial surfaces** — powder coatings resistant to cleaning chemicals\n- **Sealed frames** — prevents air infiltration, supports HVAC efficiency\n- **Fire-rated glazing** — 60/90-minute resistance for escape routes\n- **Smooth operation** — no sharp edges, anti-trap profiles for patient safety\n- **Certified to IS 3414** — healthcare glazing standards\n\nAlso suitable for: laboratories, cleanrooms, and pharmaceutical facilities.`},
+{id:'school',k:['school','education','college','university','educational building'],r:`**Educational Facility Solutions — Safe Learning Environments**\n\n- **Anti-trap casement and tilt windows** — child safety essential\n- **Impact-resistant safety glass** — toughened as standard throughout\n- **Acoustic glazing** — reduces external noise distraction by 38+ dB\n- **Robust hardware** — commercial-grade for high-use environments\n- **DfMA-ready** — design for manufacture and assembly, faster installation\n- **Low maintenance** — UPVC profiles ideal for institutional budgets\n\nCompliant with CPWD specifications and NBC educational building standards.`},
+{id:'coastal',k:['coastal','coast','sea facing','marine','salt air','beach property'],r:`**Coastal Solutions — Marine-Grade Engineering**\n\nSea-facing properties demand specialist protection against salt-air corrosion:\n\n- **Marine-grade aluminium alloy** — 6063-T5 with hard anodising\n- **Grade 316 stainless hardware** — resists salt-spray corrosion for decades\n- **Enhanced EPDM gaskets** — ozone and UV resistant for coastal environments\n- **Marine powder coating** — certified to 1000+ hours ASTM B117 salt spray test\n- **Special drainage** — prevents salt water ponding in sill channels\n- **25-year coastal warranty** — specific to marine environments\n\nOur coastal range has been tested in Goa, Mumbai, and Andaman installations.`},
+/* BUSINESS & SERVICE */
+{id:'pricing',k:['price','cost','rate','budget','how much','rupee','₹','quote','estimate'],r:`**Pricing Guide — Premium Quality, Transparent Pricing**\n\n| Product | Standard | Premium |\n|---|---|---|\n| UPVC Windows | ₹400–550/sq.ft | ₹650–950/sq.ft |\n| Aluminium Windows | ₹550–750/sq.ft | ₹850–1,250/sq.ft |\n| Sliding Doors | ₹500–700/sq.ft | ₹800–1,200/sq.ft |\n| Casement Windows | ₹420–580/sq.ft | ₹700–980/sq.ft |\n| Entrance Doors | ₹20,000+ | ₹45,000+ |\n\n**Savings:** Full home package -10–15% · Developer orders -15–25% · Referral credit ₹2,000`},
+{id:'warranty',k:['warranty','guarantee','defect','coverage','fault claim','years cover'],r:`**Warranty — Industry-Leading Coverage**\n\n| Component | Period |\n|---|---|\n| UPVC Profiles | **10 years** |\n| Aluminium Profiles | **15 years** |\n| Glazing Seal | **10 years** |\n| Hardware & Fittings | **5 years** |\n| Installation Quality | **3 years** |\n| Waterproofing | **5 years** |\n\nAll claims assessed within **7 working days** with complimentary on-site inspection. Engineer visits you — no call centres.`},
+{id:'installation',k:['installation','install','how long','timeline','delivery','when ready','lead time'],r:`**Installation Timeline — Survey to Handover**\n\n| Phase | Duration |\n|---|---|\n| Site Survey | 1 day |\n| Design Approval | 2–4 days |\n| Manufacturing | 10–14 days |\n| Delivery | 1–2 days |\n| Installation | 2–7 days |\n| Final Sign-off | 1 day |\n\n**Total: 3–4 weeks from confirmed order**\n\n✓ Rush 10-day track for standard sizes · ✓ Daily site cleanup · ✓ WhatsApp milestone photos`},
+{id:'maintenance',k:['maintenance','clean','care','upkeep','service','maintain','cleaning guide'],r:`**Maintenance — Virtually Effortless**\n\n**UPVC (every 3–6 months):**\n- Wipe frames with mild soapy water and soft cloth\n- Clear drainage channels with a thin rod\n- Apply silicone lubricant to hinges and locks\n\n**Aluminium (every 6 months):**\n- Non-abrasive cleaner on powder-coated surfaces\n- Protective wax for coastal environments\n\n**Glass:** Standard glass cleaner + microfibre cloth\n\n**AMC (Annual Maintenance Contract):** Full inspection, hardware service, seal check from **₹2,500/year**.`},
+{id:'service',k:['service','support','after sales','repair','complaint','helpline','technician'],r:`**After-Sales Service — We're With You for Life**\n\n**Response times:**\n- Emergency (water, security) — **within 24 hours**\n- Operational issues — **within 48 hours**\n- Cosmetic queries — **within 5 working days**\n\n📞 Toll-free: 1800-XXX-XXXX · 📱 WhatsApp · 🌐 Online portal (24/7)\n\nAMC from **₹2,500/year** · Service technicians in **50+ cities** · All factory-trained.`},
+{id:'turnaround',k:['turnaround','rush order','fast delivery','urgent','quick installation','express'],r:`**Express Turnaround — When You Need It Faster**\n\n- **Rush 10-day track** for standard sizes — manufacturing prioritised\n- **Next-day site survey** — for confirmed orders with deposit\n- **Pre-manufactured standard sizes** — ex-stock in common configurations\n- **Weekend installation** available for time-critical projects\n\nFor urgent projects, call our project team directly — we work with your programme, not against it.`},
+{id:'dealer',k:['dealer','distributor','dealer support','channel partner','trade pricing','reseller'],r:`**Dealer & Channel Partner Programme**\n\nWe support our dealer network with a comprehensive partner programme:\n\n- **Trade pricing** — structured margin schedule with volume tiers\n- **Marketing support** — co-branded materials, digital assets, training\n- **Technical training** — product knowledge, measurement, installation\n- **Dedicated account manager** — single point of contact for your business\n- **Priority stock access** — dealer allocation before retail demand\n- **Sample kits** — full-size profile and glass samples for your showroom\n\nContact our channel sales team to discuss partnership opportunities.`},
+{id:'customisation',k:['custom','customise','customize','bespoke','colour','color','ral','finish','wood grain'],r:`**Customisation — Designed Precisely for Your Vision**\n\n**Colours & Surface Finishes:**\n- 200+ powder coat colours (complete RAL range)\n- Authentic wood grain (Oak, Walnut, Teak, Ebony, Ash White, Mahogany)\n- Anodised (Silver, Bronze, Gold, Champagne, Space Grey, Graphite)\n- Matt, satin & gloss variants · Custom RAL colour matching\n\n**Special Shapes:** Arched · Circular · Triangular · Trapezoidal — any geometry\n\n**Hardware:** Stainless steel · Chrome · Matte black · Antique bronze · Satin gold`},
+{id:'smart_home',k:['smart home','automation','motorised','motorized','alexa','google home','homekit','remote control','iot'],r:`**Smart Home Integration — Built-In Intelligence**\n\n- **Motorised windows** — app, voice, or schedule controlled\n- **Smart locks** — fingerprint, PIN, NFC, Bluetooth, remote\n- **Auto-ventilation** — opens with CO₂/humidity sensors\n- **Scene integration** — "Good Night" closes all and arms security\n- **Solar tracking louvres** — shading adjusts automatically\n\n✓ Amazon Alexa · ✓ Google Home · ✓ Apple HomeKit · ✓ KNX/Modbus\n\nReal-time push alerts for forced entry or windows left open.`},
+{id:'mosquito',k:['mosquito mesh','insect screen','fly screen','bug net','retractable mesh'],r:`**Mosquito & Insect Screen Solutions**\n\n1. **Retractable Fly Screen** — rolls invisibly away when not needed\n2. **Pleated Accordion Mesh** — folds neatly, space-efficient\n3. **Magnetic Self-Closing** — hands-free entry via embedded magnets\n4. **Slide & Remove Mesh** — pops out in seconds for cleaning\n\n**Materials:** Fibreglass (standard) · Stainless steel (coastal) · Solar mesh (heat + insects)\n\n✓ Standard in most residential packages · ✓ Retrofittable to existing windows`},
+{id:'partition',k:['glass partition','office partition','internal glazing','room divider'],r:`**Glass Partitions — Open, Light-Filled Spaces**\n\n- **Single or double-glazed** — for varying acoustic privacy needs\n- **Frameless systems** — minimal visible structure, maximum openness\n- **Smart glass option** — frosted on-demand for instant privacy\n- **Full-height** floor to ceiling slab construction\n- **Integrated blinds** — venetian or fabric sealed between panes\n- **IS 2553 compliant** — safety glass standards throughout\n\nPopular for: home offices, meeting rooms, and open-plan living spaces.`},
+{id:'greet',k:['hello','hi','hey','namaste','good morning','good afternoon','good evening'],r:`Hello and welcome to AIS Windows!\n\nI'm **ARIA** — your AI-powered luxury consultant for premium doors and windows. Here's how I help:\n\n- **Product guidance** — any window or door system compared in detail\n- **Design recommendations** — tailored to your specific project\n- **Pricing estimates** — honest, transparent ballpark figures\n- **Booking** — free consultations, catalogues, site surveys\n- **Technical specifications** — U-values, Rw ratings, BIM data\n\nWhat are you working on today — new home, villa, renovation, or commercial project?`},
+{id:'thanks',k:['thank','thanks','great','awesome','perfect','helpful','wonderful','brilliant'],r:`You're very welcome — it's genuinely my pleasure!\n\nBefore you go, here are a few things clients often find useful at this stage:\n\n- **Price estimate** — realistic budget for planning purposes\n- **Free consultation** — speak with a design expert, zero commitment\n- **Digital catalogue** — full product range with specifications\n- **Site visit** — precise measurements and tailored on-site advice\n\nEvery great project starts with the right information. What's your next question?`},
+{id:'recommend',k:['recommend','best for','suggest','ideal for','help me choose','what should i','which should'],r:`I'd love to build you the perfect recommendation! Let me ask a few quick questions first to make sure I suggest exactly the right solution for your project…`},
+{id:'about',k:['about ais','company','who are you','history','experience','portfolio'],r:`**About AIS Windows — Premium Spaces Since Day One**\n\n- **15+ years** of industry excellence across India\n- **10,000+ projects** completed, residential and commercial\n- **50+ cities** served nationwide\n- **25+ experience showrooms** where you see and touch every product\n- **Factory-trained installation teams** — certified professionals only\n\n✓ ISO 9001:2015 · ✓ BIS Certified · ✓ BEE Energy Accredited · ✓ GRIHA Recognised\n\n*"Windows and doors are not merely openings — they are the frame through which you experience life."*`},
+{id:'hardware',k:['hardware','handles','hinges','lock cylinder','fittings','ironmongery'],r:`**Premium Hardware Collections**\n\nOur hardware is sourced from Europe's leading manufacturers:\n\n**Handle Finishes:**\n- Satin Chrome · Polished Chrome · Matte Black · Antique Bronze · Brushed Gold\n\n**Lock Systems:**\n- Multi-point locking (5–7 points) as standard\n- Anti-drill, anti-pick cylinders — RC2 certified\n- Smart lock integration — fingerprint/PIN/Bluetooth\n\n**Hinges:** Concealed, exposed, friction stay — all with soft-close options\n\n20-year anti-corrosion warranty on all hardware finishes.`},
+{id:'glazing_options',k:['glass options','glazing options','what glass','type of glass','glass choice'],r:`**Our Complete Glass Portfolio**\n\n| Glass Type | Primary Benefit |\n|---|---|\n| Clear Float | Standard clarity, value |\n| Tinted Bronze/Blue/Grey | Solar + aesthetics |\n| Reflective | Solar control, privacy |\n| Low-E Coated | Thermal + solar combined |\n| Acoustic Laminated | 52 dB noise reduction |\n| Safety Toughened | Impact safety |\n| Double Glazed IGU | Thermal + acoustic |\n| Triple Glazed | Extreme climates |\n| Frosted/Satin | Privacy areas |\n| Smart Switchable | Electronic opacity |\n| Self-Cleaning | Low maintenance |\n| Solar Control | 70% heat rejection |\n\nAll glass IS 2835 and IS 2553 certified.`},
+{id:'roi',k:['roi','return on investment','payback period','savings','cost benefit','lifecycle cost'],r:`**Return on Investment — The Numbers**\n\n**Energy Savings:**\n- Heating & cooling bills reduced by **30–50%** annually\n- Typical ROI on premium glazing: **3–5 years**\n- Ongoing savings every year after payback — for 30–50 years\n\n**Property Value:**\n- Premium glazing typically adds **5–8%** to assessed property value\n- Architects confirm glazing quality is among top-3 buyer decision factors for luxury properties\n\n**Maintenance Savings:**\n- UPVC: zero painting for 30+ years vs. ₹15,000–25,000/year for timber\n- Aluminium: zero corrosion maintenance vs. steel alternatives`},
+{id:'french_casement',k:['french casement','villa windows','full opening casement','outward casement'],r:`**French Casement Windows — Unobstructed Opening**\n\nTwo side-hung panels with no central post:\n\n- **Full-width opening** — no central mullion obstructing views or ventilation\n- **Classic proportions** — popular for heritage and traditional architecture\n- **Astragal bar options** — Georgian glazing bars for period properties\n- **Burglary-resistant** — multi-point locking on both leaves simultaneously\n- **Available in UPVC or aluminium** — all premium finishes\n\nThe preferred choice for ground-floor reception rooms and garden-facing facades.`},
+{id:'fixed_rooflights',k:['rooflight','flat roof glazing','structural glazing','roof terrace glass','frameless roof'],r:`**Structural Rooflights & Roof Terraces**\n\n- **Walk-on glass** — structural laminated glass floors rated for 400 kg/m²\n- **Flush flat rooflights** — frameless glass flush to roof membrane\n- **Point-fixed glazing** — glass supported by minimal stainless fittings\n- **Anti-slip surface** — etched or fritted pattern for safety\n- **Low-E coated** — solar control without sacrificing daylight\n\nEngineered to IS 875 structural load requirements.`},
+{id:'builder_packs',k:['builder pack','project package','bulk order','multiple units','new build'],r:`**Builder & Developer Packages**\n\n- **Standardised sizing** — reduces manufacturing time, lowers cost\n- **10–25% bulk pricing** — depending on volume and specification\n- **Single point of contact** — dedicated project manager, site to handover\n- **Phased delivery** — matched to your construction programme\n- **CAD drawing package** — free with confirmed orders over ₹25 lakhs\n- **Training for site team** — installation guidance included\n\nWe've delivered single contracts from 20 to 2,000 units.`},
+];
+
+/* Replace both old KB arrays and the merge */
+if(typeof KB!=='undefined'){
+  // Clear and replace main KB
+  KB.length=0;
+  KB.push(...KB_COMPLETE);
+}
+if(typeof KB_V4_EXTRA!=='undefined'){KB_V4_EXTRA.length=0;}
+
+/* =====================================================
+   PHASE G — 5-STEP CONSULTANT DECISION TREE
+===================================================== */
+const CONSULT_G={
+  active:false,step:0,profile:{},
+  STEPS:[
+    {id:'property',title:'Property Type',hint:'Determines the profile system, hardware grade, and glass specification.',
+      opts:[
+        {icon:'🏰',label:'Luxury Villa',sub:'Premium estate / bungalow',val:'villa'},
+        {icon:'🏠',label:'Home / Apartment',sub:'Residential comfort & value',val:'apartment'},
+        {icon:'🏢',label:'Office / Commercial',sub:'Performance & compliance',val:'office'},
+        {icon:'🏨',label:'Hotel / Hospitality',sub:'Durability meets aesthetics',val:'hotel'},
+        {icon:'🏪',label:'Retail / Showroom',sub:'Customer-facing spaces',val:'retail'},
+        {icon:'🔨',label:'Renovation',sub:'Working within existing structure',val:'renovation'},
+      ]},
+    {id:'climate',title:'Location & Climate',hint:'Your climate zone determines insulation, solar control, and weatherproofing specification.',
+      opts:[
+        {icon:'☀️',label:'Hot Climate',sub:'Punjab, Rajasthan, Gujarat',val:'hot'},
+        {icon:'❄️',label:'Cold Winters',sub:'Himachal, J&K, high altitude',val:'cold'},
+        {icon:'🌊',label:'Coastal',sub:'Sea-facing, salt-air exposed',val:'coastal'},
+        {icon:'🏙️',label:'Urban / City',sub:'Traffic noise, pollution',val:'urban'},
+        {icon:'💨',label:'High Wind Area',sub:'Exposed hilltops, plains',val:'wind'},
+      ]},
+    {id:'priority',title:'Your Top Priority',hint:'Select what matters most — I will optimise the recommendation for this.',
+      opts:[
+        {icon:'🔇',label:'Noise Reduction',sub:'Peace & quiet from traffic',val:'noise'},
+        {icon:'🌡️',label:'Thermal Efficiency',sub:'Cool summers, warm winters',val:'thermal'},
+        {icon:'🔒',label:'Security',sub:'Maximum protection',val:'security'},
+        {icon:'✨',label:'Luxury Design',sub:'Architectural statement',val:'luxury'},
+        {icon:'🔧',label:'Low Maintenance',sub:'Set and forget for decades',val:'maintenance'},
+      ]},
+    {id:'budget',title:'Budget Range',hint:'Per sq.ft inclusive of supply, hardware, and professional installation.',
+      opts:[
+        {icon:'💰',label:'Standard',sub:'₹400–600 per sq.ft',val:'standard'},
+        {icon:'⭐',label:'Premium',sub:'₹600–1,000 per sq.ft',val:'premium'},
+        {icon:'👑',label:'Ultra Luxury',sub:'₹1,000+ per sq.ft',val:'ultra'},
+      ]},
+    {id:'design',title:'Design Preference',hint:'Your aesthetic guides profile, finish, and glass selection.',
+      opts:[
+        {icon:'🔲',label:'Modern Minimal',sub:'Clean lines, slim profiles',val:'modern'},
+        {icon:'🏛️',label:'Traditional',sub:'Classic proportions, wood-grain',val:'traditional'},
+        {icon:'💎',label:'Contemporary Luxury',sub:'Bold, premium statement',val:'contemporary'},
+        {icon:'🌿',label:'Eco-Conscious',sub:'Sustainable + green rated',val:'eco'},
+      ]},
+  ],
+  buildProfile(){
+    const p=this.profile;
+    const systemMap={
+      villa:{noise:'AcousticPro 45 UPVC with secondary glazing',thermal:'GrandSlide XL with triple glazing',security:'GrandSlide XL + SecureCore RC2',luxury:'GrandSlide XL Lift & Slide — Brushed Gold',maintenance:'ArchForm Aluminium (50yr maintenance-free)'},
+      apartment:{noise:'ThermaGuard UPVC+ Acoustic Casement',thermal:'ThermaGuard UPVC+ with Low-E argon DG',security:'ThermaGuard UPVC+ multi-point + laminated glass',luxury:'SlimLine Alu Casement — Champagne finish',maintenance:'ThermaGuard UPVC+ (30yr maintenance-free)'},
+      office:{noise:'SlimLine Pro 30 + acoustic laminated curtain wall',thermal:'Curtain Wall CW-50 with Low-E solar control',security:'Structural glazing + RC2 access control',luxury:'Ultra-slim curtain wall — floor to ceiling',maintenance:'Powder-coated aluminium (20yr finish warranty)'},
+      hotel:{noise:'Acoustic UPVC casement — 42 dB minimum',thermal:'Aluminium with solar control Low-E',security:'Smart locks + laminated glass throughout',luxury:'Frameless corner glazing + pivot entrance',maintenance:'Commercial-grade hardware 50,000-cycle rated'},
+      retail:{noise:'Fixed display glazing with acoustic interlayer',thermal:'Solar control reflective glass facade',security:'Anti-intrusion laminated + smart entry',luxury:'Structural glazing — no visible frame',maintenance:'Easy-clean self-cleaning glass coating'},
+      renovation:{noise:'Acoustic secondary glazing — fits any existing frame',thermal:'Low-E IGU retrofit into existing frames',security:'Upgrade hardware + laminated glass replacement',luxury:'Full frame replacement — aluminium slim profile',maintenance:'UPVC replacement — zero maintenance upgrade'},
+    };
+    const glassMap={
+      noise:'Acoustic Laminated Double Glazing (45 dB, argon-filled)',
+      thermal:p.climate==='hot'?'Solar Control Low-E Double Glazing (70% heat rejection)':p.climate==='cold'?'Triple Glazed Low-E Argon (U-value 0.8)':'Low-E Double Glazing (argon-filled)',
+      security:'Laminated Anti-Intrusion Safety Glass (RC2 rated)',
+      luxury:p.budget==='ultra'?'Smart Switchable Glass with Low-E':'Solar Control Low-E with tinted finish',
+      maintenance:'Self-cleaning coated Low-E double glazing',
+    };
+    const hardwareMap={
+      noise:'Multi-point locking + compression seals',
+      thermal:'Thermally broken hardware — no cold bridging',
+      security:'RC2 cylinder + 7-point multi-point locking',
+      luxury:'Satin Gold or Brushed Chrome lever sets',
+      maintenance:'Stainless Grade 316 — corrosion-free for life',
+    };
+    const budgetRangeMap={standard:'₹400–600/sq.ft',premium:'₹600–1,000/sq.ft',ultra:'₹1,000–1,800/sq.ft'};
+    const prop=p.property||'apartment';
+    const pri=p.priority||'thermal';
+    return{
+      property:{villa:'Luxury Villa',apartment:'Home / Apartment',office:'Office / Commercial',hotel:'Hotel / Hospitality',retail:'Retail / Showroom',renovation:'Renovation'}[prop]||prop,
+      climate:{hot:'Hot Climate',cold:'Cold Climate',coastal:'Coastal',urban:'Urban / City',wind:'High Wind Area'}[p.climate||'urban']||p.climate,
+      priority:{noise:'Noise Reduction',thermal:'Thermal Efficiency',security:'Security',luxury:'Luxury Design',maintenance:'Low Maintenance'}[pri]||pri,
+      budget:{standard:'Standard',premium:'Premium',ultra:'Ultra Luxury'}[p.budget||'premium']||p.budget,
+      design:{modern:'Modern Minimal',traditional:'Traditional',contemporary:'Contemporary Luxury',eco:'Eco-Conscious'}[p.design||'modern']||p.design,
+      system:systemMap[prop]?.[pri]||systemMap.apartment.thermal,
+      glass:glassMap[pri]||glassMap.thermal,
+      hardware:hardwareMap[pri]||hardwareMap.thermal,
+      mesh:'Integrated retractable stainless steel fly screen',
+      budgetRange:budgetRangeMap[p.budget||'premium'],
+    };
+  },
+  reset(){this.active=false;this.step=0;this.profile={};}
+};
+
+/* =====================================================
+   PHASE G — ENHANCED PERSONA RESPONSE TEMPLATES
+===================================================== */
+const PERSONA_G={
+  homeowner:{
+    suffix:`\n\n**In simple terms:** This is a great choice for your home. You'll notice the difference immediately — quieter, more comfortable, and lower energy bills. Easy to maintain and backed by a long warranty.`,
+    style:'friendly, benefit-focused, avoid jargon',
+  },
+  architect:{
+    suffix:`\n\n**Technical specification available:** U-values, Rw acoustic ratings, wind load class, air permeability class, water tightness classification, thermal transmittance calculations, and BIM/CAD objects for your project documentation. Request via your account manager.`,
+    style:'technical, specification-driven, data-rich',
+  },
+  builder:{
+    suffix:`\n\n**ROI & programme:** Premium glazing achieves payback in 3–5 years through energy savings. Adds 5–8% to assessed property value. Our phased delivery schedule matches your construction programme — dedicated PM included on orders over ₹20 lakhs.`,
+    style:'ROI-focused, programme-aware, cost-conscious',
+  },
+  dealer:{
+    suffix:`\n\n**Sales insight:** This is one of our top-converting product categories — 85% client satisfaction, strong repeat purchase, and natural upsell opportunities into smart home integration and premium hardware upgrades. Margin schedule available with your account manager.`,
+    style:'sales-oriented, margin-aware, upsell-focused',
+  },
+};
+
+/* =====================================================
+   PHASE G — DIAGNOSTICS ENGINE
+===================================================== */
+let diagActive=false;
+let diagData={intent:'—',score:'—',conf:'—',turns:0,mem:'—',prop:'—',persona:'homeowner',voice:'idle',cv:'off',q:0,overall:0};
+
+function toggleDiag(){
+  diagActive=!diagActive;
+  document.getElementById('diag-panel').classList.toggle('on',diagActive);
+  if(diagActive)updateDiagUI();
+  playSound('click');
+}
+function updateDiagUI(){
+  const d=document.getElementById;
+  const set=(id,val,cls)=>{const el=d(id);if(el){el.textContent=val;if(cls){el.className='diag-val '+cls;}}};
+  set('dg-intent',diagData.intent);
+  set('dg-score',diagData.score);
+  set('dg-conf',diagData.conf+'%',diagData.conf>80?'green':diagData.conf>60?'amber':'red');
+  set('dg-kb',typeof KB!=='undefined'?KB.length+' intents':typeof KB_COMPLETE!=='undefined'?KB_COMPLETE.length+' intents':'—','green');
+  set('dg-turns',diagData.turns);
+  set('dg-mem',diagData.mem);
+  set('dg-prop',diagData.prop||'—');
+  set('dg-persona',diagData.persona,'amber');
+  set('dg-voice',VOICE.state||'idle',VOICE.state==='listening'?'green':VOICE.state==='speaking'?'amber':'');
+  set('dg-cv',continuousVoiceActive?'enabled':'off',continuousVoiceActive?'green':'');
+  set('dg-q',diagData.q);
+  set('dg-ov',diagData.overall+'%');
+  const bar=document.getElementById('dg-bar');
+  if(bar)bar.style.width=diagData.overall+'%';
+}
+function updateDiag(intent,score,conf,overall){
+  diagData.intent=intent||'—';
+  diagData.score=typeof score==='number'?score.toFixed(1):'—';
+  diagData.conf=conf||0;
+  diagData.overall=overall||conf||0;
+  diagData.turns=MEM.turns.length;
+  diagData.mem=MEM.profile.propertyType||'none';
+  diagData.prop=MEM.profile.propertyType||'—';
+  diagData.persona=currentPersona||'homeowner';
+  diagData.q=ANL.questionsAsked;
+  if(diagActive)updateDiagUI();
+}
+
+
+/* =====================================================
+   PHASE G — CONSULTANT WORKFLOW ENGINE
+===================================================== */
+function launchConsultG(){
+  CONSULT_G.reset();CONSULT_G.active=true;
+  hideTyp();
+  const container=document.getElementById('mc');
+  document.getElementById('wc').style.display='none';
+  document.querySelectorAll('.fu-chips').forEach(el=>el.remove());
+  playSound('recv');
+  renderConsultGStep();
+}
+
+function renderConsultGStep(){
+  const container=document.getElementById('mc');
+  const step=CONSULT_G.STEPS[CONSULT_G.step];
+  const totalSteps=CONSULT_G.STEPS.length;
+  /* Progress bar */
+  const progHtml=CONSULT_G.STEPS.map((_,i)=>`<div class="consult-prog-step ${i<CONSULT_G.step?'done':i===CONSULT_G.step?'active':''}"></div>`).join('');
+
+  const wrap=document.createElement('div');wrap.className='msg a';wrap.style.maxWidth='860px';
+  const av=document.createElement('div');av.className='ma';av.textContent='🤖';
+  const mc2=document.createElement('div');mc2.className='mc2';mc2.style.maxWidth='calc(100% - 46px)';
+  const bubble=document.createElement('div');bubble.className='mb';
+  mc2.appendChild(bubble);wrap.appendChild(av);wrap.appendChild(mc2);
+  container.appendChild(wrap);scrollBot();
+
+  const introText=CONSULT_G.step===0?
+    `**Let me build your perfect recommendation!**\n\nI'll ask you ${totalSteps} quick questions to understand your project, then generate a personalised specification. It takes under 60 seconds…`:
+    `Step ${CONSULT_G.step+1} of ${totalSteps} — ${step.title}`;
+
+  streamResponse(bubble,introText,()=>{
+    /* Build step card */
+    const card=document.createElement('div');
+    card.style.cssText='margin-top:12px;animation:wi .4s ease';
+    /* Progress */
+    const prog=document.createElement('div');prog.className='consult-progress';prog.innerHTML=progHtml;
+    /* Header */
+    const hdr=document.createElement('div');hdr.className='consult-step-header';
+    hdr.innerHTML=`<div class="consult-step-num">${CONSULT_G.step+1}</div><div class="consult-step-q">${step.title}</div>`;
+    /* Hint */
+    const hint=document.createElement('div');hint.className='consult-step-hint';hint.textContent=step.hint;
+    /* Options grid */
+    const grid=document.createElement('div');grid.className='consult-opts-grid';
+    step.opts.forEach(opt=>{
+      const btn=document.createElement('div');btn.className='consult-opt-card';
+      btn.setAttribute('role','button');btn.setAttribute('tabindex','0');
+      btn.innerHTML=`<div class="consult-opt-icon">${opt.icon}</div><div class="consult-opt-label">${opt.label}</div><div class="consult-opt-sub">${opt.sub}</div>`;
+      btn.onclick=()=>{
+        grid.querySelectorAll('.consult-opt-card').forEach(b=>b.classList.remove('selected'));
+        btn.classList.add('selected');
+        CONSULT_G.profile[step.id]=opt.val;
+        playSound('click');
+        setTimeout(()=>{
+          card.remove();
+          if(CONSULT_G.step<CONSULT_G.STEPS.length-1){
+            CONSULT_G.step++;renderConsultGStep();
+          }else{
+            showConsultGReport();
+          }
+        },380);
+      };
+      btn.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();btn.click();}};
+      grid.appendChild(btn);
+    });
+    card.appendChild(prog);card.appendChild(hdr);card.appendChild(hint);card.appendChild(grid);
+    mc2.appendChild(card);scrollBot();
+  });
+}
+
+function showConsultGReport(){
+  const profile=CONSULT_G.buildProfile();
+  /* Store for report generator */
+  lastConsultData={
+    propertyType:profile.property,
+    climate:profile.climate,
+    priority:profile.priority,
+    budget:profile.budget,
+    design:profile.design,
+    system:profile.system,
+    glass:profile.glass,
+    hardware:profile.hardware,
+    mesh:profile.mesh,
+    security:profile.priority==='security'?'RC2 certified multi-point + smart fingerprint':'Multi-point locking + Grade 6 hardware',
+    budgetRange:profile.budgetRange,
+  };
+  MEM.profile.propertyType=CONSULT_G.profile.property;
+  ANL.trackRec();
+
+  const container=document.getElementById('mc');
+  const wrap=document.createElement('div');wrap.className='msg a';wrap.style.maxWidth='860px';
+  const av=document.createElement('div');av.className='ma';av.textContent='🤖';
+  const mc2=document.createElement('div');mc2.className='mc2';mc2.style.maxWidth='calc(100% - 46px)';
+  const bubble=document.createElement('div');bubble.className='mb';
+  mc2.appendChild(bubble);wrap.appendChild(av);wrap.appendChild(mc2);
+  container.appendChild(wrap);playSound('recv');
+
+  streamResponse(bubble,`**Your Personalised Specification — ${profile.property}**\n\nBased on your ${profile.climate} environment with ${profile.priority.toLowerCase()} as your priority and a ${profile.budget.toLowerCase()} budget:`,()=>{
+    const reportDiv=document.createElement('div');reportDiv.style.marginTop='14px';
+    const items=[
+      {label:'Recommended System',value:profile.system,highlight:true},
+      {label:'Glass Specification',value:profile.glass,highlight:false},
+      {label:'Hardware Collection',value:profile.hardware,highlight:false},
+      {label:'Integrated Mesh',value:profile.mesh,highlight:false},
+      {label:'Design Aesthetic',value:profile.design,highlight:false},
+      {label:'Budget Range (per sq.ft)',value:profile.budgetRange,highlight:true},
+    ];
+    items.forEach(item=>{
+      const rc=document.createElement('div');
+      rc.className='report-card'+(item.highlight?' highlight':'');
+      rc.style.cssText='border:1px solid var(--glass-b);border-radius:var(--r-md);padding:12px 14px;margin-bottom:8px;background:var(--glass)';
+      if(item.highlight)rc.style.background='linear-gradient(135deg,rgba(0,212,255,.06),rgba(123,47,255,.04))';
+      const lbl=document.createElement('div');lbl.style.cssText='font-size:9px;color:var(--ac1);font-weight:700;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:5px';lbl.textContent=item.label;
+      const val=document.createElement('div');val.style.cssText='font-size:13px;font-weight:700;color:var(--txt-1)';val.textContent=item.value;
+      rc.appendChild(lbl);rc.appendChild(val);reportDiv.appendChild(rc);
+    });
+    /* CTA row */
+    const ctaRow=document.createElement('div');ctaRow.style.cssText='display:flex;gap:9px;margin-top:12px;flex-wrap:wrap';
+    const b1=document.createElement('button');b1.className='mbtn p';b1.style.cssText='flex:1;padding:11px;border-radius:var(--r-md);font-size:12.5px;font-weight:600;cursor:pointer;background:var(--grad1);border:none;color:#fff';
+    b1.textContent='📅 Book Consultation';b1.onclick=()=>openM('cm');
+    const b2=document.createElement('button');b2.className='mbtn sec';b2.style.cssText='flex:1;padding:11px;border-radius:var(--r-md);font-size:12.5px;font-weight:600;cursor:pointer;background:var(--glass);border:1px solid var(--glass-b);color:var(--txt-2)';
+    b2.textContent='📄 Export Report';b2.onclick=()=>exportPDFReport(lastConsultData);
+    const b3=document.createElement('button');b3.className='mbtn sec';b3.style.cssText='flex:1;padding:11px;border-radius:var(--r-md);font-size:12.5px;font-weight:600;cursor:pointer;background:var(--glass);border:1px solid var(--glass-b);color:var(--txt-2)';
+    b3.textContent='🏠 Site Visit';b3.onclick=()=>openM('svm');
+    ctaRow.appendChild(b1);ctaRow.appendChild(b2);ctaRow.appendChild(b3);
+    reportDiv.appendChild(ctaRow);
+    mc2.appendChild(reportDiv);
+    /* Follow-ups */
+    const fuRow=document.createElement('div');fuRow.className='fu-chips';
+    const fuChips=['Tell me more about this system','Compare with another option','What glass would you recommend?','Show me pricing details'];
+    fuChips.forEach(fc=>{
+      const btn=document.createElement('button');btn.className='fu-chip';btn.textContent=fc;
+      btn.onclick=()=>{fuRow.remove();ask(fc);};fuRow.appendChild(btn);
+    });
+    container.appendChild(fuRow);
+    CONSULT_G.reset();scrollBot();
+    toast('Recommendation ready! Use Export Report to save as PDF.','s');
+    playSound('notif');
+  });
+}
+
+/* =====================================================
+   PHASE G — PDF EXPORT ENGINE
+===================================================== */
+function exportPDFReport(data){
+  if(!data){toast('Complete a consultation first to generate a report.','i');return;}
+  const d=data;
+  const date=new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});
+  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>AIS Windows — Recommendation Report</title>
+<style>
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;margin:0;padding:0;background:#fff;color:#1a1a2e;font-size:13px;line-height:1.6}
+.page{max-width:720px;margin:0 auto;padding:40px 48px}
+.header{border-bottom:2px solid #00d4ff;padding-bottom:24px;margin-bottom:28px}
+.logo-row{display:flex;align-items:center;gap:14px;margin-bottom:8px}
+.logo{width:48px;height:48px;background:linear-gradient(135deg,#00d4ff,#7b2fff);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:22px;font-weight:900}
+.brand{font-size:20px;font-weight:800;color:#1a1a2e}
+.brand-sub{font-size:11px;color:#888}
+.report-title{font-size:24px;font-weight:800;color:#1a1a2e;margin-bottom:4px}
+.report-date{font-size:11px;color:#888}
+.section{margin-bottom:28px}
+.section-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:#00d4ff;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid #e5e7eb}
+.row{display:flex;justify-content:space-between;align-items:flex-start;padding:9px 0;border-bottom:1px solid #f3f4f6}
+.row:last-child{border-bottom:none}
+.row-label{color:#6b7280;width:160px;flex-shrink:0;font-size:12px}
+.row-value{font-weight:600;color:#1a1a2e;flex:1;text-align:right;font-size:12px}
+.highlight-row{background:#f0feff;border-radius:8px;padding:12px 14px;margin-bottom:8px}
+.h-label{font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:#00a8cc;font-weight:700;margin-bottom:4px}
+.h-value{font-size:14px;font-weight:700;color:#1a1a2e}
+.footer{margin-top:40px;padding-top:16px;border-top:1px solid #e5e7eb;font-size:10px;color:#9ca3af;display:flex;justify-content:space-between}
+.cta-box{background:linear-gradient(135deg,#f0feff,#f5f0ff);border:1px solid #d0f0ff;border-radius:12px;padding:18px;text-align:center;margin-top:20px}
+.cta-title{font-size:14px;font-weight:700;color:#1a1a2e;margin-bottom:6px}
+.cta-sub{font-size:12px;color:#6b7280;margin-bottom:12px}
+.cta-btn{display:inline-block;padding:10px 24px;background:linear-gradient(135deg,#00d4ff,#7b2fff);color:#fff;border-radius:20px;font-weight:700;font-size:12px;text-decoration:none}
+@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+</style></head><body><div class="page">
+<div class="header">
+  <div class="logo-row"><div class="logo">A</div><div><div class="brand">AIS Windows</div><div class="brand-sub">Premium Doors &amp; Windows · Neural Consultant Platform</div></div></div>
+  <div class="report-title">Personalised Recommendation Report</div>
+  <div class="report-date">Generated: ${date} · Powered by ARIA v3</div>
+</div>
+<div class="section">
+  <div class="section-title">Property Profile</div>
+  <div class="row"><span class="row-label">Property Type</span><span class="row-value">${d.propertyType||'—'}</span></div>
+  <div class="row"><span class="row-label">Climate / Location</span><span class="row-value">${d.climate||'—'}</span></div>
+  <div class="row"><span class="row-label">Top Priority</span><span class="row-value">${d.priority||'—'}</span></div>
+  <div class="row"><span class="row-label">Budget Range</span><span class="row-value">${d.budget||'—'}</span></div>
+  <div class="row"><span class="row-label">Design Preference</span><span class="row-value">${d.design||'—'}</span></div>
+</div>
+<div class="section">
+  <div class="section-title">Recommended Solution</div>
+  <div class="highlight-row"><div class="h-label">Window System</div><div class="h-value">${d.system||'—'}</div></div>
+  <div class="highlight-row"><div class="h-label">Glass Specification</div><div class="h-value">${d.glass||'—'}</div></div>
+  <div class="row"><span class="row-label">Hardware Collection</span><span class="row-value">${d.hardware||'Multi-point locking, Grade 6'}</span></div>
+  <div class="row"><span class="row-label">Integrated Mesh</span><span class="row-value">${d.mesh||'Retractable stainless fly screen'}</span></div>
+  <div class="row"><span class="row-label">Security Level</span><span class="row-value">${d.security||'Multi-point locking + Grade 6 hardware'}</span></div>
+</div>
+<div class="section">
+  <div class="section-title">Investment Estimate</div>
+  <div class="highlight-row"><div class="h-label">Budget Range (per sq.ft)</div><div class="h-value">${d.budgetRange||'₹600–1,000/sq.ft'}</div></div>
+  <div class="row"><span class="row-label">Estimated ROI</span><span class="row-value">3–5 years through energy savings</span></div>
+  <div class="row"><span class="row-label">Warranty</span><span class="row-value">10–15 years profiles · 10 years glazing</span></div>
+  <div class="row"><span class="row-label">Design Life</span><span class="row-value">30–50 years</span></div>
+</div>
+<div class="section">
+  <div class="section-title">Next Steps</div>
+  <div class="row"><span class="row-label">Recommended Action</span><span class="row-value">Free site survey + detailed itemised quote</span></div>
+  <div class="row"><span class="row-label">Lead Time</span><span class="row-value">3–4 weeks survey to completed installation</span></div>
+  <div class="row"><span class="row-label">Contact</span><span class="row-value">AIS Windows · 1800-XXX-XXXX</span></div>
+</div>
+<div class="cta-box">
+  <div class="cta-title">Ready to Get Started?</div>
+  <div class="cta-sub">Book a free site survey — our experts come to you, at no charge and no commitment.</div>
+  <span class="cta-btn">Book Free Consultation</span>
+</div>
+<div class="footer"><span>AIS Windows — Premium Doors &amp; Windows</span><span>Confidential · For client use only</span></div>
+</div></body></html>`;
+  const win=window.open('','_blank','width=800,height=900');
+  if(!win){toast('Pop-up blocked — please allow pop-ups and try again.','e');return;}
+  win.document.write(html);win.document.close();
+  setTimeout(()=>{win.focus();win.print();},600);
+  toast('Report opened — use Print → Save as PDF','s');playSound('notif');
+}
+
+/* =====================================================
+   PHASE G — ADVANCED ANALYTICS DASHBOARD
+===================================================== */
+const ANL_G={
+  voiceUsed:0,
+  personaHistory:[],
+  productViews:{},
+  questionHistory:[],
+  trackVoice(){this.voiceUsed++;},
+  trackPersona(p){this.personaHistory.push({p,ts:Date.now()});},
+  trackProduct(name){this.productViews[name]=(this.productViews[name]||0)+1;},
+  getTopProducts(){return Object.entries(this.productViews).sort((a,b)=>b[1]-a[1]).slice(0,5);},
+  getPersonaBreakdown(){
+    const counts={homeowner:0,architect:0,builder:0,dealer:0};
+    this.personaHistory.forEach(h=>{if(counts[h.p]!==undefined)counts[h.p]++;});
+    return counts;
+  },
+};
+
+/* Patch openAnalytics to inject enhanced view */
+const _origOpenAnalytics=typeof openAnalytics==='function'?openAnalytics:null;
+window.openAnalytics=function(){
+  if(_origOpenAnalytics)_origOpenAnalytics();
+  /* Inject enhanced sections */
+  setTimeout(()=>{
+    const panel=document.getElementById('anl-panel');
+    if(!panel||panel.dataset.gEnhanced)return;
+    panel.dataset.gEnhanced='1';
+
+    /* Session timeline chart */
+    const timelineWrap=document.createElement('div');timelineWrap.className='anl-chart-wrap';
+    timelineWrap.innerHTML=`<div class="anl-chart-title">Activity Timeline (last 10 actions)</div>
+      <div class="anl-timeline" id="anl-timeline"></div>`;
+    panel.appendChild(timelineWrap);
+
+    /* Persona usage */
+    const personaWrap=document.createElement('div');personaWrap.className='anl-chart-wrap';
+    const pBreak=ANL_G.getPersonaBreakdown();
+    const maxP=Math.max(...Object.values(pBreak),1);
+    personaWrap.innerHTML=`<div class="anl-chart-title">Persona Usage</div>`+
+      Object.entries(pBreak).map(([k,v])=>`<div class="anl-bar-row">
+        <div class="anl-bar-name">${k.charAt(0).toUpperCase()+k.slice(1)}</div>
+        <div class="anl-bar-track"><div class="anl-bar-fill" style="width:${(v/maxP)*100}%"></div></div>
+        <div class="anl-bar-val">${v}</div></div>`).join('');
+    panel.appendChild(personaWrap);
+
+    /* Top products */
+    const topProds=ANL_G.getTopProducts();
+    if(topProds.length){
+      const prodWrap=document.createElement('div');prodWrap.className='anl-chart-wrap';
+      prodWrap.innerHTML=`<div class="anl-chart-title">Most Viewed Products</div>`+
+        topProds.map(([name,c])=>`<div class="anl-bar-row">
+          <div class="anl-bar-name">${name.substring(0,12)}</div>
+          <div class="anl-bar-track"><div class="anl-bar-fill" style="width:${(c/topProds[0][1])*100}%"></div></div>
+          <div class="anl-bar-val">${c}</div></div>`).join('');
+      panel.appendChild(prodWrap);
+    }
+
+    /* Voice usage */
+    const vWrap=document.createElement('div');vWrap.className='anl-chart-wrap';
+    vWrap.innerHTML=`<div class="anl-chart-title">Voice vs Text</div>
+      <div class="anl-pills">
+        <span class="anl-pill">🎙️ Voice: ${ANL_G.voiceUsed}</span>
+        <span class="anl-pill">⌨️ Text: ${Math.max(0,ANL.questionsAsked-ANL_G.voiceUsed)}</span>
+        <span class="anl-pill">⏱️ Session: ${ANL.getSessionTime()}</span>
+      </div>`;
+    panel.appendChild(vWrap);
+
+    /* Build timeline bars */
+    const timelineEl=document.getElementById('anl-timeline');
+    if(timelineEl){
+      const hist=MEM.turns.slice(-10);
+      const maxH=10;
+      for(let i=0;i<maxH;i++){
+        const b=document.createElement('div');b.className='anl-t-bar';
+        b.style.height=(hist[i]?Math.random()*40+20:4)+'px';
+        timelineEl.appendChild(b);
+      }
+    }
+  },200);
+};
+
+/* =====================================================
+   PHASE G — ARCHITECT SPEC PANEL
+===================================================== */
+function generateArchitectSpec(productName,intent){
+  if(currentPersona!=='architect')return null;
+  const specs={
+    upvc:{profile:'Multi-chamber UPVC 70mm system',uVal:'1.3–2.0 W/m²K (DG)',rwRating:'32–38 dB (DG)',airPermeability:'Class 4 (IS:1948)',waterTightness:'Class E750',windLoad:'AW Class 3',hardware:'Grade 304 SS multipoint',thermal:'IS 11197 compliant'},
+    aluminum:{profile:'Aluminium 60mm thermally broken',uVal:'1.2–1.6 W/m²K (DG)',rwRating:'30–35 dB (DG)',airPermeability:'Class 4 (IS:1948)',waterTightness:'Class E900',windLoad:'AW Class 4',hardware:'Grade 316 SS multipoint, concealed hinges',thermal:'Polyamide PA66 thermal break'},
+    sliding:{profile:'Lift & Slide 74mm system',uVal:'1.1–1.4 W/m²K (DG)',rwRating:'35–42 dB',airPermeability:'Class 3 (IS:1948)',waterTightness:'Class E300',windLoad:'AW Class 3',hardware:'Stainless multi-point, concealed rollers',thermal:'Compression seal on closing'},
+    noise_reduction:{profile:'AcousticPro 45 — 76mm UPVC',uVal:'1.4 W/m²K',rwRating:'45 dB (acoustic DG)',airPermeability:'Class 4',waterTightness:'Class E750',windLoad:'AW Class 3',hardware:'Compression locking, acoustic strip',thermal:'IS 11197 — thermal break frame'},
+    villa:{profile:'Lift & Slide 74mm or 115mm',uVal:'0.8–1.2 W/m²K (TG)',rwRating:'38–45 dB',airPermeability:'Class 4',waterTightness:'Class E900',windLoad:'AW Class 4',hardware:'Grade 316 SS, motorised option',thermal:'Triple seal, argon/krypton filled'},
+  };
+  const sp=specs[intent]||specs.aluminum;
+  const div=document.createElement('div');div.className='arch-spec-panel';
+  div.innerHTML=`<div class="arch-spec-title">TECHNICAL SPECIFICATION — ${productName.toUpperCase()}</div>`+
+    Object.entries({
+      'Profile System':sp.profile,'U-Value (Uw)':sp.uVal,
+      'Acoustic Rw':sp.rwRating,'Air Permeability':sp.airPermeability,
+      'Water Tightness':sp.waterTightness,'Wind Load':sp.windLoad,
+      'Hardware Grade':sp.hardware,'Thermal Standard':sp.thermal,
+    }).map(([k,v])=>`<div class="arch-spec-row"><span class="arch-spec-key">${k}</span><span class="arch-spec-val">${v}</span></div>`).join('');
+  return div;
+}
+
+/* =====================================================
+   PHASE G — CONFIGURATOR PRO
+===================================================== */
+function calcWindowPro(){
+  const w=parseInt(document.getElementById('cfg-w')?.value)||0;
+  const h=parseInt(document.getElementById('cfg-h')?.value)||0;
+  const prop=document.getElementById('cfg-prop')?.value||'';
+  const noise=document.getElementById('cfg-noise')?.value||'';
+  const climate=document.getElementById('cfg-climate')?.value||'mixed';
+  const sec=document.getElementById('cfg-sec')?.value||'standard';
+
+  if(!w||!h){toast('Please enter both width and height','e');return;}
+  if(w<300||h<300){toast('Minimum dimension is 300mm','e');return;}
+  if(w>8000||h>4000){toast('Contact us for oversized specifications','i');return;}
+
+  const sqft=((w/304.8)*(h/304.8)).toFixed(2);
+  const isLarge=w>2000||h>2000;
+  const systems={
+    villa:isLarge?'GrandSlide XL Lift & Slide':'ArchForm Alu Elite Casement',
+    apartment:isLarge?'ThermaGuard UPVC+ Sliding':'ThermaGuard UPVC+ Casement',
+    office:'SlimLine Pro 30 Aluminium',
+    coastal:'MarineGuard Marine-Grade Aluminium',
+    hotel:isLarge?'GrandSlide XL (Hotel Grade)':'ArchForm Alu Casement (Hotel Grade)',
+    renovation:isLarge?'ThermaGuard UPVC+ Sliding':'ThermaGuard UPVC+ Casement',
+  };
+  const glassMap={
+    high:'Acoustic Laminated Double Glazing 45 dB (argon)',
+    medium:'Solar Control Double Glazing Low-E (argon)',
+    low:'Low-E Double Glazing (argon-filled)',
+  };
+  const climateGlass={hot:'Solar Control Low-E (70% heat rejection)',cold:'Triple Glazed Low-E Argon (U-val 0.8)',coastal:'Laminated Low-E (salt-air resistant)',mixed:'Low-E Double Glazing (argon)'};
+  const secHardware={high:'RC2 multi-point + smart fingerprint entry',premium:'Grade 6 multi-point + security cylinder',standard:'Grade 6 multi-point locking'};
+  const system=systems[prop]||systems.apartment;
+  const primaryGlass=noise==='high'?glassMap.high:climateGlass[climate]||climateGlass.mixed;
+  const hardware=secHardware[sec]||secHardware.standard;
+
+  const basePriceMap={villa:900,apartment:600,office:850,coastal:1000,hotel:950,renovation:580};
+  const base=basePriceMap[prop]||650;
+  const noiseAdder={high:180,medium:90,low:0}[noise]||0;
+  const secAdder={high:150,premium:80,standard:0}[sec]||0;
+  const climateAdder={hot:60,cold:80,coastal:120,mixed:0}[climate]||0;
+  const ppsf=base+noiseAdder+secAdder+climateAdder+(isLarge?100:0);
+  const totalLow=Math.round(parseFloat(sqft)*ppsf*0.88);
+  const totalHigh=Math.round(parseFloat(sqft)*ppsf*1.14);
+  const fmt=n=>'₹'+n.toLocaleString('en-IN');
+
+  const resultDiv=document.getElementById('cfg-result');
+  if(resultDiv){
+    resultDiv.style.display='block';
+    resultDiv.innerHTML=`<div class="cfg-result-card">
+      <div class="cfg-result-title">Your Window Specification</div>
+      <div class="cfg-result-row"><span class="cfg-row-label">Dimensions</span><span class="cfg-row-value">${w}mm × ${h}mm (${sqft} sq.ft)</span></div>
+      <div class="cfg-result-row"><span class="cfg-row-label">Recommended System</span><span class="cfg-row-value">${system}</span></div>
+      <div class="cfg-result-row"><span class="cfg-row-label">Glass Specification</span><span class="cfg-row-value">${primaryGlass}</span></div>
+      <div class="cfg-result-row"><span class="cfg-row-label">Hardware & Security</span><span class="cfg-row-value">${hardware}</span></div>
+      <div class="cfg-result-row"><span class="cfg-row-label">Integrated Mesh</span><span class="cfg-row-value">Retractable stainless fly screen</span></div>
+      <div class="cfg-budget">Estimate: ${fmt(totalLow)} – ${fmt(totalHigh)}</div>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button class="cr-cta" style="flex:1" onclick="closeM('config-modal');openM('cm')">📅 Get Quote</button>
+        <button class="cr-secondary" style="flex:1;padding:9px;border-radius:var(--r-md);border:1px solid var(--glass-b);background:var(--glass);color:var(--txt-2);font-size:12px;cursor:pointer" onclick="exportPDFReport({propertyType:'${prop}',system:'${system}',glass:'${primaryGlass}',hardware:'${hardware}',mesh:'Retractable fly screen',budgetRange:'${fmt(totalLow)} – ${fmt(totalHigh)}'})">📄 Export</button>
+      </div>
+    </div>`;
+    playSound('recv');
+    lastConsultData={propertyType:prop,system,glass:primaryGlass,hardware,mesh:'Retractable fly screen',budgetRange:`${fmt(totalLow)} – ${fmt(totalHigh)}`};
+  }
+}
+
+/* =====================================================
+   PHASE G — CURSOR TRAIL EFFECT
+===================================================== */
+function initCursorTrail(){
+  if(window.matchMedia('(max-width:768px)').matches)return;
+  const trail=[];const N=8;
+  for(let i=0;i<N;i++){
+    const d=document.createElement('div');d.className='cursor-dot';
+    d.style.opacity=((N-i)/N*0.35).toFixed(2);
+    d.style.width=d.style.height=(6-i*0.5)+'px';
+    document.body.appendChild(d);trail.push({el:d,x:0,y:0});
+  }
+  let mx=0,my=0;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+  let frame=0;
+  function animate(){
+    trail[0].x+=(mx-trail[0].x)*.25;trail[0].y+=(my-trail[0].y)*.25;
+    for(let i=1;i<N;i++){trail[i].x+=(trail[i-1].x-trail[i].x)*.3;trail[i].y+=(trail[i-1].y-trail[i].y)*.3;}
+    trail.forEach(t=>{t.el.style.left=t.x+'px';t.el.style.top=t.y+'px';});
+    requestAnimationFrame(animate);
+  }
+  animate();
+}
+
+/* =====================================================
+   PHASE G — RESPONSE ENGINE PATCH
+===================================================== */
+/* Override getResp to: use KB_COMPLETE, add persona suffix, update diag, track product */
+const _origGetResp=typeof getResp==='function'?getResp:null;
+window.getResp=function(rawQ){
+  /* Use the full KB */
+  const activeKB=KB_COMPLETE.length?KB_COMPLETE:(typeof KB!=='undefined'?KB:[]);
+  const q=MEM.buildContextQuery(rawQ);
+  const intents=detectIntents(q);
+  const topScore=intents[0]?.score||0;
+  const confidence=calcConfidence(topScore);
+
+  /* Consult trigger */
+  const lower=rawQ.toLowerCase();
+  const isConsult=['recommend','best for','suggest','ideal for','help me choose','what should i','which should','luxury setup','what windows'].some(t=>lower.includes(t));
+  if(isConsult&&!lower.match(/villa|office|apartment|upvc|aluminum|aluminium|sliding|noise|heat|glass|coastal|hotel/)){
+    updateDiag('recommend',0,60,60);
+    return{r:null,intent:'recommend',confidence:60,isConsult:true,intents};
+  }
+
+  /* Multi-intent */
+  let best=null,bestScore=0;
+  activeKB.forEach(entry=>{
+    const s=tokenScore(q,entry.k);
+    if(s>bestScore){bestScore=s;best=entry;}
+  });
+  if(MEM.turns.length&&best){
+    const prev=MEM.getContextIntent();
+    if(prev&&best.id===prev)bestScore*=1.25;
+  }
+
+  if(best&&bestScore>3){
+    /* Add persona suffix */
+    const personaSuffix=(PERSONA_G[currentPersona]?.suffix)||'';
+    const enriched=applyPersona(best.r,best.id)+personaSuffix;
+    updateDiag(best.id,bestScore,confidence,confidence);
+    /* Track product views */
+    if(best.id&&!['greet','thanks','recommend','about'].includes(best.id)){
+      ANL_G.trackProduct(best.id);
+    }
+    return{r:enriched,intent:best.id,confidence,intents};
+  }
+
+  const fb=[
+    {r:"That's a great question — our specialist team will give you the most accurate answer. Shall I book a free consultation, or can I help with our product range?",intent:'general'},
+    {r:"I want to give you the most precise answer. For this specific query, our design expert would be ideal. Would you like to book a consultation or explore our product range?",intent:'general'},
+  ];
+  const fallback=fb[Math.floor(Math.random()*fb.length)];
+  updateDiag('general',0,42,42);
+  return{...fallback,confidence:42,intents};
+};
+
+/* Override sendMsg to launch consultant when needed */
+const _origSendMsg=typeof sendMsg==='function'?sendMsg:null;
+window.sendMsg=function(txt){
+  const inp=document.getElementById('mi2');
+  const m=(txt||inp?.value||'').trim();
+  if(!m||(typeof typing!=='undefined'&&typing))return;
+  if(!txt&&inp){inp.value='';autoR(inp);}
+  VOICE.interrupt();playSound('send');
+  document.getElementById('wc').style.display='none';
+  document.querySelectorAll('.fu-chips').forEach(el=>el.remove());
+  const now=ts();
+  addMsg('u',m,now);
+  history.push({r:'u',c:m,t:now});saveH();
+  const intents=detectIntents(m);
+  ANL.track(intents);ANL.questionsAsked++;
+  diagData.q=ANL.questionsAsked;
+  showTyp();updConf();
+  const delay=800+Math.random()*700;
+  setTimeout(()=>{
+    hideTyp();
+    const res=getResp(m);
+    if(res.isConsult){launchConsultG();return;}
+    const rt=ts();
+    VOICE.setState('thinking');
+    addMsg('a',res.r,rt,true,res.intent,res.confidence,res.intents||[]);
+    MEM.push(m,res.r,res.intents||[]);
+    history.push({r:'a',c:res.r,t:rt});saveH();
+    updateSidebarRec(res.intent);
+    /* Architect spec panel */
+    if(currentPersona==='architect'&&res.intent&&!['greet','thanks','recommend'].includes(res.intent)){
+      const specPanel=generateArchitectSpec(res.intent,res.intent);
+      if(specPanel){
+        const lastMsg=document.getElementById('mc').lastElementChild;
+        if(lastMsg&&lastMsg.classList.contains('msg'))lastMsg.querySelector('.mc2')?.appendChild(specPanel);
+      }
+    }
+    msgCnt++;
+    if(continuousVoiceActive&&document.getElementById('vwo')?.classList.contains('on')){
+      setTimeout(()=>VOICE.speak(res.r),350);
+    }
+    updateConfData(res.confidence||70);
+    if(msgCnt%5===0)setTimeout(()=>toast('💡 Use the Wizard for a personalised recommendation!','i'),1400);
+  },delay);
+};
+
+/* =====================================================
+   PHASE G — CONFIGURATOR MODAL UPGRADE
+===================================================== */
+function upgradeConfigModal(){
+  const cfgModal=document.getElementById('config-modal');
+  if(!cfgModal||cfgModal.dataset.gUpgraded)return;
+  cfgModal.dataset.gUpgraded='1';
+  const moc=cfgModal.querySelector('.moc');
+  if(!moc)return;
+  /* Replace submit button binding */
+  const oldBtn=moc.querySelector('button[onclick="calcWindow()"]');
+  if(oldBtn){oldBtn.setAttribute('onclick','calcWindowPro()');oldBtn.textContent='⚙️ Calculate';}
+  /* Add climate and security selects */
+  const lastSel=moc.querySelector('#cfg-noise');
+  if(lastSel&&!document.getElementById('cfg-climate')){
+    const climSel=document.createElement('select');climSel.className='fi';climSel.id='cfg-climate';climSel.style.cssText='cursor:pointer;margin-bottom:12px;width:100%';
+    climSel.innerHTML='<option value="" style="background:#0c0c1e">Climate Zone</option><option value="hot" style="background:#0c0c1e">Hot & Sunny (Punjab, Rajasthan)</option><option value="cold" style="background:#0c0c1e">Cold Winters (Himachal, hills)</option><option value="coastal" style="background:#0c0c1e">Coastal / High Humidity</option><option value="mixed" style="background:#0c0c1e">Mixed / Moderate</option>';
+    lastSel.after(climSel);
+    const secSel=document.createElement('select');secSel.className='fi';secSel.id='cfg-sec';secSel.style.cssText='cursor:pointer;margin-bottom:16px;width:100%';
+    secSel.innerHTML='<option value="" style="background:#0c0c1e">Security Priority</option><option value="high" style="background:#0c0c1e">High — RC2 certified + smart lock</option><option value="premium" style="background:#0c0c1e">Premium — Grade 6 + security cylinder</option><option value="standard" style="background:#0c0c1e">Standard — multi-point locking</option>';
+    climSel.after(secSel);
+  }
+}
+
+/* =====================================================
+   PHASE G — VOICE TRACKING PATCH
+===================================================== */
+const _origOpenVoiceMode=typeof openVoiceMode==='function'?openVoiceMode:null;
+window.openVoiceMode=function(){
+  ANL_G.trackVoice();
+  if(_origOpenVoiceMode)_origOpenVoiceMode();
+};
+
+/* Patch setPersona to track persona changes */
+const _origSetPersona=typeof setPersona==='function'?setPersona:null;
+window.setPersona=function(p,btn){
+  ANL_G.trackPersona(p);
+  if(_origSetPersona)_origSetPersona(p,btn);
+};
+
+/* =====================================================
+   PHASE G — KEYBOARD SHORTCUTS
+===================================================== */
+document.addEventListener('keydown',e=>{
+  if(e.ctrlKey&&e.shiftKey&&e.key==='D'){e.preventDefault();toggleDiag();}
+  if(e.ctrlKey&&e.shiftKey&&e.key==='R'){e.preventDefault();if(lastConsultData)exportPDFReport(lastConsultData);}
+});
+
+/* =====================================================
+   PHASE G — INIT PATCH
+===================================================== */
+const _origInitAppG=typeof initApp!=='undefined'?initApp:null;
+window.initApp=function(){
+  if(_origInitAppG&&_origInitAppG!==window.initApp)_origInitAppG();
+  else{
+    /* Fallback minimal init */
+    applyTheme&&applyTheme();
+    if(history.length){document.getElementById('wc').style.display='none';history.forEach(m=>renderMsg(m.r,m.c,m.t,false));scrollBot&&scrollBot();}
+    startVisitors&&startVisitors();startConf&&startConf();
+    if(typeof tIdx!=='undefined')setInterval(nextT,5200);
+    VOICE.init();initCursor&&initCursor();initTilt&&initTilt();
+    document.getElementById('mi2')?.focus();
+    if(window.speechSynthesis){window.speechSynthesis.getVoices();setInterval(()=>{if(window.speechSynthesis.speaking)window.speechSynthesis.resume();},10000);}
+  }
+  /* Phase G additions */
+  setTimeout(()=>{
+    initCursorTrail();
+    upgradeConfigModal();
+    /* Update KB count in diagnostics */
+    const kbEl=document.getElementById('dg-kb');
+    if(kbEl)kbEl.textContent=KB_COMPLETE.length+' intents';
+    /* Restore continuous voice */
+    if(localStorage.getItem('ais_cv')==='1'){continuousVoiceActive=false;toggleContinuousVoice&&toggleContinuousVoice();}
+    /* Init permission check */
+    PermManager&&PermManager.check&&PermManager.check();
+    /* Render confidence circles */
+    setTimeout(renderConfDash,400);
+    /* Init catalogue */
+    initV4Catalogue&&initV4Catalogue();
+    /* Inject sidebar */
+    injectV4Sidebar&&injectV4Sidebar();
+    /* Ensure compare selects populated */
+    populateCompareSelects&&populateCompareSelects();
+    /* Render catalogue grid */
+    renderCatGrid&&renderCatGrid();
+    /* Update diag KB count */
+    setTimeout(()=>{
+      const kbCount=KB_COMPLETE.length;
+      updateDiag('—','—',97,97);
+      const el=document.getElementById('dg-kb');
+      if(el)el.textContent=kbCount+' intents active';
+    },500);
+  },120);
+};
 
 </script>
 </body>
