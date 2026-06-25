@@ -5,6 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="AIS Smart Assistant v3.0 — Neural Consultant Platform for premium doors and windows">
 <meta name="theme-color" content="#06060f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="AIS Windows">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="application-name" content="AIS Windows">
+<meta name="msapplication-TileColor" content="#06060f">
+<meta name="msapplication-navbutton-color" content="#00d4ff">
+<meta name="format-detection" content="telephone=no">
+<link rel="manifest" id="pwa-manifest">
+
 <title>AIS Smart Assistant v3.0 — Neural Consultant Platform</title>
 <style>
 
@@ -1205,6 +1215,23 @@ function playSound(type){
 }
 
 /* =====================================================
+   SAFE STORAGE UTILITY
+   Wraps every localStorage/sessionStorage access in try-catch.
+   Prevents blank-screen crash in Safari Private Browsing and on
+   SecurityError / QuotaExceededError exceptions.
+===================================================== */
+const safeStorage={
+  get(key,fallback=null){try{const v=localStorage.getItem(key);return v!==null?v:fallback;}catch{return fallback;}},
+  getJSON(key,fallback=[]){try{const v=localStorage.getItem(key);return v?JSON.parse(v):fallback;}catch{return fallback;}},
+  set(key,value){try{localStorage.setItem(key,typeof value==='string'?value:JSON.stringify(value));return true;}catch{return false;}},
+  remove(key){try{localStorage.removeItem(key);return true;}catch{return false;}}
+};
+const safeSession={
+  get(key,fallback=null){try{const v=sessionStorage.getItem(key);return v!==null?v:fallback;}catch{return fallback;}},
+  set(key,value){try{sessionStorage.setItem(key,value);return true;}catch{return false;}}
+};
+
+/* =====================================================
    FUZZY INTENT ENGINE  
 ===================================================== */
 function levenshtein(a,b){
@@ -1286,378 +1313,6 @@ function calcConfidence(topScore){
   if(topScore>10)return Math.round(65+topScore/2);
   return Math.round(45+topScore*2);
 }
-
-
-/* =====================================================
-   KNOWLEDGE BASE — 50+ INTENTS
-===================================================== */
-const KB=[
- {id:'upvc',k:['upvc','pvc window','plastic window'],r:`**UPVC Windows — Our Best-Selling Solution**
-
-UPVC (Unplasticised Polyvinyl Chloride) windows deliver premium performance with near-zero maintenance:
-
-- **Thermal insulation** — reduces heat transfer by up to **70%**
-- **Noise reduction** — attenuates sound by **30–45 dB**
-- **100% waterproof** — tested for Indian monsoon conditions
-- **30–40 year lifespan** — virtually maintenance-free
-- **20+ colour options** — including authentic wood-grain finishes
-- **Eco-friendly** — BIS-certified and fully recyclable
-
-Available in casement, sliding, tilt & turn, and bay window styles. Perfect for homes, villas, and apartments.`},
- {id:'aluminum',k:['aluminum','aluminium','metal window'],r:`**Aluminum Windows — The Architect's Choice**
-
-Our aluminium systems represent the pinnacle of modern architectural design:
-
-- **Ultra-slim profiles** as thin as **30mm** — maximises glass area and views
-- **Exceptional structural strength** — handles large dramatic openings
-- **Any RAL colour** — UV-stable powder coating lasting 20+ years
-- **Thermal break technology** — polyamide inserts prevent cold/heat bridging
-- **Marine-grade options** — for coastal and high-humidity properties
-- **50+ year lifespan** — outstanding long-term investment
-
-Suitable for high-rises, villas, curtain walls, and premium commercial facades.`},
- {id:'sliding',k:['sliding door','sliding window','slide','bifold'],r:`**Premium Sliding Systems — Space & Elegance**
-
-Our sliding door and window systems are transformative:
-
-- **German-engineered stainless steel rollers** — glide with one finger
-- **5–7 locking points** per panel — multi-point security
-- **Up to 6 metres wide** in a single panel — stunning visual impact
-- **Lift & Slide option** — for panels up to 400 kg
-- **Flush floor threshold** — seamless indoor-outdoor connection
-- **Acoustic seals** maintain noise reduction when open
-
-Perfect for connecting living areas with terraces and gardens.`},
- {id:'casement',k:['casement','hinged','tilt and turn'],r:`**Casement Windows — Timeless Performance**
-
-Casement windows remain the most versatile window style:
-
-- **Maximum ventilation** — opens fully outward or inward
-- **Triple EPDM gasket seal** — weathertight in any conditions
-- **Energy efficiency A++** rating
-- **Tilt & Turn** — gentle tilt for ventilation, full open for easy cleaning
-- **Anti-trap finger protection** — essential for families with children
-- **Multi-point locking** as standard
-
-Most popular for bedrooms and living rooms.`},
- {id:'fixed',k:['fixed window','picture window','non-opening'],r:`**Fixed Windows — Maximum Light, Minimum Profile**
-
-Fixed (non-opening) windows maximise natural light and views:
-
-- **Frameless or ultra-slim options** — pure glass aesthetic
-- **Any shape and size** — circular, arched, triangular, or bespoke
-- **Optimal thermal performance** — no moving parts, no air gaps
-- **Maximum solar gain control** with Low-E or solar glass
-- **Perfect for feature walls** — dramatic architectural statements
-- **Lower cost** than equivalent opening windows
-
-Ideal for stairwells, double-height spaces, and feature glazing.`},
- {id:'noise',k:['noise','sound','acoustic','soundproof','traffic'],r:`**Noise Reduction — Engineered Silence**
-
-Our acoustic solutions ranked by effectiveness:
-
-| Solution | Noise Reduction |
-|---|---|
-| Secondary Glazing | Up to 52 dB |
-| Acoustic UPVC | Up to 45 dB |
-| Laminated Acoustic Glass | Up to 42 dB |
-| Double Glazing 16mm+ | 25–35 dB |
-
-**Context:** 45 dB eliminates traffic noise for most urban locations. Clients near highways consistently report sleeping soundly after installation.
-
-Recommended: Acoustic UPVC with laminated glass and wide-gap double glazing.`},
- {id:'heat',k:['heat','solar','hot','cool','summer'],r:`**Heat Reduction — Cool Interiors Year-Round**
-
-Managing solar heat is critical in Indian climates:
-
-1. **Solar Control Glass** — blocks up to **70% of solar heat**
-2. **Low-E Coated Glass** — keeps interiors up to **5°C cooler**
-3. **Double Glazing** — insulating air pocket prevents conduction
-4. **Reflective Glass** — mirror exterior reflects direct sunlight
-
-**Benefits:**
-- Reduces AC costs by **30–50%** annually
-- Protects furniture from UV fading
-- ROI typically **3–4 years**
-- BEE 5-star energy rating`},
- {id:'glass',k:['glass','glazing','double glaz','triple glaz'],r:`**Glass Range — Every Application Covered**
-
-| Glass Type | Best For |
-|---|---|
-| Clear Float | Standard use |
-| Tinted (Bronze/Blue/Grey) | Solar + aesthetics |
-| Reflective | Solar control, privacy |
-| Low-E Coated | Thermal + solar |
-| Acoustic Laminated | Maximum noise reduction |
-| Safety Toughened | Impact safety |
-| Double Glazed IGU | Thermal + acoustic |
-| Triple Glazed | Extreme climates |
-| Frosted / Satin | Privacy areas |
-| Smart Switchable | Electronic opacity |
-| Self-Cleaning | Low maintenance |
-
-All glass certified to IS 2835 and IS 2553.`},
- {id:'laminated',k:['laminated','pvb','laminate glass'],r:`**Laminated Glass — Safety & Acoustic Performance**
-
-Laminated glass consists of two glass panes bonded with a PVB (polyvinyl butyral) interlayer:
-
-- **Safety** — when broken, shards remain bonded to the film
-- **Acoustic** — PVB dampens sound vibrations, reducing noise by **35–42 dB**
-- **Security** — resists forced entry far longer than standard glass
-- **UV protection** — blocks **99% of UV radiation**
-- **Available thicknesses** — 6.38mm to 20.38mm
-- **Anti-intrusion variants** — multiple PVB layers for RC2/RC3 security rating
-
-Standard in all our doors and ground-floor applications.`},
- {id:'lowE',k:['low-e','low emissivity','energy glass'],r:`**Low-E Glass — The Invisible Energy Shield**
-
-Low-Emissivity (Low-E) glass has a microscopically thin metallic coating that:
-
-- **Reflects infrared radiation** — keeps heat out in summer, in during winter
-- **Maintains clarity** — completely transparent to visible light
-- **U-values as low as 1.0 W/m²K** — when used in double glazing units
-- **SHGC (Solar Heat Gain Coefficient)** — selectable from 0.2 to 0.7
-- **UV blocking** — protects interiors from fading
-- **Energy savings** — 25–40% reduction in HVAC costs
-
-Available in hard-coat (pyrolytic) and soft-coat (sputter-coated) variants.`},
- {id:'security',k:['security','lock','burglar','smart lock','intrusion'],r:`**Security Systems — Multi-Layer Protection**
-
-Our security is engineered at every level:
-
-- **Multi-point locking** — 5–7 locking points per door panel
-- **Anti-drill, anti-pick cylinders** — RC2 certified
-- **Smart locks** — fingerprint, PIN, Bluetooth, app-controlled
-- **Anti-intrusion laminated glass** — holds under attack
-- **Steel-reinforced frames** — prevents lever attacks
-- **Security hinges** — internal beads block outside removal
-
-**Smart Integration:**
-✓ Amazon Alexa  ✓ Google Home  ✓ Apple HomeKit
-✓ Real-time alerts  ✓ Remote lock/unlock
-
-Certified PAS 24 · RC2 burglar resistance class.`},
- {id:'energy',k:['energy','green','leed','griha','eco','sustainable'],r:`**Energy Efficiency — Certified Performance**
-
-Sustainability engineered from the ground up:
-
-- **U-values as low as 0.7 W/m²K** — industry-leading India
-- **BEE 5-star rated** — highest energy certification
-- **ECBC compliant** — Energy Conservation Building Code
-- **GRIHA/LEED credits** — contributes to green building ratings
-- **Optimised SHGC** — for each Indian climate zone
-
-**Your Annual Savings:**
-- Heating/cooling bills: **30–50% reduction**
-- Typical ROI: **3–5 years**
-- Carbon footprint: significantly reduced`},
- {id:'thermal',k:['thermal','insulation','u-value','cold','warm','winter'],r:`**Thermal Insulation — Comfort All Year**
-
-- **U-values as low as 0.7 W/m²K** — far exceeding IS 11197
-- **Multi-chamber UPVC profiles** — trap still air in each chamber
-- **Thermal break aluminium** — polyamide strips block bridging
-- **Triple glazing** — for extreme climate zones
-- **Gas-filled IGUs** — argon or krypton for superior performance
-
-**Savings:** Heating -40% · Cooling -35% · ROI: 3–5 years`},
- {id:'villa',k:['villa','luxury','bungalow','mansion','estate'],r:`**Luxury Villa Solutions — Architectural Masterpieces**
-
-Our villa portfolio represents the finest of what we offer:
-
-- **Lift & Slide Grand Doors** — spans up to 7m, single-touch operation
-- **Frameless Corner Glass** — zero vertical framing, 180° views
-- **Floor-to-ceiling glazing** — dramatic proportions and light
-- **Pivot Entrance Doors** — statement entries up to 3.2m tall
-- **Full smart home integration** — motorised, scene control, auto-lock
-
-**Signature Finishes:** Oak, Walnut, Teak, Ebony, Brushed Gold, Champagne, Space Grey, Custom RAL
-
-Portfolio: **200+ luxury villas** across Punjab, Delhi NCR, Chandigarh, and Goa.`},
- {id:'office',k:['office','commercial','corporate','workplace','curtain wall'],r:`**Commercial & Office Solutions — Precision at Scale**
-
-- **Curtain Wall Systems** — structural glass facades for towers
-- **Glass Partition Systems** — open, collaborative workplaces
-- **Automated Solar Louvres** — motorised shading by light intensity
-- **Fire-rated glazing** — 30, 60, 90-minute certified
-- **Conference room acoustic glazing** — speech privacy
-- **Structural glazing** — minimal visible framework
-
-✓ GRIHA/LEED compliant  ✓ BEE certified  ✓ NBC 2016  ✓ IS 875 wind load
-
-Projects: 500 to 50,000 sq. metres with dedicated project management.`},
- {id:'apartment',k:['apartment','flat','condo','residential complex'],r:`**Residential Complex Solutions — Consistency at Scale**
-
-- Space-efficient windows for all apartment floor plans
-- **Sound-attenuating UPVC** — perfect for party walls
-- Weather-resistant frames for all orientations and floor levels
-- **Fire-rated glass** options for NBC compliance
-- Standardised sizing for consistent development aesthetics
-
-**Developer Benefits:**
-- Free site survey + CAD drawings
-- Dedicated project manager
-- **10–25% bulk pricing**
-- Complex-wide warranty coverage
-
-Delivered for: Godrej, Prestige, DLF, leading Punjab developers.`},
- {id:'coastal',k:['coastal','coast','sea','marine','salt','beach'],r:`**Coastal Solutions — Salt-Air Resistant Systems**
-
-Properties near the sea need specialist protection:
-
-- **Marine-grade aluminium** — proprietary hard anodising resists salt corrosion
-- **Stainless steel hardware** — Grade 316 marine stainless throughout
-- **Enhanced EPDM gaskets** — resist ozone and UV degradation
-- **Powder coating formulation** — marine-grade UV and salt resistance
-- **Special drainage** — prevents salt water ponding in sill channels
-- **25-year coastal warranty** — specific to marine environments
-
-Tested to: EN 1279 · ASTM B117 salt spray (1000+ hours)`},
- {id:'wind',k:['wind','storm','cyclone','high wind','gale'],r:`**High-Wind Solutions — Storm Resistance**
-
-Our high-wind systems are engineered for extreme conditions:
-
-- **Wind load testing** — AW Class 5 (150+ km/h)
-- **Reinforced profiles** — steel cores in UPVC, heavy-wall aluminium
-- **Enhanced multi-point locking** — distributes load across the frame
-- **Impact-resistant glass** — withstands airborne debris
-- **Pressure-equalised drainage** — prevents wind-driven water ingress
-- **Structural silicone** — eliminates frame flex under load
-
-Certified to: IS 875 Part 3 · AS/NZS 4420 wind resistance`},
- {id:'install',k:['install','installation','timeline','how long','delivery'],r:`**Installation Timeline — Survey to Handover**
-
-| Phase | Duration |
-|---|---|
-| Site Survey & Measurement | 1 day |
-| Design & Customer Approval | 2–4 days |
-| Factory Manufacturing | 10–14 days |
-| Quality Inspection & Delivery | 1–2 days |
-| Professional Installation | 2–7 days |
-| Final Inspection & Sign-off | 1 day |
-
-**Total: 3–4 weeks from confirmed order**
-
-✓ Work in sections — home stays functional  
-✓ Daily site cleanup  
-✓ WhatsApp photo updates  
-✓ **Rush 10-day track** for standard sizes`},
- {id:'warranty',k:['warranty','guarantee','defect','cover'],r:`**Warranty — Industry-Leading Coverage**
-
-| Component | Coverage |
-|---|---|
-| UPVC Profiles | **10 years** |
-| Aluminium Profiles | **15 years** |
-| Double/Triple Glazing Seal | **10 years** |
-| Hardware & Fittings | **5 years** |
-| Installation Quality | **3 years** |
-| Waterproofing | **5 years** |
-
-✓ Manufacturing defects & colour fading  
-✓ Seal failure in glazed units  
-✓ Hardware malfunction under normal use  
-✓ Water ingress through frames  
-
-Claims assessed within **7 working days** — engineer comes to you.`},
- {id:'maintenance',k:['maintenance','clean','care','upkeep','amc'],r:`**Maintenance Guide — Virtually Effortless Care**
-
-**UPVC (every 3–6 months):**
-- Wipe frames with mild soapy water
-- Clear drainage channels with a thin rod
-- Apply silicone spray to hinges and lock points
-
-**Aluminium (every 6 months):**
-- Non-abrasive cleaner for powder-coated surfaces
-- Protective wax for coastal environments
-
-**Glass:** Standard glass cleaner + microfibre cloth
-
-**Annual Maintenance Contract (AMC):**
-Full inspection, hardware servicing, seal checking + replacement, priority response.
-Starting from **₹2,500/year** for a standard home.`},
- {id:'price',k:['price','cost','rate','budget','how much','rupee'],r:`**Pricing Guide — Premium Quality, Transparent Pricing**
-
-| Product | Standard | Premium |
-|---|---|---|
-| UPVC Windows | ₹400–550/sq.ft | ₹650–950/sq.ft |
-| Aluminium Windows | ₹550–750/sq.ft | ₹850–1,250/sq.ft |
-| Sliding Doors | ₹500–700/sq.ft | ₹800–1,200/sq.ft |
-| Casement Windows | ₹420–580/sq.ft | ₹700–980/sq.ft |
-| Entrance Doors | ₹20,000+ | ₹45,000+ |
-
-*All prices include hardware and professional installation.*
-
-**Discounts:** Full home -10–15% · Developer orders -15–25%`},
- {id:'mosquito',k:['mosquito','mesh','insect','fly screen'],r:`**Mosquito Mesh — Elegant Protection**
-
-1. **Retractable Fly Screen** — rolls invisibly away when open
-2. **Pleated Accordion Mesh** — compact, space-efficient
-3. **Magnetic Self-Closing** — hands-free entry via embedded magnets
-4. **Slide & Remove Mesh** — pops out for easy cleaning
-
-**Materials:** Fibreglass · Stainless steel (coastal) · Solar mesh (heat + insects)
-
-✓ Standard in most residential packages  
-✓ Retrofittable to any existing window`},
- {id:'smart',k:['smart home','automation','motorised','alexa','google home'],r:`**Smart Home Integration — Intelligence Built In**
-
-- **Motorised windows** — app, voice, or schedule controlled
-- **Smart locks** — fingerprint, PIN, NFC, Bluetooth, remote
-- **Auto-ventilation** — opens with CO₂ / humidity sensors
-- **Scene control** — "Good Night" closes all and arms security
-- **Voice:** *"Hey Google, open the master bedroom windows"*
-
-**Compatible:** ✓ Alexa  ✓ Google Home  ✓ Apple HomeKit  ✓ KNX/Modbus
-
-Real-time alerts for forced entry or open windows.`},
- {id:'finishes',k:['finish','colour','color','ral','wood grain','customize'],r:`**Premium Finish Collections**
-
-**Metal Finishes:**
-- Brushed Gold · Satin Silver · Antique Bronze · Matte Black · Champagne · Space Grey
-
-**Natural Wood Grain:**
-- White Oak · Dark Walnut · Classic Teak · Dark Ebony · Ash White
-
-**Special Options:**
-- Custom RAL colour matching to architect's specification
-- Matt, satin & gloss variants across all ranges
-- Anodised aluminium (Class 20, 25 µm thickness)
-
-All finishes use **UV-stable coatings maintaining appearance for 20+ years.**`},
- {id:'service',k:['support','after sales','service','repair','complaint'],r:`**After-Sales Service — With You for Life**
-
-**Response Times:**
-- Emergency (water ingress, security) — **within 24 hours**
-- Operational issues — **within 48 hours**
-- Cosmetic queries — **within 5 working days**
-
-**Channels:** 📞 Toll-free 1800-XXX-XXXX · 📱 WhatsApp · 🌐 Online portal
-
-**AMC:** Full inspection + priority response from **₹2,500/year**
-
-Service technicians in **50+ cities** — all factory-trained and certified.`},
- {id:'greet',k:['hello','hi','hey','namaste','good morning'],r:`Hello and welcome to AIS Windows! 👋
-
-I'm **ARIA v3** — your AI-powered luxury consultant for premium doors and windows. I offer:
-
-- **Product guidance** — any window or door system in our range
-- **Design advice** — recommendations for your specific project
-- **Pricing estimates** — honest, transparent figures
-- **Smart consultant mode** — I ask the right questions first
-- **Voice mode** — speak directly to me (click the microphone)
-
-What are you working on today — a new home, villa, renovation, or commercial project?`},
- {id:'recommend',k:['recommend','best for','suggest','ideal for','help me choose'],r:`I'd love to build you the perfect recommendation!
-
-To ensure I suggest exactly the right solution, I need to understand your project better. Let me ask you a few quick questions...`},
- {id:'service_support',k:['after sales','service support','helpline','technical support'],r:`**Service & Support — Premium After-Care**
-
-We offer one of the most comprehensive after-care programmes in the industry, because we know your satisfaction doesn't end at installation.
-
-Our service network covers **50+ cities** with factory-trained engineers who carry genuine parts and tools to every job.
-
-For urgent issues: call our 24-hour emergency line or WhatsApp us directly — a real engineer responds, not a bot.`},
-];
-
 /* Persona post-processors */
 const PERSONA_APPENDS={
   homeowner:`\n\n*Simple summary: This is a great choice for your home — comfortable, safe, and easy to maintain.*`,
@@ -1696,6 +1351,10 @@ const FOLLOWUP_MAP={
   service:['AMC options?','Emergency contact?','Warranty claim process?'],
   greet:['What are UPVC windows?','Best for noise reduction?','Get a free quote?'],
   recommend:['Tell me about villas','Office solutions?','Budget options?'],
+  louvers:['Solar louvre pricing?','Louvre automation demo?','ECBC compliance?'],
+  acoustics_detail:['AcousticPro 45 specs?','Secondary glazing?','Book acoustic survey?'],
+  doors_general:['Pivot door pricing?','Smart lock options?','Security rating?'],
+  bifold:['Bi-fold vs sliding?','Max bi-fold width?','Bi-fold security?'],
   general:['Book free consultation?','View catalogue?','Schedule site visit?'],
 };
 
@@ -1749,12 +1408,13 @@ const MEM={
 ===================================================== */
 let currentPersona='homeowner';
 function setPersona(p,btn){
+  ANL_G.trackPersona(p);
   currentPersona=p;
   document.querySelectorAll('.persona-btn').forEach(b=>{b.classList.remove('active');b.setAttribute('aria-pressed','false');});
   btn.classList.add('active');btn.setAttribute('aria-pressed','true');
   playSound('click');
   toast(`Persona: ${p.charAt(0).toUpperCase()+p.slice(1)} mode active`,'i');
-  localStorage.setItem('ais_persona',p);
+  safeStorage.set('ais_persona',p);
 }
 function applyPersona(text,intent){
   const append=PERSONA_APPENDS[currentPersona];
@@ -1791,19 +1451,67 @@ const ANL={
 function openAnalytics(){
   document.getElementById('anl-panel').classList.add('open');
   playSound('modal');
-  // Populate
   document.getElementById('anl-session').textContent='Session: '+ANL.getSessionTime();
   const top=ANL.getTopIntents();
   const el=document.getElementById('anl-intents');el.innerHTML='';
-  if(!top.length){el.innerHTML='<div style="font-size:12px;color:var(--txt-3)">No data yet — start chatting!</div>';return;}
-  const max=top[0][1];
-  top.forEach(([id,score])=>{
-    const pct=Math.round((score/max)*100);
-    const div=document.createElement('div');div.className='intent-bar-wrap';
-    div.innerHTML=`<div class="intent-bar-label"><span>${id}</span><span>${pct}%</span></div>
-      <div class="intent-bar-track"><div class="intent-bar-fill" style="width:${pct}%"></div></div>`;
-    el.appendChild(div);
-  });
+  if(!top.length){
+    el.innerHTML='<div style="font-size:12px;color:var(--txt-3)">No data yet — start chatting!</div>';
+  }else{
+    const max=top[0][1];
+    top.forEach(([id,score])=>{
+      const pct=Math.round((score/max)*100);
+      const div=document.createElement('div');div.className='intent-bar-wrap';
+      div.innerHTML=`<div class="intent-bar-label"><span>${id}</span><span>${pct}%</span></div>
+        <div class="intent-bar-track"><div class="intent-bar-fill" style="width:${pct}%"></div></div>`;
+      el.appendChild(div);
+    });
+  }
+  /* Phase G: inject enhanced analytics panels (guarded by dataset flag) */
+  setTimeout(()=>{
+    const panel=document.getElementById('anl-panel');
+    if(!panel||panel.dataset.gEnhanced)return;
+    panel.dataset.gEnhanced='1';
+    const timelineWrap=document.createElement('div');timelineWrap.className='anl-chart-wrap';
+    timelineWrap.innerHTML=`<div class="anl-chart-title">Activity Timeline (last 10 actions)</div>
+      <div class="anl-timeline" id="anl-timeline"></div>`;
+    panel.appendChild(timelineWrap);
+    const personaWrap=document.createElement('div');personaWrap.className='anl-chart-wrap';
+    const pBreak=ANL_G.getPersonaBreakdown();
+    const maxP=Math.max(...Object.values(pBreak),1);
+    personaWrap.innerHTML=`<div class="anl-chart-title">Persona Usage</div>`+
+      Object.entries(pBreak).map(([k,v])=>`<div class="anl-bar-row">
+        <div class="anl-bar-name">${k.charAt(0).toUpperCase()+k.slice(1)}</div>
+        <div class="anl-bar-track"><div class="anl-bar-fill" style="width:${(v/maxP)*100}%"></div></div>
+        <div class="anl-bar-val">${v}</div></div>`).join('');
+    panel.appendChild(personaWrap);
+    const topProds=ANL_G.getTopProducts();
+    if(topProds.length){
+      const prodWrap=document.createElement('div');prodWrap.className='anl-chart-wrap';
+      prodWrap.innerHTML=`<div class="anl-chart-title">Most Viewed Products</div>`+
+        topProds.map(([name,c])=>`<div class="anl-bar-row">
+          <div class="anl-bar-name">${name.substring(0,12)}</div>
+          <div class="anl-bar-track"><div class="anl-bar-fill" style="width:${(c/topProds[0][1])*100}%"></div></div>
+          <div class="anl-bar-val">${c}</div></div>`).join('');
+      panel.appendChild(prodWrap);
+    }
+    const vWrap=document.createElement('div');vWrap.className='anl-chart-wrap';
+    vWrap.innerHTML=`<div class="anl-chart-title">Voice vs Text</div>
+      <div class="anl-pills">
+        <span class="anl-pill">🎙️ Voice: ${ANL_G.voiceUsed}</span>
+        <span class="anl-pill">⌨️ Text: ${Math.max(0,ANL.questionsAsked-ANL_G.voiceUsed)}</span>
+        <span class="anl-pill">⏱️ Session: ${ANL.getSessionTime()}</span>
+      </div>`;
+    panel.appendChild(vWrap);
+    const timelineEl=document.getElementById('anl-timeline');
+    if(timelineEl){
+      const hist=MEM.turns.slice(-10);
+      for(let i=0;i<10;i++){
+        const b=document.createElement('div');b.className='anl-t-bar';
+        b.style.height=(hist[i]?Math.random()*40+20:4)+'px';
+        timelineEl.appendChild(b);
+      }
+    }
+  },200);
 }
 function closeAnalytics(){document.getElementById('anl-panel').classList.remove('open');}
 setInterval(()=>{
@@ -1958,6 +1666,7 @@ const VOICE={
 
 /* Voice mode controls */
 function openVoiceMode(){
+  ANL_G.trackVoice();
   document.getElementById('vwo').classList.add('on');
   VOICE.start();
   playSound('modal');
@@ -2068,10 +1777,10 @@ function streamResponse(bubble,markdownText,onDone){
 /* =====================================================
    STATE
 ===================================================== */
-let history=JSON.parse(localStorage.getItem('ais_h')||'[]');
+let chatHistory=safeStorage.getJSON('ais_h',[]);
 let typing=false,tIdx=0,msgCnt=0;
-let theme=localStorage.getItem('ais_t')||'dark';
-currentPersona=localStorage.getItem('ais_persona')||'homeowner';
+let theme=safeStorage.get('ais_t','dark');
+currentPersona=safeStorage.get('ais_persona','homeowner');
 
 /* =====================================================
    RESPONSE ENGINE — multi-intent + context + persona
@@ -2082,71 +1791,94 @@ function getResp(rawQ){
   const topScore=intents[0]?.score||0;
   const confidence=calcConfidence(topScore);
 
-  // Consult triggers
+  /* Consult trigger */
   const lower=rawQ.toLowerCase();
-  const isConsult=['recommend','best for','suggest','ideal','help me choose','which should','what should i'].some(t=>lower.includes(t));
-  if(isConsult&&!lower.match(/villa|office|apartment|upvc|aluminum|sliding|noise|heat/)){
-    return{r:null,intent:'recommend',confidence:88,isConsult:true,intents};
+  const isConsult=['recommend','best for','suggest','ideal for','help me choose','what should i','which should','luxury setup','what windows'].some(t=>lower.includes(t));
+  if(isConsult&&!lower.match(/villa|office|apartment|upvc|aluminum|aluminium|sliding|noise|heat|glass|coastal|hotel/)){
+    updateDiag('recommend',0,60,60);
+    return{r:null,intent:'recommend',confidence:60,isConsult:true,intents};
   }
 
-  // Multi-intent merge: if top 2 intents both strong, combine responses
-  if(intents.length>=2&&intents[1].score>intents[0].score*0.6&&intents[0].score>15){
-    const e1=KB.find(k=>k.id===intents[0].id);
-    const e2=KB.find(k=>k.id===intents[1].id);
-    if(e1&&e2&&e1.id!==e2.id){
-      const merged=`**Combined Recommendation — ${e1.id.toUpperCase()} + ${e2.id.toUpperCase()}**\n\n`+e1.r+'\n\n---\n\n**Also addressing ${intents[1].id}:**\n\n'+e2.r;
-      return{r:applyPersona(merged,e1.id),intent:e1.id,confidence,intents};
+  /* Scan full KB with context boost */
+  let best=null,bestScore=0;
+  KB.forEach(entry=>{
+    const sc=tokenScore(q,entry.k);
+    if(sc>bestScore){bestScore=sc;best=entry;}
+  });
+  if(MEM.turns.length&&best){
+    const prev=MEM.getContextIntent();
+    if(prev&&best.id===prev)bestScore*=1.25;
+  }
+
+  if(best&&bestScore>3){
+    const personaSuffix=(PERSONA_G[currentPersona]?.suffix)||'';
+    const enriched=applyPersona(best.r,best.id)+personaSuffix;
+    updateDiag(best.id,bestScore,confidence,confidence);
+    if(best.id&&!['greet','thanks','recommend','about'].includes(best.id)){
+      ANL_G.trackProduct(best.id);
     }
+    return{r:enriched,intent:best.id,confidence,intents};
   }
 
-  // Single intent
-  const entry=KB.find(k=>k.id===(intents[0]?.id||''));
-  if(entry&&topScore>4)return{r:applyPersona(entry.r,entry.id),intent:entry.id,confidence,intents};
-
-  // Fallback
   const fb=[
-    {r:"That's a great question — our specialist team will give you the most accurate answer. Shall I book a free consultation, or can I help with products, pricing, or installation details?",intent:'general'},
-    {r:"I want to give you the most precise answer possible. For this specific query, our design expert would be ideal. Would you like to book a consultation, or explore our product range?",intent:'general'},
+    {r:"That's a great question \u2014 our specialist team will give you the most accurate answer. Shall I book a free consultation, or can I help with our product range?",intent:'general'},
+    {r:"I want to give you the most precise answer. For this specific query, our design expert would be ideal. Would you like to book a consultation or explore our product range?",intent:'general'},
   ];
-  return{...fb[Math.floor(Math.random()*fb.length)],confidence:42,intents};
+  const fallback=fb[Math.floor(Math.random()*fb.length)];
+  updateDiag('general',0,42,42);
+  return{...fallback,confidence:42,intents};
 }
 
+
+/* =====================================================
+   CHAT CORE
+===================================================== */
 /* =====================================================
    CHAT CORE
 ===================================================== */
 function sendMsg(txt){
   const inp=document.getElementById('mi2');
-  const m=(txt||inp.value).trim();
+  const m=(txt||inp?.value||'').trim();
   if(!m||typing)return;
-  if(!txt){inp.value='';autoR(inp);}
-  VOICE.interrupt();
-  playSound('send');
+  if(!txt&&inp){inp.value='';autoR(inp);}
+  VOICE.interrupt();playSound('send');
   document.getElementById('wc').style.display='none';
   document.querySelectorAll('.fu-chips').forEach(el=>el.remove());
   const now=ts();
   addMsg('u',m,now);
-  history.push({r:'u',c:m,t:now});saveH();
-  ANL.track(detectIntents(m));
+  chatHistory.push({r:'u',c:m,t:now});saveH();
+  const intents=detectIntents(m);
+  ANL.track(intents);ANL.questionsAsked++;
+  diagData.q=ANL.questionsAsked;
   showTyp();updConf();
-  const delay=900+Math.random()*700;
+  const delay=800+Math.random()*700;
   setTimeout(()=>{
     hideTyp();
     const res=getResp(m);
-    if(res.isConsult){addConsultCard();return;}
+    if(res.isConsult){launchConsultG();return;}
     const rt=ts();
     VOICE.setState('thinking');
-    addMsg('a',res.r,rt,true,res.intent,res.confidence,res.intents);
+    addMsg('a',res.r,rt,true,res.intent,res.confidence,res.intents||[]);
     MEM.push(m,res.r,res.intents||[]);
-    history.push({r:'a',c:res.r,t:rt});saveH();
+    chatHistory.push({r:'a',c:res.r,t:rt});saveH();
     updateSidebarRec(res.intent);
-    msgCnt++;
-    // Auto voice reply
-    if(VOICE.autoVoiceReply&&document.getElementById('vwo').classList.contains('on')){
-      setTimeout(()=>VOICE.speak(res.r),400);
+    /* Architect spec panel */
+    if(currentPersona==='architect'&&res.intent&&!['greet','thanks','recommend'].includes(res.intent)){
+      const specPanel=generateArchitectSpec(res.intent,res.intent);
+      if(specPanel){
+        const lastMsg=document.getElementById('mc').lastElementChild;
+        if(lastMsg&&lastMsg.classList.contains('msg'))lastMsg.querySelector('.mc2')?.appendChild(specPanel);
+      }
     }
-    if(msgCnt%5===0)setTimeout(()=>toast('💡 Try our wizard for a personalised report!','i'),1400);
+    msgCnt++;
+    if(continuousVoiceActive&&document.getElementById('vwo')?.classList.contains('on')){
+      setTimeout(()=>VOICE.speak(res.r),350);
+    }
+    updateConfData(res.confidence||70);
+    if(msgCnt%5===0)setTimeout(()=>toast('💡 Use the Wizard for a personalised recommendation!','i'),1400);
   },delay);
 }
+
 
 function addMsg(role,content,time,anim=true,intent='general',confidence=null,intents=[]){
   const container=document.getElementById('mc');
@@ -2175,7 +1907,7 @@ function addMsg(role,content,time,anim=true,intent='general',confidence=null,int
     const btnCopy=document.createElement('button');btnCopy.title='Copy';btnCopy.setAttribute('aria-label','Copy response');btnCopy.innerHTML='📋 Copy';btnCopy.onclick=()=>{cpyMsg(bubble);};
     const btnSpeak=document.createElement('button');btnSpeak.title='Read aloud';btnSpeak.setAttribute('aria-label','Read aloud');btnSpeak.innerHTML='🔊 Speak';btnSpeak.onclick=()=>{VOICE.speak(bubble.textContent);};
     const btnRegen=document.createElement('button');btnRegen.title='Regenerate';btnRegen.setAttribute('aria-label','Regenerate response');btnRegen.innerHTML='🔄 Retry';btnRegen.onclick=()=>{
-      const prev=history.filter(h=>h.r==='u').pop();
+      const prev=chatHistory.filter(h=>h.r==='u').pop();
       if(prev){wrap.remove();sendMsg(prev.c);}
     };
     mab.appendChild(btnCopy);mab.appendChild(btnSpeak);mab.appendChild(btnRegen);
@@ -2329,6 +2061,16 @@ function runConsultStep3(){
 
 function showConsultResult(){
   const recs=CONSULT.buildRecommendation();
+  /* Capture before async CONSULT.reset() fires */
+  lastConsultData={
+    propertyType:{villa:'Luxury Villa',apartment:'Home/Apartment',office:'Commercial Office',renovation:'Renovation'}[CONSULT.answers.propertyType]||'—',
+    priority:{noise:'Noise Reduction',heat:'Heat Control',security:'Security',luxury:'Luxury Aesthetics'}[CONSULT.answers.priority]||'—',
+    budget:{budget:'Value Range',standard:'Standard Range',premium:'Premium Range',luxury:'Luxury Range'}[CONSULT.answers.budget]||'—',
+    system:recs.system,glass:recs.glass,mesh:recs.mesh,security:recs.security,
+    hardware:'Multi-point locking, Grade 6 certified',
+    budgetRange:recs.budgetRange,
+    climate:'Mixed / Moderate (adjust for your city)'
+  };
   const container=document.getElementById('mc');
   const wrap=document.createElement('div');wrap.className='msg a';
   const avEl=document.createElement('div');avEl.className='ma';avEl.textContent='🤖';
@@ -2376,7 +2118,7 @@ function clearChat(){
   Array.from(mc.children).forEach(c=>{if(c.id!=='wc')c.remove();});
   document.getElementById('wc').style.display='block';
   MEM.turns=[];MEM.profile={propertyType:null,budget:null,city:null,climate:null,interests:[],recommendedProducts:[]};
-  history=[];saveH();clearSidebarRec();toast('Chat cleared','i');playSound('click');
+  chatHistory=[];saveH();clearSidebarRec();toast('Chat cleared','i');playSound('click');
 }
 function cpyMsg(bubble){
   const text=bubble.innerText||bubble.textContent;
@@ -2478,6 +2220,14 @@ function generateWizReport(){
   const glass=a[2]==='very_noisy'||a[2]==='city'?'Acoustic Laminated Double Glazing (16mm argon, 52 dB)':a[1]==='hot'?'Solar Control Low-E Double Glazing (70% heat blocked)':a[1]==='cold'?'Triple Glazed Low-E Argon Units (U-value 0.8)':'Solar Control Double Glazing (argon-filled, Low-E)';
   const budgetRange={budget:'₹350–550/sq.ft',standard:'₹550–800/sq.ft',premium:'₹800–1,300/sq.ft',luxury:'₹1,300+/sq.ft'}[a[3]]||'₹550–800/sq.ft';
 
+  /* Capture wizard answers for report export */
+  lastConsultData={
+    propertyType:prop,climate,priority:noise,budget,system,glass,
+    mesh:'Retractable stainless steel fly screen',
+    hardware:'Multi-point locking Grade 6',
+    security:'Multi-point locking + Grade 6 hardware',
+    budgetRange
+  };
   const reportMsg=`**Your Personalised Window Report**\n\nBased on your **${prop}** in a **${climate}**, **${noise}** environment with **${style}** preference and **${budget}** budget:\n\n**Recommended System:** ${system}\n\n**Recommended Glass:** ${glass}\n\n**Mesh:** Retractable stainless steel fly screen integrated\n\n**Security:** Multi-point locking with Grade 6 hardware${a[3]==='luxury'?', smart fingerprint entry':''}\n\n**Budget Range:** ${budgetRange}`;
   setTimeout(()=>{
     document.getElementById('wc').style.display='none';
@@ -2601,7 +2351,7 @@ function updConf(){
 function toggleTheme(){
   theme=theme==='dark'?'light':'dark';
   document.documentElement.setAttribute('data-theme',theme);
-  localStorage.setItem('ais_t',theme);
+  safeStorage.set('ais_t',theme);
   const btn=document.getElementById('ttb');
   if(btn)btn.textContent=theme==='dark'?'☀️':'🌙';
   playSound('click');
@@ -2635,7 +2385,7 @@ function submitM(id,msg){
     'catm':'The full catalogue pack has been sent to your email. Enjoy exploring over 50 premium products with full specifications and pricing! 📋',
     'svm':'Your site visit is booked! Our surveyor will arrive at your chosen time with everything needed for precise measurements. 🏠'
   };
-  if(replies[id]){setTimeout(()=>{document.getElementById('wc').style.display='none';addMsg('a',replies[id],ts(),true,'greet',null,[]);history.push({r:'a',c:replies[id],t:ts()});saveH();},900);}
+  if(replies[id]){setTimeout(()=>{document.getElementById('wc').style.display='none';addMsg('a',replies[id],ts(),true,'greet',null,[]);chatHistory.push({r:'a',c:replies[id],t:ts()});saveH();},900);}
 }
 document.querySelectorAll('.mo').forEach(o=>{o.addEventListener('click',e=>{if(e.target===o){o.classList.remove('open');playSound('click');}});});
 
@@ -2648,7 +2398,7 @@ function autoR(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeig
 /* =====================================================
    STORAGE & UTILS
 ===================================================== */
-function saveH(){if(history.length>100)history=history.slice(-100);localStorage.setItem('ais_h',JSON.stringify(history));}
+function saveH(){if(chatHistory.length>100)chatHistory=chatHistory.slice(-100);safeStorage.set('ais_h',chatHistory);}
 function ts(){return new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});}
 
 /* =====================================================
@@ -2748,18 +2498,18 @@ document.addEventListener('click',e=>{if(e.target.matches('.pc,.ab,.qc,.fu-chip,
 ===================================================== */
 function initApp(){
   applyTheme();
-  // Restore persona
-  const savedP=localStorage.getItem('ais_persona')||'homeowner';
+  /* Restore persona */
+  const savedP=safeStorage.get('ais_persona','homeowner');
   currentPersona=savedP;
   document.querySelectorAll('.persona-btn').forEach(b=>{
     const isActive=b.dataset.persona===savedP;
     b.classList.toggle('active',isActive);
     b.setAttribute('aria-pressed',isActive?'true':'false');
   });
-  // Restore history
-  if(history.length){
+  /* Restore chat history */
+  if(chatHistory.length){
     document.getElementById('wc').style.display='none';
-    history.forEach(m=>renderMsg(m.r,m.c,m.t,false));
+    chatHistory.forEach(m=>renderMsg(m.r,m.c,m.t,false));
     scrollBot();
   }
   startVisitors();startConf();
@@ -2770,21 +2520,42 @@ function initApp(){
   renderCatGrid();
   setTimeout(()=>toast('ARIA v3.0 online — Neural Consultant Mode active','i'),700);
   document.getElementById('mi2').focus();
-  /* Pre-load speech synthesis voices */
   if(window.speechSynthesis){
     window.speechSynthesis.getVoices();
     if(!window.speechSynthesis.getVoices().length){
       window.speechSynthesis.addEventListener('voiceschanged',()=>{window.speechSynthesis.getVoices();},{once:true});
     }
-    /* Chrome long-utterance bug fix: resume every 10s */
     setInterval(()=>{if(window.speechSynthesis.speaking)window.speechSynthesis.resume();},10000);
   }
-  // Keyboard nav for product cards
   document.querySelectorAll('.pc[tabindex]').forEach(el=>{
     el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();el.click();}});
   });
-  // Periodically re-init tilt (for dynamically added cards)
   setInterval(initTilt,8000);
+  /* V4: Compare + Configurator keyboard shortcuts */
+  document.addEventListener('keydown',e=>{
+    if((e.ctrlKey||e.metaKey)&&e.shiftKey&&e.key==='C'){e.preventDefault();openCompare();}
+    if((e.ctrlKey||e.metaKey)&&e.shiftKey&&e.key==='W'){e.preventDefault();openM('config-modal');}
+  });
+  /* Phase G: deferred UI injection and diagnostics */
+  setTimeout(()=>{
+    PWA.init();
+  initCursorTrail();
+    upgradeConfigModal();
+    const kbEl=document.getElementById('dg-kb');
+    if(kbEl)kbEl.textContent=KB.length+' intents';
+    if(safeStorage.get('ais_cv')==='1'){continuousVoiceActive=false;toggleContinuousVoice&&toggleContinuousVoice();}
+    PermManager&&PermManager.check&&PermManager.check();
+    setTimeout(renderConfDash,400);
+    initV4Catalogue&&initV4Catalogue();
+    injectV4Sidebar&&injectV4Sidebar();
+    populateCompareSelects&&populateCompareSelects();
+    renderCatGrid&&renderCatGrid();
+    setTimeout(()=>{
+      updateDiag('—','—',97,97);
+      const el=document.getElementById('dg-kb');
+      if(el)el.textContent=KB.length+' intents active';
+    },500);
+  },120);
 }
 
 /* =====================================================
@@ -2809,13 +2580,13 @@ const PermManager={
     this.updateUI();
   },
   async request(){
-    if(this.status==='granted'||sessionStorage.getItem('mic_ok')==='1'){
+    if(this.status==='granted'||safeSession.get('mic_ok')==='1'){
       this.status='granted';this.updateUI();return true;
     }
     try{
       const s=await navigator.mediaDevices.getUserMedia({audio:true});
       s.getTracks().forEach(t=>t.stop());
-      this.status='granted';sessionStorage.setItem('mic_ok','1');
+      this.status='granted';safeSession.set('mic_ok','1');
       this.updateUI();return true;
     }catch(e){this.status='denied';this.updateUI();return false;}
   },
@@ -2849,7 +2620,7 @@ function toggleContinuousVoice(){
     toast('Voice mode disabled','i');
     if(hdr)hdr.textContent='Neural Consultant · Multi-Intent · Context-Aware';
   }
-  localStorage.setItem('ais_cv',continuousVoiceActive?'1':'0');
+  safeStorage.set('ais_cv',continuousVoiceActive?'1':'0');
   playSound('click');
 }
 
@@ -3064,11 +2835,11 @@ function calcWindow(){
    V4 LEAD CAPTURE ENGINE
 ===================================================== */
 const LeadCapture={
-  data:JSON.parse(localStorage.getItem('ais_leads')||'[]'),
+  data:safeStorage.getJSON('ais_leads',[]),
   save(entry){
     entry.ts=new Date().toISOString();
     this.data.push(entry);
-    localStorage.setItem('ais_leads',JSON.stringify(this.data));
+    safeStorage.set('ais_leads',this.data);
   },
   getLast(){return this.data.length?this.data[this.data.length-1]:null;}
 };
@@ -3310,7 +3081,7 @@ function injectV4Sidebar(){
   }
 
   /* Restore continuous voice state */
-  if(localStorage.getItem('ais_cv')==='1'){
+  if(safeStorage.get('ais_cv')==='1'){
     continuousVoiceActive=false;toggleContinuousVoice();
   }
 
@@ -3360,95 +3131,12 @@ function initV4Catalogue(){
   }
 }
 
-/* =====================================================
-   V4 KNOWLEDGE BASE ADDITIONS (10 more intents to hit 50+)
-===================================================== */
-const KB_V4_EXTRA=[
-  {id:'fixed_windows',k:['picture window','fixed frame','non-opening window','view window'],r:`**Fixed Windows — Uninterrupted Views & Maximum Light**\n\nFixed (non-opening) windows are designed purely to maximise light, views, and thermal performance:\n\n- **Frameless or ultra-slim options** — pure glass aesthetic, no visible sightlines\n- **Any custom shape** — circular, arched, triangular, trapezoidal, or completely bespoke\n- **Optimum thermal performance** — no moving parts means no air infiltration\n- **Available in all glass types** — Low-E, solar control, acoustic, toughened, or smart glass\n- **Lower cost per sq.ft** than equivalent opening windows\n- **Perfect for feature walls, stairwells**, and double-height spaces\n\nIdeal where ventilation isn't required but natural light and views are priorities.`},
-  {id:'bay_windows',k:['bay window','bow window','angled window','projecting window'],r:`**Bay & Bow Windows — Architectural Character**\n\nBay and bow windows project outward from the building, creating additional space and a distinctive exterior:\n\n- **Bay windows** — typically 3 panels at 45° or 90° angles\n- **Bow windows** — 4–6 panels forming a gentle curve\n- **Creates additional floor space** inside — popular for seating nooks\n- **Maximises natural light** from multiple angles simultaneously\n- **Available in UPVC or aluminium** — both in premium finishes\n- **Can include opening vents** in side panels for ventilation\n\nAdds significant kerb appeal and interior character to any home.`},
-  {id:'skylight',k:['skylight','roof window','roof light','velux','overhead glazing'],r:`**Skylights & Roof Windows — Bring the Sky Inside**\n\nRoof glazing transforms dark interiors with natural overhead light:\n\n- **Fixed skylights** — pure light wells, excellent thermal performance\n- **Opening roof windows** — electric or manual, adds ventilation\n- **Walk-on glazing** — structural glass floors and roof terraces\n- **Solar-control glass** — prevents summer overheating from above\n- **Automated rain sensors** — auto-close when rain detected\n- **Available sizes** from 500×500mm to custom large-format\n\nParticularly popular in loft conversions, flat-roof extensions, and modern villas.`},
-  {id:'partition',k:['glass partition','office partition','internal glazing','room divider','internal wall'],r:`**Glass Partitions — Open, Light-Filled Spaces**\n\nInternal glass partitions transform offices and homes:\n\n- **Single or double-glazed** options for acoustic privacy\n- **Frameless systems** — minimal visible structure, maximum openness\n- **Switchable smart glass** — frosted on-demand for privacy\n- **Full-height** from floor to ceiling slab\n- **Integrated blinds** — venetian or fabric blinds sealed between panes\n- **Compliant with IS 2553** safety glass standards\n\nPopular for home offices, meeting rooms, and open-plan living spaces.`},
-  {id:'louvers',k:['louvre','louver','solar shading','external blind','brise-soleil'],r:`**Solar Louvre Systems — Dynamic Sun Control**\n\nAutomated louvre systems actively manage solar gain:\n\n- **Motorised aluminium fins** — adjust angle throughout the day\n- **Responds to sun intensity sensors** — fully automated\n- **Reduces solar gain by up to 85%** when fully closed\n- **Maintains diffused natural light** — not a blackout system\n- **Integrates with building management systems** and smart home\n- **Available in all RAL colours** — architectural statement element\n\nEssential for ECBC compliance and LEED/GRIHA green building ratings.`},
-  {id:'acoustics_detail',k:['rw rating','stc rating','sound transmission','acoustic certification','decibel rating'],r:`**Acoustic Performance — Technical Specifications**\n\nUnderstanding acoustic ratings helps you choose the right system:\n\n| System | Rw Rating | Best Application |\n|---|---|---|\n| Single glazed 6mm | 28 dB | Basic noise reduction |\n| UPVC standard DG | 32–35 dB | Suburban residential |\n| Acoustic UPVC | 38–42 dB | Urban areas |\n| AcousticPro 45 | 45 dB | Highway/airport adjacent |\n| Secondary glazing | 48–52 dB | Maximum isolation |\n\n**Rw = Weighted Sound Reduction Index** — higher is better.\n\nFor perspective: 10 dB reduction halves the perceived loudness.`},
-  {id:'thermal_detail',k:['u value','r value','thermal transmittance','heat loss coefficient','thermal break detail'],r:`**Thermal Performance — Technical Deep Dive**\n\nU-value (thermal transmittance) measures heat loss — lower is better:\n\n| System | U-Value | Energy Class |\n|---|---|---|\n| Single glazed aluminium | 5.8 W/m²K | F |\n| Standard UPVC DG | 2.8 W/m²K | C |\n| Low-E argon DG | 1.4 W/m²K | B |\n| Triple glazed | 0.8–1.0 W/m²K | A+ |\n| Our premium system | 0.7 W/m²K | A++ |\n\n**Thermal break aluminium** uses polyamide inserts to interrupt the metal path and reduce conductivity by 80%.\n\nAll our systems comply with IS 11197 and exceed ECBC requirements.`},
-  {id:'doors_general',k:['front door','entrance door','external door','main door','entry door'],r:`**Premium Entrance Doors — First Impressions Count**\n\nOur entrance door range combines security, thermal performance, and architectural impact:\n\n- **Pivot doors** — dramatic statement entries up to 3.2m tall, 1.5m wide\n- **Double leaf doors** — traditional symmetry with modern performance\n- **UPVC panel doors** — superior thermal and security performance\n- **Aluminium slim-frame doors** — sleek contemporary aesthetics\n- **Smart entry systems** — fingerprint, PIN, Bluetooth, app control\n\n**All doors include:** multi-point locking, RC2 burglar resistance, toughened safety glass, and weather-seal as standard.\n\nAvailable with 1, 2, 3 or full-glass panel configurations.`},
-  {id:'bifold',k:['bifold','bi fold','bi-fold','folding door','accordion door'],r:`**Bi-Fold Door Systems — Maximum Opening, Maximum Impact**\n\nBi-fold doors fold back completely to create a full-width opening:\n\n- **2 to 8 panel configurations** — opens virtually the entire wall\n- **Stacks neatly to one or both sides** — choice of stacking direction\n- **Flush threshold option** — seamless indoor-outdoor flow\n- **Thermally broken aluminium** — no cold bridging in winter\n- **Multi-point locking** — secure even in folded position\n- **Available in UPVC or aluminium** — both in all premium finishes\n\nIdeal for kitchen-garden connections, living rooms opening to terraces, and entertainment spaces.`},
-  {id:'smart_glass_detail',k:['switchable glass','electrochromic','pdlc','smart glass detail','privacy glass electric'],r:`**Smart Glass Technology — Intelligence in Every Pane**\n\nOur smart glass systems use PDLC (Polymer Dispersed Liquid Crystal) technology:\n\n**How it works:**\n- Off (no power): glass appears frosted/opaque — privacy\n- On (12V DC): glass becomes clear — transparency\n- Switches in under 1 second\n\n**Applications:** bathroom windows, conference room partitions, skylights, entrance doors\n\n**Technical specs:**\n- Visible light transmission: 0% (off) → 72% (on)\n- Power consumption: 5 W/m² — very low\n- UV blocking: 99% in both states\n- Available as laminated safety glass (both states)\n\nCan be integrated with smart home systems and automated on timer or sensor.`},
-];
-
-/* Merge extra KB into main KB array */
-if(typeof KB!=='undefined'){KB.push(...KB_V4_EXTRA);}
-
-/* =====================================================
-   V4 RESPONSE ENGINE PATCH — capture data for report
-===================================================== */
-const _origShowResult=typeof showConsultResult==='function'?showConsultResult:null;
-if(_origShowResult){
-  window.showConsultResult=function(){
-    _origShowResult();
-    const recs=CONSULT.buildRecommendation();
-    lastConsultData={
-      propertyType:{villa:'Luxury Villa',apartment:'Home/Apartment',office:'Commercial Office',renovation:'Renovation'}[CONSULT.answers.propertyType]||'—',
-      priority:{noise:'Noise Reduction',heat:'Heat Control',security:'Security',luxury:'Luxury Aesthetics'}[CONSULT.answers.priority]||'—',
-      budget:{budget:'Value Range',standard:'Standard Range',premium:'Premium Range',luxury:'Luxury Range'}[CONSULT.answers.budget]||'—',
-      system:recs.system,glass:recs.glass,mesh:recs.mesh,security:recs.security,
-      hardware:'Multi-point locking, Grade 6 certified',
-      budgetRange:recs.budgetRange,
-      climate:'Mixed / Moderate (adjust for your city)'
-    };
-  };
-}
-
-/* Also capture wizard report data */
-const _origGenReport=typeof generateWizReport==='function'?generateWizReport:null;
-if(_origGenReport){
-  window.generateWizReport=function(){
-    _origGenReport();
-    /* lastConsultData is set inside calcWindow too — wizard sets its own */
-    setTimeout(()=>{
-      const a=WIZ.answers;
-      const propMap={villa:'Luxury Villa',apartment:'Home/Apartment',office:'Commercial Office',coastal:'Coastal Property'};
-      const noiseMap={very_noisy:'Very Noisy',moderate:'Moderate',quiet:'Quiet',city:'City Centre'};
-      lastConsultData={
-        propertyType:propMap[a[0]]||'—',
-        climate:{hot:'Hot & Sunny',cold:'Cold Winters',monsoon:'Heavy Monsoon',mixed:'Mixed'}[a[1]]||'Mixed',
-        priority:noiseMap[a[2]]||'Moderate',
-        budget:{budget:'Value Range',standard:'Standard Range',premium:'Premium Range',luxury:'Luxury Range'}[a[3]]||'—',
-        system:'See chat for details',glass:'See chat for details',
-        mesh:'Retractable stainless steel fly screen',
-        hardware:'Multi-point locking Grade 6',
-        security:'Multi-point locking + Grade 6 hardware',
-        budgetRange:{budget:'₹350–550/sq.ft',standard:'₹550–800/sq.ft',premium:'₹800–1,300/sq.ft',luxury:'₹1,300+/sq.ft'}[a[3]]||'₹550–800/sq.ft'
-      };
-    },500);
-  };
-}
-
-/* =====================================================
-   V4 INIT PATCH
-===================================================== */
-const _origInitApp=typeof initApp==='function'?initApp:null;
-window.initApp=function(){
-  if(_origInitApp)_origInitApp();
-  setTimeout(injectV4Sidebar,100);
-  setTimeout(initV4Catalogue,200);
-  /* keyboard shortcut: Ctrl+Shift+C = Compare */
-  document.addEventListener('keydown',e=>{
-    if((e.ctrlKey||e.metaKey)&&e.shiftKey&&e.key==='C'){e.preventDefault();openCompare();}
-    if((e.ctrlKey||e.metaKey)&&e.shiftKey&&e.key==='W'){e.preventDefault();openM('config-modal');}
-  });
-};
-
 /* V4: Per-sound audio settings check is now inside playSound() directly */
 
 
 /* ============ PHASE G ============ */
 
-/* =====================================================
-   PHASE G — COMPLETE 65+ INTENT KNOWLEDGE BASE
-   (Replaces all previous KB arrays — no duplicates)
-===================================================== */
-const KB_COMPLETE=[
+const KB=[
 /* WINDOW TYPES */
 {id:'upvc',k:['upvc','uPVC','pvc window','plastic window','unplasticised'],r:`**UPVC Windows — The Nation's Favourite Premium Solution**\n\nUPVC (Unplasticised Polyvinyl Chloride) delivers exceptional performance with virtually zero maintenance:\n\n- **Thermal insulation** — reduces heat transfer by up to **70%**\n- **Noise reduction** — attenuates external sound by **30–45 dB**\n- **100% waterproof** — tested for Indian monsoon and coastal conditions\n- **30–40 year lifespan** — virtually maintenance-free throughout\n- **200+ colour options** — including authentic wood-grain and matte finishes\n- **Eco-friendly** — BIS-certified, fully recyclable at end of life\n\nAvailable as: casement, sliding, tilt & turn, bay, and fixed window styles.`},
 {id:'aluminum',k:['aluminum','aluminium','metal window','al window','slim profile','alu'],r:`**Aluminum Systems — The Architect's Premium Choice**\n\nOur aluminium systems are specified by leading architects across India:\n\n- **Ultra-slim profiles from 30mm** — maximises glass area and views\n- **Exceptional structural strength** — handles large-format openings\n- **Full RAL colour range** — UV-stable powder coating lasting 20+ years\n- **Thermal break technology** — polyamide inserts eliminate cold bridging\n- **Marine-grade options** — for coastal and high-humidity properties\n- **50+ year design life** — outstanding long-term investment\n\nSuitable for: high-rises, villas, curtain walls, and commercial facades.`},
@@ -3509,15 +3197,13 @@ const KB_COMPLETE=[
 {id:'french_casement',k:['french casement','villa windows','full opening casement','outward casement'],r:`**French Casement Windows — Unobstructed Opening**\n\nTwo side-hung panels with no central post:\n\n- **Full-width opening** — no central mullion obstructing views or ventilation\n- **Classic proportions** — popular for heritage and traditional architecture\n- **Astragal bar options** — Georgian glazing bars for period properties\n- **Burglary-resistant** — multi-point locking on both leaves simultaneously\n- **Available in UPVC or aluminium** — all premium finishes\n\nThe preferred choice for ground-floor reception rooms and garden-facing facades.`},
 {id:'fixed_rooflights',k:['rooflight','flat roof glazing','structural glazing','roof terrace glass','frameless roof'],r:`**Structural Rooflights & Roof Terraces**\n\n- **Walk-on glass** — structural laminated glass floors rated for 400 kg/m²\n- **Flush flat rooflights** — frameless glass flush to roof membrane\n- **Point-fixed glazing** — glass supported by minimal stainless fittings\n- **Anti-slip surface** — etched or fritted pattern for safety\n- **Low-E coated** — solar control without sacrificing daylight\n\nEngineered to IS 875 structural load requirements.`},
 {id:'builder_packs',k:['builder pack','project package','bulk order','multiple units','new build'],r:`**Builder & Developer Packages**\n\n- **Standardised sizing** — reduces manufacturing time, lowers cost\n- **10–25% bulk pricing** — depending on volume and specification\n- **Single point of contact** — dedicated project manager, site to handover\n- **Phased delivery** — matched to your construction programme\n- **CAD drawing package** — free with confirmed orders over ₹25 lakhs\n- **Training for site team** — installation guidance included\n\nWe've delivered single contracts from 20 to 2,000 units.`},
+{id:'louvers',k:['louvre','louver','solar shading','external blind','brise-soleil'],r:`**Solar Louvre Systems \u2014 Dynamic Sun Control**\n\nAutomated louvre systems actively manage solar gain:\n\n- **Motorised aluminium fins** \u2014 adjust angle throughout the day\n- **Responds to sun intensity sensors** \u2014 fully automated\n- **Reduces solar gain by up to 85%** when fully closed\n- **Maintains diffused natural light** \u2014 not a blackout system\n- **Integrates with building management systems** and smart home\n- **Available in all RAL colours** \u2014 architectural statement element\n\nEssential for ECBC compliance and LEED/GRIHA green building ratings.`},
+{id:'acoustics_detail',k:['rw rating','stc rating','sound transmission','acoustic certification','decibel rating'],r:`**Acoustic Performance \u2014 Technical Rw Specifications**\n\n| System | Rw Rating | Best Application |\n|---|---|---|\n| Single glazed 6mm | 28 dB | Basic noise reduction |\n| UPVC standard DG | 32\u201335 dB | Suburban residential |\n| Acoustic UPVC | 38\u201342 dB | Urban areas |\n| AcousticPro 45 | 45 dB | Highway/airport adjacent |\n| Secondary glazing | 48\u201352 dB | Maximum isolation |\n\n**Rw = Weighted Sound Reduction Index** \u2014 higher is better.\n\nFor perspective: 10 dB reduction halves the perceived loudness.`},
+{id:'doors_general',k:['front door','entrance door','external door','main door','entry door'],r:`**Premium Entrance Doors \u2014 First Impressions Count**\n\nOur entrance door range combines security, thermal performance, and architectural impact:\n\n- **Pivot doors** \u2014 dramatic statement entries up to 3.2m tall, 1.5m wide\n- **Double leaf doors** \u2014 traditional symmetry with modern performance\n- **UPVC panel doors** \u2014 superior thermal and security performance\n- **Aluminium slim-frame doors** \u2014 sleek contemporary aesthetics\n- **Smart entry systems** \u2014 fingerprint, PIN, Bluetooth, app control\n\n**All doors include:** multi-point locking, RC2 burglar resistance, toughened safety glass, and weather-seal as standard.\n\nAvailable with 1, 2, 3 or full-glass panel configurations.`},
+{id:'bifold',k:['bifold','bi-fold','folding door','accordion door'],r:`**Bi-Fold Door Systems \u2014 Maximum Opening, Maximum Impact**\n\nBi-fold doors fold back completely to create a full-width opening:\n\n- **2 to 8 panel configurations** \u2014 opens virtually the entire wall\n- **Stacks neatly to one or both sides** \u2014 choice of stacking direction\n- **Flush threshold option** \u2014 seamless indoor-outdoor flow\n- **Thermally broken aluminium** \u2014 no cold bridging in winter\n- **Multi-point locking** \u2014 secure even in folded position\n- **Available in UPVC or aluminium** \u2014 all premium finishes\n\nIdeal for kitchen-garden connections, living rooms opening to terraces, and entertainment spaces.`},
 ];
 
 /* Replace both old KB arrays and the merge */
-if(typeof KB!=='undefined'){
-  // Clear and replace main KB
-  KB.length=0;
-  KB.push(...KB_COMPLETE);
-}
-if(typeof KB_V4_EXTRA!=='undefined'){KB_V4_EXTRA.length=0;}
 
 /* =====================================================
    PHASE G — 5-STEP CONSULTANT DECISION TREE
@@ -3647,7 +3333,7 @@ function updateDiagUI(){
   set('dg-intent',diagData.intent);
   set('dg-score',diagData.score);
   set('dg-conf',diagData.conf+'%',diagData.conf>80?'green':diagData.conf>60?'amber':'red');
-  set('dg-kb',typeof KB!=='undefined'?KB.length+' intents':typeof KB_COMPLETE!=='undefined'?KB_COMPLETE.length+' intents':'—','green');
+  set('dg-kb',typeof KB!=='undefined'?KB.length+' intents':typeof KB!=='undefined'?KB.length+' intents':'—','green');
   set('dg-turns',diagData.turns);
   set('dg-mem',diagData.mem);
   set('dg-prop',diagData.prop||'—');
@@ -3847,6 +3533,82 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;margin:0
 .cta-sub{font-size:12px;color:#6b7280;margin-bottom:12px}
 .cta-btn{display:inline-block;padding:10px 24px;background:linear-gradient(135deg,#00d4ff,#7b2fff);color:#fff;border-radius:20px;font-weight:700;font-size:12px;text-decoration:none}
 @media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+
+/* =====================================================
+   PWA INSTALL POPUP
+===================================================== */
+#install-popup{
+  position:fixed;bottom:-100%;left:0;right:0;
+  background:rgba(6,6,20,.97);
+  border-top:1px solid rgba(0,212,255,.22);
+  backdrop-filter:blur(36px);-webkit-backdrop-filter:blur(36px);
+  border-radius:26px 26px 0 0;
+  padding:18px 22px env(safe-area-inset-bottom,28px);
+  z-index:99999;
+  transition:bottom .42s cubic-bezier(.34,1.4,.64,1);
+  box-shadow:0 -24px 70px rgba(0,0,0,.55),0 0 0 1px rgba(0,212,255,.08);
+}
+#install-popup.show{bottom:0}
+.ip-drag{width:38px;height:4px;background:rgba(255,255,255,.12);border-radius:2px;margin:0 auto 20px;cursor:grab}
+.ip-header{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.ip-app-icon{width:60px;height:60px;border-radius:16px;
+  background:linear-gradient(135deg,#00d4ff,#7b2fff);
+  display:flex;align-items:center;justify-content:center;
+  font-size:28px;font-weight:900;color:#fff;flex-shrink:0;
+  box-shadow:0 0 22px #00d4ff44,0 0 44px #7b2fff22}
+.ip-app-name{font-size:18px;font-weight:700;color:var(--txt-1);line-height:1.2}
+.ip-app-cat{font-size:12px;color:var(--txt-3);margin-top:2px}
+.ip-stars{color:#ffaa00;font-size:11px;letter-spacing:1px;margin-top:3px}
+.ip-desc{font-size:13.5px;color:var(--txt-2);line-height:1.6;margin-bottom:18px}
+.ip-features{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+.ip-feature{padding:5px 11px;border-radius:100px;
+  background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.15);
+  color:var(--ac1);font-size:11px;font-weight:600}
+.ip-actions{display:flex;gap:10px}
+.ip-btn-install{
+  flex:1;padding:14px;border-radius:14px;
+  background:linear-gradient(135deg,#00d4ff,#7b2fff);
+  border:none;color:#fff;font-size:15px;font-weight:700;
+  cursor:pointer;transition:all .2s;
+  box-shadow:0 4px 18px rgba(0,212,255,.35)}
+.ip-btn-install:hover{opacity:.9;transform:translateY(-1px)}
+.ip-btn-install:active{transform:scale(.97)}
+.ip-btn-later{
+  padding:14px 18px;border-radius:14px;
+  border:1px solid rgba(255,255,255,.1);
+  background:rgba(255,255,255,.04);
+  color:var(--txt-2);font-size:13px;cursor:pointer;transition:all .2s}
+.ip-btn-later:hover{color:var(--txt-1);border-color:rgba(255,255,255,.2)}
+/* iOS steps */
+.ip-ios-steps{margin-bottom:18px}
+.ip-ios-step{
+  display:flex;align-items:center;gap:12px;
+  padding:11px 0;border-bottom:1px solid rgba(255,255,255,.06);
+  font-size:13.5px;color:var(--txt-2);line-height:1.4}
+.ip-ios-step:last-child{border-bottom:none}
+.ip-ios-num{
+  width:26px;height:26px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,#00d4ff,#7b2fff);
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;color:#fff}
+.ip-ios-step strong{color:var(--txt-1)}
+.ip-ios-step .ip-share-icon{
+  display:inline-block;width:20px;height:20px;
+  background:var(--ac1);border-radius:4px;
+  vertical-align:middle;margin:0 2px;
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2l-4 4h3v9h2V6h3l-4-4zM5 17v3h14v-3h-2v1H7v-1H5z'/%3E%3C/svg%3E") center/cover;
+  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2l-4 4h3v9h2V6h3l-4-4zM5 17v3h14v-3h-2v1H7v-1H5z'/%3E%3C/svg%3E") center/cover}
+/* Installed badge */
+.pwa-installed-badge{
+  display:none;align-items:center;gap:6px;
+  padding:5px 12px;border-radius:100px;
+  background:rgba(0,255,136,.1);border:1px solid rgba(0,255,136,.2);
+  color:var(--ac4);font-size:11px;font-weight:600}
+.pwa-installed-badge.show{display:flex}
+/* Safe area support */
+@supports(padding:max(0px)){
+  #install-popup{padding-bottom:max(28px,env(safe-area-inset-bottom));}
+}
 </style></head><body><div class="page">
 <div class="header">
   <div class="logo-row"><div class="logo">A</div><div><div class="brand">AIS Windows</div><div class="brand-sub">Premium Doors &amp; Windows · Neural Consultant Platform</div></div></div>
@@ -3888,12 +3650,46 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;margin:0
   <span class="cta-btn">Book Free Consultation</span>
 </div>
 <div class="footer"><span>AIS Windows — Premium Doors &amp; Windows</span><span>Confidential · For client use only</span></div>
-</div></body></html>`;
-  const win=window.open('','_blank','width=800,height=900');
-  if(!win){toast('Pop-up blocked — please allow pop-ups and try again.','e');return;}
-  win.document.write(html);win.document.close();
-  setTimeout(()=>{win.focus();win.print();},600);
-  toast('Report opened — use Print → Save as PDF','s');playSound('notif');
+</div>
+<!-- PWA INSTALL POPUP -->
+<div id="install-popup" role="dialog" aria-modal="true" aria-label="Install AIS Windows app" aria-hidden="true">
+  <div class="ip-drag" aria-hidden="true"></div>
+  <div class="ip-header">
+    <div class="ip-app-icon" aria-hidden="true">A</div>
+    <div>
+      <div class="ip-app-name">AIS Smart Assistant</div>
+      <div class="ip-app-cat">Doors &amp; Windows Consultant</div>
+      <div class="ip-stars" aria-label="5 star rating">★★★★★</div>
+    </div>
+  </div>
+  <p class="ip-desc" id="ip-desc">Add to your home screen for the full app experience — launches instantly, works offline, no browser chrome.</p>
+  <div class="ip-features" id="ip-features">
+    <span class="ip-feature">⚡ Instant launch</span>
+    <span class="ip-feature">📶 Works offline</span>
+    <span class="ip-feature">🔔 Notifications</span>
+    <span class="ip-feature">🎙️ Voice ready</span>
+  </div>
+  <div id="ip-body">
+    <div class="ip-actions">
+      <button class="ip-btn-install" id="ip-btn-install" onclick="triggerPWAInstall()" aria-label="Install AIS Windows app">
+        ⬇&nbsp; Install App — Free
+      </button>
+      <button class="ip-btn-later" onclick="dismissPWAPrompt(false)" aria-label="Maybe later">Later</button>
+    </div>
+  </div>
+</div>
+
+</body></html>`;
+  try{
+    const blob=new Blob([html],{type:'text/html'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;a.download='AIS-Windows-Recommendation.html';a.style.display='none';
+    document.body.appendChild(a);a.click();
+    setTimeout(()=>{URL.revokeObjectURL(url);a.remove();},2000);
+    toast('Report downloaded — open in browser then Print → Save as PDF','s');
+    playSound('notif');
+  }catch(e){toast('Download failed — please try again','e');}
 }
 
 /* =====================================================
@@ -3915,68 +3711,6 @@ const ANL_G={
   },
 };
 
-/* Patch openAnalytics to inject enhanced view */
-const _origOpenAnalytics=typeof openAnalytics==='function'?openAnalytics:null;
-window.openAnalytics=function(){
-  if(_origOpenAnalytics)_origOpenAnalytics();
-  /* Inject enhanced sections */
-  setTimeout(()=>{
-    const panel=document.getElementById('anl-panel');
-    if(!panel||panel.dataset.gEnhanced)return;
-    panel.dataset.gEnhanced='1';
-
-    /* Session timeline chart */
-    const timelineWrap=document.createElement('div');timelineWrap.className='anl-chart-wrap';
-    timelineWrap.innerHTML=`<div class="anl-chart-title">Activity Timeline (last 10 actions)</div>
-      <div class="anl-timeline" id="anl-timeline"></div>`;
-    panel.appendChild(timelineWrap);
-
-    /* Persona usage */
-    const personaWrap=document.createElement('div');personaWrap.className='anl-chart-wrap';
-    const pBreak=ANL_G.getPersonaBreakdown();
-    const maxP=Math.max(...Object.values(pBreak),1);
-    personaWrap.innerHTML=`<div class="anl-chart-title">Persona Usage</div>`+
-      Object.entries(pBreak).map(([k,v])=>`<div class="anl-bar-row">
-        <div class="anl-bar-name">${k.charAt(0).toUpperCase()+k.slice(1)}</div>
-        <div class="anl-bar-track"><div class="anl-bar-fill" style="width:${(v/maxP)*100}%"></div></div>
-        <div class="anl-bar-val">${v}</div></div>`).join('');
-    panel.appendChild(personaWrap);
-
-    /* Top products */
-    const topProds=ANL_G.getTopProducts();
-    if(topProds.length){
-      const prodWrap=document.createElement('div');prodWrap.className='anl-chart-wrap';
-      prodWrap.innerHTML=`<div class="anl-chart-title">Most Viewed Products</div>`+
-        topProds.map(([name,c])=>`<div class="anl-bar-row">
-          <div class="anl-bar-name">${name.substring(0,12)}</div>
-          <div class="anl-bar-track"><div class="anl-bar-fill" style="width:${(c/topProds[0][1])*100}%"></div></div>
-          <div class="anl-bar-val">${c}</div></div>`).join('');
-      panel.appendChild(prodWrap);
-    }
-
-    /* Voice usage */
-    const vWrap=document.createElement('div');vWrap.className='anl-chart-wrap';
-    vWrap.innerHTML=`<div class="anl-chart-title">Voice vs Text</div>
-      <div class="anl-pills">
-        <span class="anl-pill">🎙️ Voice: ${ANL_G.voiceUsed}</span>
-        <span class="anl-pill">⌨️ Text: ${Math.max(0,ANL.questionsAsked-ANL_G.voiceUsed)}</span>
-        <span class="anl-pill">⏱️ Session: ${ANL.getSessionTime()}</span>
-      </div>`;
-    panel.appendChild(vWrap);
-
-    /* Build timeline bars */
-    const timelineEl=document.getElementById('anl-timeline');
-    if(timelineEl){
-      const hist=MEM.turns.slice(-10);
-      const maxH=10;
-      for(let i=0;i<maxH;i++){
-        const b=document.createElement('div');b.className='anl-t-bar';
-        b.style.height=(hist[i]?Math.random()*40+20:4)+'px';
-        timelineEl.appendChild(b);
-      }
-    }
-  },200);
-};
 
 /* =====================================================
    PHASE G — ARCHITECT SPEC PANEL
@@ -4094,104 +3828,6 @@ function initCursorTrail(){
 }
 
 /* =====================================================
-   PHASE G — RESPONSE ENGINE PATCH
-===================================================== */
-/* Override getResp to: use KB_COMPLETE, add persona suffix, update diag, track product */
-const _origGetResp=typeof getResp==='function'?getResp:null;
-window.getResp=function(rawQ){
-  /* Use the full KB */
-  const activeKB=KB_COMPLETE.length?KB_COMPLETE:(typeof KB!=='undefined'?KB:[]);
-  const q=MEM.buildContextQuery(rawQ);
-  const intents=detectIntents(q);
-  const topScore=intents[0]?.score||0;
-  const confidence=calcConfidence(topScore);
-
-  /* Consult trigger */
-  const lower=rawQ.toLowerCase();
-  const isConsult=['recommend','best for','suggest','ideal for','help me choose','what should i','which should','luxury setup','what windows'].some(t=>lower.includes(t));
-  if(isConsult&&!lower.match(/villa|office|apartment|upvc|aluminum|aluminium|sliding|noise|heat|glass|coastal|hotel/)){
-    updateDiag('recommend',0,60,60);
-    return{r:null,intent:'recommend',confidence:60,isConsult:true,intents};
-  }
-
-  /* Multi-intent */
-  let best=null,bestScore=0;
-  activeKB.forEach(entry=>{
-    const s=tokenScore(q,entry.k);
-    if(s>bestScore){bestScore=s;best=entry;}
-  });
-  if(MEM.turns.length&&best){
-    const prev=MEM.getContextIntent();
-    if(prev&&best.id===prev)bestScore*=1.25;
-  }
-
-  if(best&&bestScore>3){
-    /* Add persona suffix */
-    const personaSuffix=(PERSONA_G[currentPersona]?.suffix)||'';
-    const enriched=applyPersona(best.r,best.id)+personaSuffix;
-    updateDiag(best.id,bestScore,confidence,confidence);
-    /* Track product views */
-    if(best.id&&!['greet','thanks','recommend','about'].includes(best.id)){
-      ANL_G.trackProduct(best.id);
-    }
-    return{r:enriched,intent:best.id,confidence,intents};
-  }
-
-  const fb=[
-    {r:"That's a great question — our specialist team will give you the most accurate answer. Shall I book a free consultation, or can I help with our product range?",intent:'general'},
-    {r:"I want to give you the most precise answer. For this specific query, our design expert would be ideal. Would you like to book a consultation or explore our product range?",intent:'general'},
-  ];
-  const fallback=fb[Math.floor(Math.random()*fb.length)];
-  updateDiag('general',0,42,42);
-  return{...fallback,confidence:42,intents};
-};
-
-/* Override sendMsg to launch consultant when needed */
-const _origSendMsg=typeof sendMsg==='function'?sendMsg:null;
-window.sendMsg=function(txt){
-  const inp=document.getElementById('mi2');
-  const m=(txt||inp?.value||'').trim();
-  if(!m||(typeof typing!=='undefined'&&typing))return;
-  if(!txt&&inp){inp.value='';autoR(inp);}
-  VOICE.interrupt();playSound('send');
-  document.getElementById('wc').style.display='none';
-  document.querySelectorAll('.fu-chips').forEach(el=>el.remove());
-  const now=ts();
-  addMsg('u',m,now);
-  history.push({r:'u',c:m,t:now});saveH();
-  const intents=detectIntents(m);
-  ANL.track(intents);ANL.questionsAsked++;
-  diagData.q=ANL.questionsAsked;
-  showTyp();updConf();
-  const delay=800+Math.random()*700;
-  setTimeout(()=>{
-    hideTyp();
-    const res=getResp(m);
-    if(res.isConsult){launchConsultG();return;}
-    const rt=ts();
-    VOICE.setState('thinking');
-    addMsg('a',res.r,rt,true,res.intent,res.confidence,res.intents||[]);
-    MEM.push(m,res.r,res.intents||[]);
-    history.push({r:'a',c:res.r,t:rt});saveH();
-    updateSidebarRec(res.intent);
-    /* Architect spec panel */
-    if(currentPersona==='architect'&&res.intent&&!['greet','thanks','recommend'].includes(res.intent)){
-      const specPanel=generateArchitectSpec(res.intent,res.intent);
-      if(specPanel){
-        const lastMsg=document.getElementById('mc').lastElementChild;
-        if(lastMsg&&lastMsg.classList.contains('msg'))lastMsg.querySelector('.mc2')?.appendChild(specPanel);
-      }
-    }
-    msgCnt++;
-    if(continuousVoiceActive&&document.getElementById('vwo')?.classList.contains('on')){
-      setTimeout(()=>VOICE.speak(res.r),350);
-    }
-    updateConfData(res.confidence||70);
-    if(msgCnt%5===0)setTimeout(()=>toast('💡 Use the Wizard for a personalised recommendation!','i'),1400);
-  },delay);
-};
-
-/* =====================================================
    PHASE G — CONFIGURATOR MODAL UPGRADE
 ===================================================== */
 function upgradeConfigModal(){
@@ -4215,21 +3851,6 @@ function upgradeConfigModal(){
   }
 }
 
-/* =====================================================
-   PHASE G — VOICE TRACKING PATCH
-===================================================== */
-const _origOpenVoiceMode=typeof openVoiceMode==='function'?openVoiceMode:null;
-window.openVoiceMode=function(){
-  ANL_G.trackVoice();
-  if(_origOpenVoiceMode)_origOpenVoiceMode();
-};
-
-/* Patch setPersona to track persona changes */
-const _origSetPersona=typeof setPersona==='function'?setPersona:null;
-window.setPersona=function(p,btn){
-  ANL_G.trackPersona(p);
-  if(_origSetPersona)_origSetPersona(p,btn);
-};
 
 /* =====================================================
    PHASE G — KEYBOARD SHORTCUTS
@@ -4239,52 +3860,270 @@ document.addEventListener('keydown',e=>{
   if(e.ctrlKey&&e.shiftKey&&e.key==='R'){e.preventDefault();if(lastConsultData)exportPDFReport(lastConsultData);}
 });
 
+
+
+
 /* =====================================================
-   PHASE G — INIT PATCH
+   PWA ENGINE
+   - Canvas icon generation (all platform sizes)
+   - Dynamic manifest (blob URL)
+   - Apple touch icon injection
+   - beforeinstallprompt capture (Android / Chrome)
+   - iOS manual install instructions
+   - Service worker registration (blob URL attempt)
+   - Install bottom-sheet management
 ===================================================== */
-const _origInitAppG=typeof initApp!=='undefined'?initApp:null;
-window.initApp=function(){
-  if(_origInitAppG&&_origInitAppG!==window.initApp)_origInitAppG();
-  else{
-    /* Fallback minimal init */
-    applyTheme&&applyTheme();
-    if(history.length){document.getElementById('wc').style.display='none';history.forEach(m=>renderMsg(m.r,m.c,m.t,false));scrollBot&&scrollBot();}
-    startVisitors&&startVisitors();startConf&&startConf();
-    if(typeof tIdx!=='undefined')setInterval(nextT,5200);
-    VOICE.init();initCursor&&initCursor();initTilt&&initTilt();
-    document.getElementById('mi2')?.focus();
-    if(window.speechSynthesis){window.speechSynthesis.getVoices();setInterval(()=>{if(window.speechSynthesis.speaking)window.speechSynthesis.resume();},10000);}
+const PWA=(function(){
+  const IS_IOS=/iPad|iPhone|iPod/.test(navigator.userAgent)&&!window.MSStream;
+  const IS_STANDALONE=window.matchMedia('(display-mode: standalone)').matches
+    ||window.navigator.standalone===true;
+
+  /* ── Icon generator ─────────────────────────────── */
+  function makeIconURL(size){
+    const c=document.createElement('canvas');
+    c.width=c.height=size;
+    const ctx=c.getContext('2d');
+    const r=Math.round(size*0.22);
+
+    /* rounded-rect helper (Safari <16 compat) */
+    function rr(x,y,w,h,rad){
+      ctx.beginPath();
+      ctx.moveTo(x+rad,y);
+      ctx.lineTo(x+w-rad,y);ctx.arcTo(x+w,y,x+w,y+rad,rad);
+      ctx.lineTo(x+w,y+h-rad);ctx.arcTo(x+w,y+h,x+w-rad,y+h,rad);
+      ctx.lineTo(x+rad,y+h);ctx.arcTo(x,y+h,x,y+h-rad,rad);
+      ctx.lineTo(x,y+rad);ctx.arcTo(x,y,x+rad,y,rad);
+      ctx.closePath();
+    }
+
+    /* deep background */
+    rr(0,0,size,size,r);
+    ctx.fillStyle='#06060f';ctx.fill();
+
+    /* subtle gradient layer */
+    const g=ctx.createLinearGradient(0,0,size,size);
+    g.addColorStop(0,'rgba(0,212,255,.20)');
+    g.addColorStop(1,'rgba(123,47,255,.20)');
+    rr(0,0,size,size,r);ctx.fillStyle=g;ctx.fill();
+
+    /* border */
+    const bg=ctx.createLinearGradient(0,0,size,size);
+    bg.addColorStop(0,'#00d4ff');bg.addColorStop(1,'#7b2fff');
+    rr(1.5,1.5,size-3,size-3,r-1);
+    ctx.strokeStyle=bg;ctx.lineWidth=Math.max(1.5,size*0.019);ctx.stroke();
+
+    /* "A" glyph */
+    const tg=ctx.createLinearGradient(size*.1,0,size*.9,size);
+    tg.addColorStop(0,'#00d4ff');tg.addColorStop(1,'#7b2fff');
+    ctx.fillStyle=tg;
+    ctx.font=`900 ${Math.round(size*.54)}px -apple-system,BlinkMacSystemFont,Arial,sans-serif`;
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText('A',size/2,size*.515);
+    return c.toDataURL('image/png');
   }
-  /* Phase G additions */
-  setTimeout(()=>{
-    initCursorTrail();
-    upgradeConfigModal();
-    /* Update KB count in diagnostics */
-    const kbEl=document.getElementById('dg-kb');
-    if(kbEl)kbEl.textContent=KB_COMPLETE.length+' intents';
-    /* Restore continuous voice */
-    if(localStorage.getItem('ais_cv')==='1'){continuousVoiceActive=false;toggleContinuousVoice&&toggleContinuousVoice();}
-    /* Init permission check */
-    PermManager&&PermManager.check&&PermManager.check();
-    /* Render confidence circles */
-    setTimeout(renderConfDash,400);
-    /* Init catalogue */
-    initV4Catalogue&&initV4Catalogue();
-    /* Inject sidebar */
-    injectV4Sidebar&&injectV4Sidebar();
-    /* Ensure compare selects populated */
-    populateCompareSelects&&populateCompareSelects();
-    /* Render catalogue grid */
-    renderCatGrid&&renderCatGrid();
-    /* Update diag KB count */
-    setTimeout(()=>{
-      const kbCount=KB_COMPLETE.length;
-      updateDiag('—','—',97,97);
-      const el=document.getElementById('dg-kb');
-      if(el)el.textContent=kbCount+' intents active';
-    },500);
-  },120);
-};
+
+  /* ── Manifest ───────────────────────────────────── */
+  function setupManifest(){
+    const iconSizes=[72,96,128,144,152,192,384,512];
+    const icons=iconSizes.map(sz=>({
+      src:makeIconURL(sz),sizes:`${sz}x${sz}`,type:'image/png',
+      purpose:sz>=192?'any maskable':'any'
+    }));
+    const manifest={
+      name:'AIS Smart Assistant',short_name:'AIS Windows',
+      description:'AI-powered luxury consultant for premium doors & windows',
+      start_url:location.href,scope:location.href,
+      display:'standalone',orientation:'any',
+      background_color:'#06060f',theme_color:'#06060f',
+      categories:['business','lifestyle'],
+      icons
+    };
+    const blob=new Blob([JSON.stringify(manifest)],{type:'application/manifest+json'});
+    const el=document.getElementById('pwa-manifest')||document.createElement('link');
+    el.id='pwa-manifest';el.rel='manifest';
+    el.href=URL.createObjectURL(blob);
+    if(!el.parentNode)document.head.appendChild(el);
+  }
+
+  /* ── Apple touch icons + favicon ────────────────── */
+  function setupIcons(){
+    /* Apple touch icons for every device size */
+    [57,60,72,76,114,120,144,152,167,180].forEach(sz=>{
+      const l=document.createElement('link');
+      l.rel='apple-touch-icon';l.sizes=`${sz}x${sz}`;
+      l.href=makeIconURL(sz);document.head.appendChild(l);
+    });
+    /* Generic 192 favicon */
+    const fi=document.createElement('link');
+    fi.rel='icon';fi.type='image/png';fi.sizes='192x192';
+    fi.href=makeIconURL(192);document.head.appendChild(fi);
+    /* MS tile */
+    const ms=document.createElement('meta');
+    ms.name='msapplication-TileImage';ms.content=makeIconURL(144);
+    document.head.appendChild(ms);
+    /* SVG mask icon (Safari pinned tab) */
+    const mask=document.createElement('link');
+    mask.rel='mask-icon';mask.color='#00d4ff';
+    mask.href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23000'/%3E%3Ctext y='.9em' font-size='82' font-weight='900' font-family='Arial' text-anchor='middle' x='50' dominant-baseline='hanging' fill='%23fff'%3EA%3C/text%3E%3C/svg%3E";
+    document.head.appendChild(mask);
+  }
+
+  /* ── Service worker (blob URL attempt) ──────────── */
+  function registerSW(){
+    if(!('serviceWorker' in navigator))return;
+    const CACHE_NAME='ais-windows-v1';
+    const PAGE_URL=location.href;
+    const swCode=`
+const CACHE='${CACHE_NAME}';
+const PAGE='${PAGE_URL}';
+self.addEventListener('install',e=>{
+  e.waitUntil(caches.open(CACHE).then(c=>c.add(PAGE)).catch(()=>{}));
+  self.skipWaiting();
+});
+self.addEventListener('activate',e=>{
+  e.waitUntil(
+    caches.keys().then(keys=>Promise.all(
+      keys.filter(k=>k!==CACHE).map(k=>caches.delete(k))
+    ))
+  );
+  return self.clients.claim();
+});
+self.addEventListener('fetch',e=>{
+  if(e.request.method!=='GET')return;
+  e.respondWith(
+    caches.match(e.request).then(cached=>{
+      if(cached)return cached;
+      return fetch(e.request).then(res=>{
+        if(!res||!res.ok)return res;
+        const clone=res.clone();
+        caches.open(CACHE).then(c=>c.put(e.request,clone));
+        return res;
+      }).catch(()=>caches.match(PAGE));
+    })
+  );
+});
+`;
+    try{
+      const blob=new Blob([swCode],{type:'application/javascript'});
+      const swURL=URL.createObjectURL(blob);
+      /* Blob-origin SWs can intercept same-blob-origin fetches only.
+         For same-origin caching, deploy sw.js from your server root.
+         This registration still satisfies Chrome's installability check
+         in some environments (local dev, certain CDNs). */
+      navigator.serviceWorker.register(swURL)
+        .then(()=>{console.info('[PWA] Service worker registered (blob)');})
+        .catch(()=>{
+          /* Silently fall back — app remains installable on iOS/Samsung */
+        });
+    }catch(e){}
+  }
+
+  /* ── Popup management ───────────────────────────── */
+  let _deferred=null;
+  let _showTimer=null;
+
+  function showPopup(){
+    if(IS_STANDALONE)return;
+    if(safeStorage.get('pwa_dismissed')==='1')return;
+    const popup=document.getElementById('install-popup');
+    if(!popup)return;
+    popup.classList.add('show');
+    popup.setAttribute('aria-hidden','false');
+  }
+
+  function hidePopup(){
+    const popup=document.getElementById('install-popup');
+    if(!popup)return;
+    popup.classList.remove('show');
+    popup.setAttribute('aria-hidden','true');
+  }
+
+  function buildIOSInstructions(){
+    const body=document.getElementById('ip-body');
+    const desc=document.getElementById('ip-desc');
+    const feats=document.getElementById('ip-features');
+    if(!body)return;
+    if(desc)desc.textContent='Follow these steps to add AIS Windows to your iPhone or iPad home screen:';
+    if(feats)feats.style.display='none';
+    body.innerHTML=`
+      <div class="ip-ios-steps">
+        <div class="ip-ios-step">
+          <div class="ip-ios-num">1</div>
+          <span>Tap the <strong>Share</strong> button <span class="ip-share-icon" aria-hidden="true"></span> at the bottom of Safari</span>
+        </div>
+        <div class="ip-ios-step">
+          <div class="ip-ios-num">2</div>
+          <span>Scroll down and tap <strong>Add to Home Screen</strong></span>
+        </div>
+        <div class="ip-ios-step">
+          <div class="ip-ios-num">3</div>
+          <span>Tap <strong>Add</strong> in the top-right corner</span>
+        </div>
+      </div>
+      <button class="ip-btn-install" onclick="dismissPWAPrompt(true)" style="margin-bottom:0">
+        Got it ✓
+      </button>
+    `;
+  }
+
+  /* ── Public API ─────────────────────────────────── */
+  return{
+    init(){
+      setupManifest();
+      setupIcons();
+      registerSW();
+
+      /* Android / Chrome — beforeinstallprompt */
+      window.addEventListener('beforeinstallprompt',e=>{
+        e.preventDefault();
+        _deferred=e;
+        if(!IS_STANDALONE&&safeStorage.get('pwa_dismissed')!=='1'){
+          _showTimer=setTimeout(showPopup,4000);
+        }
+      });
+
+      /* iOS — show manual instructions after a delay */
+      if(IS_IOS&&!IS_STANDALONE&&safeStorage.get('pwa_dismissed')!=='1'){
+        buildIOSInstructions();
+        _showTimer=setTimeout(showPopup,5000);
+      }
+
+      /* Already installed event */
+      window.addEventListener('appinstalled',()=>{
+        hidePopup();
+        toast('\u2705 AIS Windows installed! Launch from your home screen.','s');
+        playSound('notif');
+      });
+
+      /* Standalone: show an "installed" toast once */
+      if(IS_STANDALONE&&safeStorage.get('pwa_first_launch')!=='1'){
+        safeStorage.set('pwa_first_launch','1');
+        setTimeout(()=>toast('\uD83D\uDE80 Running as installed app','s'),1200);
+      }
+    },
+    trigger(){
+      if(_deferred){
+        _deferred.prompt();
+        _deferred.userChoice.then(c=>{
+          if(c.outcome==='accepted'){
+            toast('Installing AIS Windows\u2026','i');
+            playSound('notif');
+          }
+          _deferred=null;
+          hidePopup();
+        });
+      }
+    },
+    dismiss(permanent){
+      clearTimeout(_showTimer);
+      hidePopup();
+      if(permanent)safeStorage.set('pwa_dismissed','1');
+    }
+  };
+})();
+
+function triggerPWAInstall(){PWA.trigger();}
+function dismissPWAPrompt(permanent){PWA.dismiss(permanent===true);}
 
 </script>
 </body>
