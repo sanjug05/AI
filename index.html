@@ -2,7 +2,7 @@
 <html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
 <meta name="description" content="AIS Smart Assistant v3.0 — Neural Consultant Platform for premium doors and windows">
 <meta name="theme-color" content="#06060f">
 <title>AIS Smart Assistant v3.0 — Neural Consultant Platform</title>
@@ -719,9 +719,575 @@ input,textarea{cursor:text}
 /* MOTION PHYSICS on cards */
 .motion-card{transform-style:preserve-3d;will-change:transform}
 
+
+/* =====================================================
+   PWA — MOBILE FIRST DESIGN SYSTEM
+===================================================== */
+:root{
+  --safe-t:env(safe-area-inset-top,0px);
+  --safe-b:env(safe-area-inset-bottom,0px);
+  --safe-l:env(safe-area-inset-left,0px);
+  --safe-r:env(safe-area-inset-right,0px);
+  --bnav-h:65px;
+  --header-h:56px;
+  --touch-min:44px;
+}
+
+/* OFFLINE BANNER */
+#offline-bar{position:fixed;top:0;left:0;right:0;z-index:99999;height:36px;
+  background:linear-gradient(90deg,#ff2d78,#7b2fff);color:#fff;font-size:12px;
+  font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;
+  transform:translateY(-100%);transition:transform .35s ease;padding-top:var(--safe-t)}
+#offline-bar.show{transform:translateY(0)}
+body.offline-mode #app{padding-top:36px}
+
+/* INSTALL PROMPT */
+#install-prompt{position:fixed;inset:0;z-index:90000;display:flex;
+  align-items:flex-end;justify-content:center;padding:0 0 var(--safe-b);
+  background:rgba(0,0,0,.65);backdrop-filter:blur(12px);
+  opacity:0;pointer-events:none;transition:opacity .3s ease}
+#install-prompt.show{opacity:1;pointer-events:all}
+.ipr-card{background:rgba(8,8,24,.98);border:1px solid var(--glass-b);
+  border-radius:28px 28px 0 0;padding:10px 0 0;width:100%;max-width:540px;
+  box-shadow:var(--sh-lg);transform:translateY(100%);transition:transform .4s cubic-bezier(.34,1.56,.64,1)}
+#install-prompt.show .ipr-card{transform:translateY(0)}
+.ipr-handle{width:36px;height:4px;border-radius:2px;background:var(--glass-b);margin:0 auto 18px}
+.ipr-body{padding:0 24px 24px}
+.ipr-app-row{display:flex;align-items:center;gap:16px;margin-bottom:20px}
+.ipr-icon{width:60px;height:60px;border-radius:16px;background:var(--grad1);
+  display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;color:#fff;
+  flex-shrink:0;box-shadow:var(--glow1)}
+.ipr-name{font-size:18px;font-weight:800;color:var(--txt-1);line-height:1.2}
+.ipr-sub{font-size:12px;color:var(--txt-3);margin-top:2px}
+.ipr-benefits{display:flex;flex-direction:column;gap:9px;margin-bottom:22px;
+  background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r-lg);padding:16px}
+.ipr-benefit{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--txt-2)}
+.ipr-check{width:22px;height:22px;border-radius:50%;background:rgba(0,255,136,.12);
+  border:1px solid rgba(0,255,136,.3);display:flex;align-items:center;justify-content:center;
+  font-size:11px;flex-shrink:0}
+.ipr-actions{display:flex;flex-direction:column;gap:10px}
+.ipr-btn-install{width:100%;padding:16px;border-radius:var(--r-full);background:var(--grad1);
+  border:none;color:#fff;font-size:16px;font-weight:700;cursor:pointer;
+  box-shadow:var(--glow1);letter-spacing:.3px;transition:all var(--tn)}
+.ipr-btn-install:hover{opacity:.9;transform:scale(1.02)}
+.ipr-btn-later{width:100%;padding:12px;border-radius:var(--r-full);background:transparent;
+  border:1px solid var(--glass-b);color:var(--txt-2);font-size:14px;cursor:pointer;
+  transition:all var(--tn)}
+.ipr-btn-later:hover{color:var(--txt-1)}
+.ipr-btn-never{width:100%;padding:8px;background:none;border:none;color:var(--txt-3);
+  font-size:12px;cursor:pointer;margin-top:2px}
+
+/* UPDATE TOAST */
+#update-toast{position:fixed;bottom:calc(var(--bnav-h) + var(--safe-b) + 16px);left:50%;
+  transform:translateX(-50%) translateY(20px);z-index:9999;
+  background:rgba(8,8,24,.97);border:1px solid rgba(0,212,255,.25);border-radius:var(--r-full);
+  padding:12px 20px;font-size:13px;color:var(--txt-1);white-space:nowrap;
+  display:flex;align-items:center;gap:10px;box-shadow:var(--sh-lg);
+  opacity:0;pointer-events:none;transition:all .35s ease}
+#update-toast.show{opacity:1;pointer-events:all;transform:translateX(-50%) translateY(0)}
+
+/* BOTTOM NAVIGATION */
+#bnav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:600;
+  height:calc(var(--bnav-h) + var(--safe-b));padding-bottom:var(--safe-b);
+  background:rgba(6,6,20,.96);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
+  border-top:1px solid var(--glass-b);}
+.bnav-grid{display:grid;grid-template-columns:repeat(5,1fr);height:var(--bnav-h);align-items:center}
+.bnav-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:4px;cursor:pointer;padding:6px 0;border:none;background:none;
+  color:var(--txt-3);transition:all var(--tn);position:relative;min-height:var(--touch-min)}
+.bnav-btn .bnav-icon{font-size:22px;transition:transform .2s cubic-bezier(.34,1.56,.64,1)}
+.bnav-btn .bnav-lbl{font-size:10px;font-weight:600;letter-spacing:.2px}
+.bnav-btn.active{color:var(--ac1)}
+.bnav-btn.active .bnav-icon{transform:scale(1.15)}
+.bnav-btn .bnav-dot{position:absolute;top:4px;right:calc(50% - 14px);width:7px;height:7px;
+  border-radius:50%;background:var(--ac3);opacity:0;transition:opacity .2s ease}
+.bnav-btn.has-notif .bnav-dot{opacity:1}
+/* Floating centre mic */
+.bnav-mic-wrap{display:flex;align-items:center;justify-content:center;position:relative}
+.bnav-mic{width:56px;height:56px;border-radius:50%;background:var(--grad2);border:none;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:24px;
+  box-shadow:var(--glow3),0 8px 24px rgba(0,0,0,.4);
+  transition:all .2s cubic-bezier(.34,1.56,.64,1);
+  margin-top:-14px;position:relative;z-index:1}
+.bnav-mic:active{transform:scale(.92)}
+.bnav-mic.listening{animation:bnav-mic-pulse 1.2s ease-in-out infinite}
+@keyframes bnav-mic-pulse{0%,100%{box-shadow:var(--glow3),0 8px 24px rgba(0,0,0,.4)}
+  50%{box-shadow:0 0 0 12px rgba(255,45,120,.15),var(--glow3),0 8px 24px rgba(0,0,0,.4)}}
+
+/* MOBILE PANELS */
+.pwa-panel{position:fixed;inset:0;z-index:400;background:var(--bg-0);
+  padding-top:calc(var(--header-h) + var(--safe-t));
+  padding-bottom:calc(var(--bnav-h) + var(--safe-b) + 8px);
+  overflow-y:auto;-webkit-overflow-scrolling:touch;
+  opacity:0;pointer-events:none;transform:translateX(100%);
+  transition:transform .35s cubic-bezier(.4,0,.2,1),opacity .35s ease;display:none}
+.pwa-panel.active{opacity:1;pointer-events:all;transform:translateX(0)}
+/* MOBILE HEADER */
+#mob-header{display:none;position:fixed;top:0;left:0;right:0;z-index:500;
+  height:calc(var(--header-h) + var(--safe-t));padding-top:var(--safe-t);
+  background:rgba(6,6,20,.94);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
+  border-bottom:1px solid var(--glass-b);align-items:center;padding-left:16px;padding-right:16px}
+.mob-header-inner{display:flex;align-items:center;justify-content:space-between;width:100%;height:var(--header-h)}
+.mob-logo{display:flex;align-items:center;gap:10px}
+.mob-logo-icon{width:34px;height:34px;border-radius:9px;background:var(--grad1);
+  display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;color:#fff;
+  box-shadow:var(--glow1)}
+.mob-title{font-size:15px;font-weight:700;color:var(--txt-1)}
+.mob-sub{font-size:10px;color:var(--txt-3);margin-top:1px}
+.mob-actions{display:flex;align-items:center;gap:8px}
+.mob-action-btn{width:36px;height:36px;border-radius:10px;border:1px solid var(--glass-b);
+  background:var(--glass);display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:16px;transition:all var(--tn);color:var(--txt-2)}
+.mob-action-btn:hover{border-color:var(--ac1);color:var(--ac1)}
+
+/* PANEL — CONSULT */
+#pwa-consult .consult-hero{padding:20px 16px 0;text-align:center}
+#pwa-consult .consult-hero h2{font-size:22px;font-weight:800;color:var(--txt-1);margin-bottom:6px}
+#pwa-consult .consult-hero p{font-size:13px;color:var(--txt-2);line-height:1.6;margin-bottom:20px}
+.consult-quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 16px 16px}
+.cq-card{background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r-lg);
+  padding:20px 16px;text-align:center;cursor:pointer;transition:all var(--tn);
+  -webkit-tap-highlight-color:transparent}
+.cq-card:active{transform:scale(.96)}
+.cq-card:hover{border-color:var(--ac1);box-shadow:var(--glow1)}
+.cq-icon{font-size:32px;margin-bottom:10px}
+.cq-name{font-size:13px;font-weight:700;color:var(--txt-1);margin-bottom:3px}
+.cq-desc{font-size:11px;color:var(--txt-3)}
+.consult-wizard-btn{margin:0 16px 16px;width:calc(100% - 32px);padding:18px;
+  border-radius:var(--r-full);background:var(--grad1);border:none;color:#fff;
+  font-size:16px;font-weight:700;cursor:pointer;box-shadow:var(--glow1);
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  transition:all var(--tn);-webkit-tap-highlight-color:transparent}
+.consult-wizard-btn:active{transform:scale(.97)}
+.consult-section-title{font-size:11px;font-weight:700;text-transform:uppercase;
+  letter-spacing:1.8px;color:var(--txt-3);padding:16px 16px 10px}
+
+/* PANEL — PRODUCTS */
+.prod-search-wrap{padding:12px 16px;position:sticky;top:0;background:var(--bg-0);z-index:2}
+.prod-search{width:100%;padding:12px 16px;background:var(--glass);border:1px solid var(--glass-b);
+  border-radius:var(--r-full);color:var(--txt-1);font-size:14px;outline:none;
+  transition:border-color var(--tn)}
+.prod-search:focus{border-color:var(--ac1)}
+.prod-search::placeholder{color:var(--txt-3)}
+.prod-cats{display:flex;gap:8px;padding:0 16px 12px;overflow-x:auto;
+  -webkit-overflow-scrolling:touch;scrollbar-width:none}
+.prod-cats::-webkit-scrollbar{display:none}
+.prod-cat-chip{flex-shrink:0;padding:8px 16px;border-radius:var(--r-full);
+  border:1px solid var(--glass-b);background:var(--glass);color:var(--txt-2);
+  font-size:12px;font-weight:600;cursor:pointer;transition:all var(--tn);white-space:nowrap}
+.prod-cat-chip.active{background:var(--grad1);color:#fff;border-color:transparent}
+.prod-list{padding:0 16px 16px;display:flex;flex-direction:column;gap:10px}
+.prod-item{display:flex;align-items:center;gap:14px;padding:16px;
+  background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r-lg);
+  cursor:pointer;transition:all var(--tn);-webkit-tap-highlight-color:transparent}
+.prod-item:active{transform:scale(.98)}
+.prod-item:hover{border-color:var(--ac1)}
+.prod-item-icon{width:48px;height:48px;border-radius:12px;background:var(--grad1);
+  display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.prod-item-name{font-size:14px;font-weight:700;color:var(--txt-1)}
+.prod-item-cat{font-size:11px;color:var(--txt-3);margin-top:2px}
+.prod-item-badge{font-size:10px;padding:2px 8px;border-radius:var(--r-full);
+  background:rgba(0,212,255,.1);color:var(--ac1);border:1px solid rgba(0,212,255,.18);
+  display:inline-block;margin-top:4px}
+.prod-item-chevron{margin-left:auto;font-size:16px;color:var(--txt-3);flex-shrink:0}
+
+/* PANEL — COMPARE */
+.compare-intro{padding:20px 16px;text-align:center}
+.compare-intro h2{font-size:20px;font-weight:800;color:var(--txt-1);margin-bottom:6px}
+.compare-intro p{font-size:13px;color:var(--txt-2);line-height:1.6;margin-bottom:20px}
+.compare-select-stack{display:flex;flex-direction:column;gap:10px;padding:0 16px 16px}
+.compare-launch-btn{margin:0 16px 16px;width:calc(100% - 32px);padding:16px;
+  border-radius:var(--r-full);background:var(--grad1);border:none;color:#fff;
+  font-size:15px;font-weight:700;cursor:pointer;box-shadow:var(--glow1);transition:all var(--tn)}
+.compare-launch-btn:active{transform:scale(.97)}
+
+/* PANEL — SETTINGS */
+.settings-list{padding:0 16px}
+.settings-group{margin-bottom:20px}
+.settings-group-title{font-size:10px;font-weight:700;text-transform:uppercase;
+  letter-spacing:2px;color:var(--txt-3);padding:14px 0 8px}
+.settings-row{display:flex;align-items:center;justify-content:space-between;
+  padding:14px 16px;background:var(--glass);border:1px solid var(--glass-b);
+  border-radius:var(--r-md);margin-bottom:8px;cursor:pointer;
+  transition:all var(--tn);-webkit-tap-highlight-color:transparent;min-height:var(--touch-min)}
+.settings-row:active{background:var(--glass-h)}
+.settings-row-left{display:flex;align-items:center;gap:12px}
+.settings-row-icon{width:34px;height:34px;border-radius:9px;background:var(--glass);
+  border:1px solid var(--glass-b);display:flex;align-items:center;justify-content:center;
+  font-size:16px;flex-shrink:0}
+.settings-row-name{font-size:14px;font-weight:600;color:var(--txt-1)}
+.settings-row-sub{font-size:11px;color:var(--txt-3);margin-top:1px}
+.settings-row-right{display:flex;align-items:center;gap:8px}
+.settings-row-val{font-size:12px;color:var(--txt-2)}
+.settings-chevron{font-size:14px;color:var(--txt-3)}
+/* Toggle switch */
+.sw-toggle{width:44px;height:26px;border-radius:13px;border:none;cursor:pointer;
+  position:relative;transition:background .25s ease;flex-shrink:0}
+.sw-toggle.on{background:var(--grad1)}.sw-toggle.off{background:var(--glass-b)}
+.sw-toggle::after{content:'';position:absolute;top:3px;width:20px;height:20px;
+  border-radius:50%;background:#fff;transition:left .25s ease;box-shadow:0 1px 4px rgba(0,0,0,.3)}
+.sw-toggle.on::after{left:21px}.sw-toggle.off::after{left:3px}
+/* Install status badge */
+.install-badge{font-size:11px;padding:3px 10px;border-radius:var(--r-full);font-weight:600}
+.install-badge.installed{background:rgba(0,255,136,.1);color:var(--ac4);border:1px solid rgba(0,255,136,.2)}
+.install-badge.not-installed{background:rgba(0,212,255,.1);color:var(--ac1);border:1px solid rgba(0,212,255,.2)}
+/* Profile section */
+.profile-header{padding:24px 16px 16px;text-align:center}
+.profile-avatar{width:80px;height:80px;border-radius:50%;background:var(--grad1);
+  display:flex;align-items:center;justify-content:center;font-size:36px;margin:0 auto 12px;
+  box-shadow:var(--glow1)}
+.profile-name{font-size:20px;font-weight:800;color:var(--txt-1);margin-bottom:2px}
+.profile-sub{font-size:12px;color:var(--txt-3)}
+/* App version */
+.app-version{text-align:center;padding:20px;font-size:11px;color:var(--txt-3)}
+
+/* SWIPE INDICATOR */
+.swipe-hint{display:flex;align-items:center;justify-content:center;gap:8px;
+  padding:10px;font-size:11px;color:var(--txt-3);animation:fadeOut 3s ease 3s forwards}
+@keyframes fadeOut{to{opacity:0;height:0;padding:0;overflow:hidden}}
+
+/* MOBILE RESPONSIVE OVERRIDES */
+@media(max-width:768px){
+  /* Show bottom nav and mobile header */
+  #bnav{display:block}
+  #mob-header{display:flex}
+  /* Hide desktop elements */
+  #sb{display:none!important}
+  #ch2{display:none!important}
+  #mt{display:none!important}
+  /* Adjust chat area */
+  #ca{padding-top:calc(var(--header-h) + var(--safe-t));
+    padding-bottom:calc(var(--bnav-h) + var(--safe-b))}
+  #mc{padding:12px 12px 12px;gap:14px}
+  #ia{padding:8px 12px 12px;border-radius:0}
+  /* Safe area */
+  #app{padding-left:var(--safe-l);padding-right:var(--safe-r)}
+  /* Touch targets */
+  .fu-chip,.qc,.bnav-btn{min-height:var(--touch-min)}
+  /* Larger message text */
+  .mb{font-size:14px}
+  /* Welcome card */
+  .wc{margin:4px;padding:20px 14px;border-radius:var(--r-xl)}
+  .wt{font-size:20px}.wsub{font-size:13px}
+  /* Input */
+  .iw{border-radius:22px;padding:10px 12px}
+  #mi2{font-size:16px} /* Prevent iOS zoom */
+  /* Cursor off on mobile */
+  #cg,#cd,.cursor-dot{display:none!important}
+  body{cursor:auto!important}
+  /* Modals go full-height on mobile */
+  .mo{align-items:flex-end;padding:0}
+  .moc{border-radius:24px 24px 0 0;max-width:100%;
+    padding-bottom:calc(24px + var(--safe-b));max-height:92vh;border-bottom:none}
+  /* Panels display block for animation */
+  .pwa-panel{display:block}
+  /* Analytics panel full width */
+  #anl-panel{width:100%;right:-100%;padding-top:calc(60px + var(--safe-t))}
+  /* Compare wrapper stack on mobile */
+  .compare-wrapper{grid-template-columns:1fr}
+}
+
+@media(max-width:380px){
+  .consult-quick-grid{grid-template-columns:1fr}
+  .cq-card{display:flex;align-items:center;gap:12px;text-align:left;padding:14px}
+  .cq-icon{font-size:26px;margin-bottom:0}
+}
+
+/* LANDSCAPE MOBILE */
+@media(max-width:768px) and (orientation:landscape){
+  :root{--bnav-h:52px;--header-h:44px}
+  .pwa-panel{padding-top:calc(44px + var(--safe-t))}
+  .bnav-btn .bnav-lbl{display:none}
+  .bnav-mic{width:46px;height:46px;font-size:20px}
+}
+
+/* SCROLL PHYSICS */
+#mc,#pwa-consult,#pwa-products,#pwa-compare,#pwa-settings{
+  -webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+
+/* PWA STANDALONE */
+@media(display-mode:standalone){
+  #offline-bar,#update-toast{padding-top:0}
+  .mob-header-inner{height:52px}
+}
+
 </style>
 </head>
 <body>
+
+<!-- ===== PWA OFFLINE BAR ===== -->
+<div id="offline-bar" role="alert" aria-live="assertive">
+  <span>📡</span><span>You're offline — using cached content</span>
+</div>
+
+<!-- ===== PWA INSTALL PROMPT ===== -->
+<div id="install-prompt" role="dialog" aria-modal="true" aria-label="Install AIS Smart Assistant">
+  <div class="ipr-card">
+    <div class="ipr-handle"></div>
+    <div class="ipr-body">
+      <div class="ipr-app-row">
+        <div class="ipr-icon">A</div>
+        <div>
+          <div class="ipr-name">AIS Smart Assistant</div>
+          <div class="ipr-sub">Digital Experience Centre · v5</div>
+        </div>
+      </div>
+      <div class="ipr-benefits">
+        <div class="ipr-benefit"><div class="ipr-check">✓</div><span>Works fully offline — no signal needed</span></div>
+        <div class="ipr-benefit"><div class="ipr-check">✓</div><span>Instant loading — no browser chrome</span></div>
+        <div class="ipr-benefit"><div class="ipr-check">✓</div><span>Voice assistant — hands-free consultation</span></div>
+        <div class="ipr-benefit"><div class="ipr-check">✓</div><span>Fullscreen native app experience</span></div>
+        <div class="ipr-benefit"><div class="ipr-check">✓</div><span>Quick access from Home Screen</span></div>
+      </div>
+      <div class="ipr-actions">
+        <button class="ipr-btn-install" id="ipr-install-btn" onclick="triggerInstall()">
+          ⬇️ &nbsp;Install AIS App
+        </button>
+        <button class="ipr-btn-later" onclick="dismissInstall(false)">Maybe Later</button>
+        <button class="ipr-btn-never" onclick="dismissInstall(true)">Don't ask again</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== UPDATE TOAST ===== -->
+<div id="update-toast">
+  <span>🔄</span><span>New version available</span>
+  <button onclick="reloadForUpdate()" style="padding:4px 12px;border-radius:var(--r-full);background:var(--grad1);border:none;color:#fff;font-size:11px;font-weight:700;cursor:pointer;margin-left:4px">Update</button>
+</div>
+
+<!-- ===== MOBILE HEADER ===== -->
+<div id="mob-header" role="banner">
+  <div class="mob-header-inner">
+    <div class="mob-logo">
+      <div class="mob-logo-icon">A</div>
+      <div>
+        <div class="mob-title">AIS Smart Assistant</div>
+        <div class="mob-sub" id="mob-aria-status">ARIA v5 · Neural Consultant</div>
+      </div>
+    </div>
+    <div class="mob-actions">
+      <button class="mob-action-btn" onclick="switchTab('settings')" aria-label="Settings">⚙️</button>
+      <button class="mob-action-btn" onclick="openVoiceMode&&openVoiceMode()" aria-label="Voice mode">🎙️</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== BOTTOM NAVIGATION ===== -->
+<nav id="bnav" aria-label="Main navigation">
+  <div class="bnav-grid">
+    <button class="bnav-btn active" id="bnav-home" onclick="switchTab('home')" aria-label="Home">
+      <span class="bnav-icon">💬</span>
+      <span class="bnav-lbl">Chat</span>
+      <span class="bnav-dot"></span>
+    </button>
+    <button class="bnav-btn" id="bnav-consult" onclick="switchTab('consult')" aria-label="Consult">
+      <span class="bnav-icon">🤝</span>
+      <span class="bnav-lbl">Consult</span>
+    </button>
+    <div class="bnav-mic-wrap">
+      <button class="bnav-mic" id="bnav-mic" onclick="handleMicBtnTap()" aria-label="Voice assistant">🎙️</button>
+    </div>
+    <button class="bnav-btn" id="bnav-products" onclick="switchTab('products')" aria-label="Products">
+      <span class="bnav-icon">🪟</span>
+      <span class="bnav-lbl">Products</span>
+    </button>
+    <button class="bnav-btn" id="bnav-settings" onclick="switchTab('settings')" aria-label="Settings">
+      <span class="bnav-icon">⚙️</span>
+      <span class="bnav-lbl">Settings</span>
+    </button>
+  </div>
+</nav>
+
+<!-- ===== CONSULT PANEL ===== -->
+<section class="pwa-panel" id="pwa-consult" aria-label="Consultation">
+  <div class="consult-hero">
+    <h2>Find Your Perfect Windows</h2>
+    <p>Let ARIA guide you through a personalised consultation — takes under 60 seconds.</p>
+  </div>
+  <button class="consult-wizard-btn" onclick="switchTab('home');setTimeout(()=>launchConsultG&&launchConsultG(),300)">
+    ✨ &nbsp;Start AI Consultation
+  </button>
+  <div class="consult-section-title">Quick Topics</div>
+  <div class="consult-quick-grid">
+    <div class="cq-card" onclick="switchTab('home');setTimeout(()=>ask('Which windows are best for a luxury villa?'),300)">
+      <div class="cq-icon">🏰</div><div class="cq-name">Villa Solutions</div><div class="cq-desc">Premium estate glazing</div>
+    </div>
+    <div class="cq-card" onclick="switchTab('home');setTimeout(()=>ask('Best noise reduction windows for urban apartment'),300)">
+      <div class="cq-icon">🔇</div><div class="cq-name">Noise Reduction</div><div class="cq-desc">Urban soundproofing</div>
+    </div>
+    <div class="cq-card" onclick="switchTab('home');setTimeout(()=>ask('Best windows for coastal properties'),300)">
+      <div class="cq-icon">🌊</div><div class="cq-name">Coastal Projects</div><div class="cq-desc">Marine-grade systems</div>
+    </div>
+    <div class="cq-card" onclick="switchTab('home');setTimeout(()=>ask('Office and commercial glazing solutions'),300)">
+      <div class="cq-icon">🏢</div><div class="cq-name">Commercial</div><div class="cq-desc">Office & retail</div>
+    </div>
+    <div class="cq-card" onclick="switchTab('home');setTimeout(()=>ask('Best heat reduction glass options'),300)">
+      <div class="cq-icon">☀️</div><div class="cq-name">Heat Control</div><div class="cq-desc">Solar & Low-E glass</div>
+    </div>
+    <div class="cq-card" onclick="switchTab('home');setTimeout(()=>ask('Smart home integration for windows and doors'),300)">
+      <div class="cq-icon">🤖</div><div class="cq-name">Smart Home</div><div class="cq-desc">Automated systems</div>
+    </div>
+  </div>
+  <div class="consult-section-title">Book a Human Expert</div>
+  <div style="padding:0 16px 16px;display:flex;flex-direction:column;gap:10px">
+    <button class="ab" style="width:100%;border-radius:var(--r-lg)" onclick="openM('cm')">
+      <div class="abi">📅</div>Book Free Consultation
+    </button>
+    <button class="ab" style="width:100%;border-radius:var(--r-lg)" onclick="openM('svm')">
+      <div class="abi">🏠</div>Schedule Site Visit
+    </button>
+    <button class="ab" style="width:100%;border-radius:var(--r-lg)" onclick="openM('catm')">
+      <div class="abi">📋</div>View Full Catalogue
+    </button>
+  </div>
+</section>
+
+<!-- ===== PRODUCTS PANEL ===== -->
+<section class="pwa-panel" id="pwa-products" aria-label="Products">
+  <div class="prod-search-wrap">
+    <input type="search" class="prod-search" id="mob-prod-search" placeholder="Search products…"
+      oninput="filterMobProducts(this.value)" aria-label="Search products">
+  </div>
+  <div class="prod-cats" id="mob-prod-cats">
+    <button class="prod-cat-chip active" onclick="setMobCat('all',this)">All</button>
+    <button class="prod-cat-chip" onclick="setMobCat('upvc',this)">UPVC</button>
+    <button class="prod-cat-chip" onclick="setMobCat('aluminium',this)">Aluminium</button>
+    <button class="prod-cat-chip" onclick="setMobCat('sliding',this)">Sliding</button>
+    <button class="prod-cat-chip" onclick="setMobCat('villa',this)">Villa</button>
+    <button class="prod-cat-chip" onclick="setMobCat('commercial',this)">Commercial</button>
+    <button class="prod-cat-chip" onclick="setMobCat('glass',this)">Glass</button>
+  </div>
+  <div class="prod-list" id="mob-prod-list"></div>
+</section>
+
+<!-- ===== SETTINGS PANEL ===== -->
+<section class="pwa-panel" id="pwa-settings" aria-label="Settings">
+  <div class="profile-header">
+    <div class="profile-avatar">🤖</div>
+    <div class="profile-name">ARIA v5</div>
+    <div class="profile-sub">Neural Consultant Platform · AIS Windows</div>
+  </div>
+  <div class="settings-list">
+    <!-- Appearance -->
+    <div class="settings-group">
+      <div class="settings-group-title">Appearance</div>
+      <div class="settings-row" onclick="toggleTheme&&toggleTheme()">
+        <div class="settings-row-left">
+          <div class="settings-row-icon" id="sr-theme-icon">🌙</div>
+          <div><div class="settings-row-name">Theme</div><div class="settings-row-sub" id="sr-theme-val">Dark Mode</div></div>
+        </div>
+        <div class="settings-row-right">
+          <button class="sw-toggle on" id="sw-theme" onclick="event.stopPropagation();toggleTheme&&toggleTheme()" aria-label="Toggle theme"></button>
+        </div>
+      </div>
+    </div>
+    <!-- Voice -->
+    <div class="settings-group">
+      <div class="settings-group-title">Voice Assistant</div>
+      <div class="settings-row">
+        <div class="settings-row-left">
+          <div class="settings-row-icon">🎙️</div>
+          <div><div class="settings-row-name">Microphone</div><div class="settings-row-sub" id="sr-mic-status">Checking…</div></div>
+        </div>
+        <div class="settings-row-right">
+          <span class="settings-row-val" id="sr-mic-val">—</span>
+        </div>
+      </div>
+      <div class="settings-row" onclick="toggleContinuousVoice&&toggleContinuousVoice()">
+        <div class="settings-row-left">
+          <div class="settings-row-icon">🔄</div>
+          <div><div class="settings-row-name">Continuous Voice</div><div class="settings-row-sub">Auto-listen after AI speaks</div></div>
+        </div>
+        <div class="settings-row-right">
+          <button class="sw-toggle off" id="sw-cv" onclick="event.stopPropagation();toggleContinuousVoice&&toggleContinuousVoice()" aria-label="Toggle continuous voice"></button>
+        </div>
+      </div>
+      <div class="settings-row">
+        <div class="settings-row-left">
+          <div class="settings-row-icon">🔊</div>
+          <div><div class="settings-row-name">Volume</div><div class="settings-row-sub">Sound effects & voice</div></div>
+        </div>
+        <div class="settings-row-right" style="width:120px">
+          <input type="range" id="mob-vol" min="0" max="1" step="0.1" value="0.5"
+            oninput="setVolume&&setVolume(this.value)" style="width:100%;accent-color:var(--ac1)" aria-label="Volume">
+        </div>
+      </div>
+    </div>
+    <!-- AI Persona -->
+    <div class="settings-group">
+      <div class="settings-group-title">AI Persona</div>
+      <div id="sr-persona-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div class="settings-row" onclick="setPersonaFromSettings('homeowner')" style="flex-direction:column;align-items:flex-start;gap:6px">
+          <div class="settings-row-left"><div class="settings-row-icon">🏠</div><div><div class="settings-row-name">Homeowner</div><div class="settings-row-sub">Simple language</div></div></div>
+        </div>
+        <div class="settings-row" onclick="setPersonaFromSettings('architect')" style="flex-direction:column;align-items:flex-start;gap:6px">
+          <div class="settings-row-left"><div class="settings-row-icon">📐</div><div><div class="settings-row-name">Architect</div><div class="settings-row-sub">Technical specs</div></div></div>
+        </div>
+        <div class="settings-row" onclick="setPersonaFromSettings('builder')" style="flex-direction:column;align-items:flex-start;gap:6px">
+          <div class="settings-row-left"><div class="settings-row-icon">🔨</div><div><div class="settings-row-name">Builder</div><div class="settings-row-sub">ROI focused</div></div></div>
+        </div>
+        <div class="settings-row" onclick="setPersonaFromSettings('dealer')" style="flex-direction:column;align-items:flex-start;gap:6px">
+          <div class="settings-row-left"><div class="settings-row-icon">🤝</div><div><div class="settings-row-name">Dealer</div><div class="settings-row-sub">Sales focused</div></div></div>
+        </div>
+      </div>
+    </div>
+    <!-- App -->
+    <div class="settings-group">
+      <div class="settings-group-title">Application</div>
+      <div class="settings-row" onclick="triggerInstallFromSettings()">
+        <div class="settings-row-left">
+          <div class="settings-row-icon">📲</div>
+          <div><div class="settings-row-name">Install App</div><div class="settings-row-sub">Add to Home Screen</div></div>
+        </div>
+        <div class="settings-row-right">
+          <span class="install-badge not-installed" id="install-badge">Install</span>
+        </div>
+      </div>
+      <div class="settings-row" onclick="clearCache()">
+        <div class="settings-row-left">
+          <div class="settings-row-icon">🗑️</div>
+          <div><div class="settings-row-name">Clear Cache</div><div class="settings-row-sub">Free up storage</div></div>
+        </div>
+        <div class="settings-row-right"><span class="settings-chevron">›</span></div>
+      </div>
+      <div class="settings-row" onclick="clearChat&&clearChat()">
+        <div class="settings-row-left">
+          <div class="settings-row-icon">💬</div>
+          <div><div class="settings-row-name">Clear Chat History</div><div class="settings-row-sub">Reset conversation</div></div>
+        </div>
+        <div class="settings-row-right"><span class="settings-chevron">›</span></div>
+      </div>
+      <div class="settings-row" onclick="openAnalytics&&openAnalytics()">
+        <div class="settings-row-left">
+          <div class="settings-row-icon">📊</div>
+          <div><div class="settings-row-name">AI Analytics</div><div class="settings-row-sub">Session insights</div></div>
+        </div>
+        <div class="settings-row-right"><span class="settings-chevron">›</span></div>
+      </div>
+    </div>
+    <!-- Info -->
+    <div class="settings-group">
+      <div class="settings-group-title">About</div>
+      <div class="settings-row">
+        <div class="settings-row-left">
+          <div class="settings-row-icon">ℹ️</div>
+          <div><div class="settings-row-name">Version</div><div class="settings-row-sub">AIS Smart Assistant</div></div>
+        </div>
+        <div class="settings-row-right"><span class="settings-row-val">v5.0 Phase G+PWA</span></div>
+      </div>
+      <div class="settings-row">
+        <div class="settings-row-left">
+          <div class="settings-row-icon">🔒</div>
+          <div><div class="settings-row-name">Privacy</div><div class="settings-row-sub">All data stored locally</div></div>
+        </div>
+        <div class="settings-row-right"><span class="settings-row-val">On-device only</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="app-version">AIS Smart Assistant v5.0 · Phase G + PWA · © AIS Windows</div>
+</section>
+
 <div id="cg" aria-hidden="true"></div><div id="cd" aria-hidden="true"></div>
 <canvas id="pc" aria-hidden="true"></canvas>
 <div class="blob b1" aria-hidden="true"></div><div class="blob b2" aria-hidden="true"></div><div class="blob b3" aria-hidden="true"></div>
@@ -4285,6 +4851,502 @@ window.initApp=function(){
     },500);
   },120);
 };
+
+
+/* ============ PWA ENGINE ============ */
+
+/* =====================================================
+   PWA — SERVICE WORKER (inline Blob registration)
+===================================================== */
+(function(){
+  if(!('serviceWorker' in navigator))return;
+  const CACHE='ais-pwa-v5-1';
+  const swCode=`
+const CACHE='ais-pwa-v5-1';
+const URLS=['${location.href}'];
+self.addEventListener('install',e=>{
+  self.skipWaiting();
+  e.waitUntil(caches.open(CACHE).then(c=>c.addAll(URLS).catch(()=>{})));
+});
+self.addEventListener('activate',e=>{
+  e.waitUntil(caches.keys().then(keys=>Promise.all(
+    keys.filter(k=>k!==CACHE).map(k=>caches.delete(k))
+  )));
+  self.clients.claim();
+});
+self.addEventListener('fetch',e=>{
+  if(e.request.method!=='GET')return;
+  e.respondWith(
+    caches.match(e.request).then(cached=>{
+      const fresh=fetch(e.request).then(res=>{
+        if(res&&res.status===200){
+          const r=res.clone();
+          caches.open(CACHE).then(c=>c.put(e.request,r));
+        }
+        return res;
+      }).catch(()=>cached||new Response('Offline',{status:503}));
+      return cached||fresh;
+    })
+  );
+});
+self.addEventListener('message',e=>{
+  if(e.data==='skipWaiting')self.skipWaiting();
+});
+`;
+  try{
+    const blob=new Blob([swCode],{type:'application/javascript'});
+    const url=URL.createObjectURL(blob);
+    navigator.serviceWorker.register(url,{scope:'/'}).then(reg=>{
+      reg.addEventListener('updatefound',()=>{
+        const nw=reg.installing;
+        nw.addEventListener('statechange',()=>{
+          if(nw.state==='installed'&&navigator.serviceWorker.controller){
+            showUpdateToast();
+          }
+        });
+      });
+    }).catch(()=>{});
+  }catch(e){}
+  /* Online/offline detection */
+  function showOffline(){
+    document.body.classList.add('offline-mode');
+    document.getElementById('offline-bar')?.classList.add('show');
+  }
+  function hideOffline(){
+    document.body.classList.remove('offline-mode');
+    document.getElementById('offline-bar')?.classList.remove('show');
+  }
+  if(!navigator.onLine)showOffline();
+  window.addEventListener('online',hideOffline);
+  window.addEventListener('offline',showOffline);
+})();
+
+/* =====================================================
+   PWA — MANIFEST (inline data URI)
+===================================================== */
+(function(){
+  /* Generate icon via Canvas */
+  function makeIcon(size){
+    const cv=document.createElement('canvas');cv.width=size;cv.height=size;
+    const cx=cv.getContext('2d');
+    /* Background gradient */
+    const g=cx.createLinearGradient(0,0,size,size);
+    g.addColorStop(0,'#00d4ff');g.addColorStop(1,'#7b2fff');
+    cx.fillStyle=g;
+    const r=size*0.22;
+    cx.beginPath();cx.moveTo(r,0);cx.lineTo(size-r,0);
+    cx.quadraticCurveTo(size,0,size,r);cx.lineTo(size,size-r);
+    cx.quadraticCurveTo(size,size,size-r,size);cx.lineTo(r,size);
+    cx.quadraticCurveTo(0,size,0,size-r);cx.lineTo(0,r);
+    cx.quadraticCurveTo(0,0,r,0);cx.fill();
+    /* Letter A */
+    cx.fillStyle='#ffffff';cx.font=`bold ${size*.55}px -apple-system,sans-serif`;
+    cx.textAlign='center';cx.textBaseline='middle';
+    cx.fillText('A',size/2,size/2+size*.03);
+    return cv.toDataURL('image/png');
+  }
+  const icons=[48,72,96,128,144,152,192,384,512].map(s=>({
+    src:makeIcon(s),sizes:`${s}x${s}`,type:'image/png',
+    purpose:s>=192?'any maskable':'any'
+  }));
+  /* Apple touch icon */
+  const appleLink=document.createElement('link');
+  appleLink.rel='apple-touch-icon';appleLink.href=makeIcon(180);
+  document.head.appendChild(appleLink);
+  /* Splash screen icons */
+  const splash=document.createElement('link');
+  splash.rel='apple-touch-startup-image';splash.href=makeIcon(512);
+  document.head.appendChild(splash);
+  const manifest={
+    name:'AIS Smart Assistant',
+    short_name:'AIS ARIA',
+    description:'Premium Doors & Windows AI Consultant — Neural Consultant Platform',
+    start_url:location.href,
+    id:location.href,
+    display:'standalone',
+    display_override:['window-controls-overlay','standalone','fullscreen'],
+    orientation:'portrait-primary',
+    theme_color:'#06060f',
+    background_color:'#06060f',
+    categories:['business','productivity'],
+    lang:'en',
+    icons,
+    screenshots:[],
+    shortcuts:[
+      {name:'Start Consultation',short_name:'Consult',url:location.href+'#consult',description:'Start AI Consultation'},
+      {name:'View Catalogue',short_name:'Catalogue',url:location.href+'#products',description:'Browse Products'},
+    ]
+  };
+  const blob=new Blob([JSON.stringify(manifest)],{type:'application/manifest+json'});
+  const link=document.createElement('link');
+  link.rel='manifest';link.href=URL.createObjectURL(blob);
+  document.head.appendChild(link);
+})();
+
+/* =====================================================
+   PWA — INSTALL PROMPT MANAGER
+===================================================== */
+let deferredInstall=null;
+let installDismissed=localStorage.getItem('pwa_never')==='1';
+let isInstalled=window.matchMedia('(display-mode:standalone)').matches||
+  window.navigator.standalone||document.referrer.includes('android-app://');
+
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault();deferredInstall=e;
+  if(!installDismissed&&!isInstalled){
+    setTimeout(showInstallPrompt,3500);
+  }
+});
+window.addEventListener('appinstalled',()=>{
+  isInstalled=true;hideInstallPrompt();
+  document.getElementById('install-badge').textContent='Installed';
+  document.getElementById('install-badge').className='install-badge installed';
+  toast('✅ AIS App installed successfully!','s');
+});
+
+function showInstallPrompt(){
+  if(installDismissed||isInstalled)return;
+  document.getElementById('install-prompt').classList.add('show');
+}
+function hideInstallPrompt(){
+  document.getElementById('install-prompt').classList.remove('show');
+}
+function triggerInstall(){
+  if(!deferredInstall){
+    /* Manual install instructions */
+    const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
+    const msg=isIOS?
+      'Tap the Share button (□↑) then "Add to Home Screen" to install the app.':
+      'To install: click the ⋮ menu in your browser, then "Add to Home Screen" or "Install app".';
+    alert(msg);hideInstallPrompt();return;
+  }
+  deferredInstall.prompt();
+  deferredInstall.userChoice.then(c=>{
+    if(c.outcome==='accepted'){isInstalled=true;}
+    deferredInstall=null;hideInstallPrompt();
+  });
+}
+function triggerInstallFromSettings(){triggerInstall();}
+function dismissInstall(never){
+  if(never){installDismissed=true;localStorage.setItem('pwa_never','1');}
+  hideInstallPrompt();
+}
+function showUpdateToast(){
+  const t=document.getElementById('update-toast');
+  if(t){t.classList.add('show');setTimeout(()=>t.classList.remove('show'),8000);}
+}
+function reloadForUpdate(){
+  navigator.serviceWorker.controller?.postMessage('skipWaiting');
+  window.location.reload();
+}
+
+/* =====================================================
+   PWA — BOTTOM NAVIGATION & TAB SYSTEM
+===================================================== */
+let activeTab='home';
+const TABS=['home','consult','products','settings'];
+
+function switchTab(tab){
+  if(tab===activeTab&&tab!=='home')return;
+  activeTab=tab;
+  /* Update nav buttons */
+  document.querySelectorAll('.bnav-btn').forEach(b=>{
+    const id=b.id.replace('bnav-','');
+    b.classList.toggle('active',id===tab);
+  });
+  /* Show/hide panels */
+  TABS.filter(t=>t!=='home').forEach(t=>{
+    const panel=document.getElementById('pwa-'+t);
+    if(panel)panel.classList.toggle('active',t===tab);
+  });
+  /* Home panel = show #ca directly */
+  const ca=document.getElementById('ca');
+  if(ca){
+    ca.style.display=tab==='home'?'flex':'none';
+    if(tab==='home')document.getElementById('mi2')?.focus();
+  }
+  /* Update mic button color */
+  const mic=document.getElementById('bnav-mic');
+  if(mic)mic.style.background=tab==='home'?'var(--grad2)':'var(--grad1)';
+  playSound&&playSound('click');
+  /* Haptic feedback */
+  if(navigator.vibrate)navigator.vibrate(8);
+}
+
+function handleMicBtnTap(){
+  /* Always go home and open voice */
+  switchTab('home');
+  setTimeout(()=>{
+    if(typeof openVoiceMode==='function')openVoiceMode();
+  },100);
+  const btn=document.getElementById('bnav-mic');
+  if(btn){btn.classList.add('listening');setTimeout(()=>btn.classList.remove('listening'),3000);}
+  if(navigator.vibrate)navigator.vibrate([15,10,15]);
+}
+
+/* =====================================================
+   PWA — MOBILE PRODUCTS PANEL
+===================================================== */
+const MOB_PRODUCTS=[
+  {name:'ThermaGuard UPVC Casement',cat:'upvc',icon:'🪟',badge:'Best Seller'},
+  {name:'ThermaGuard UPVC Sliding',cat:'upvc',icon:'↔️',badge:'Popular'},
+  {name:'AcousticPro 45',cat:'upvc',icon:'🔇',badge:'Noise Leader'},
+  {name:'ArchForm Alu Elite',cat:'aluminium',icon:'🚪',badge:'Premium'},
+  {name:'SlimLine Pro 30',cat:'aluminium',icon:'🏢',badge:'Commercial'},
+  {name:'GrandSlide XL',cat:'sliding',icon:'🏰',badge:'Villa Choice'},
+  {name:'SilkGlide Lift & Slide',cat:'sliding',icon:'↔️',badge:'Panoramic'},
+  {name:'MarineGuard Coastal',cat:'aluminium',icon:'🌊',badge:'Coastal'},
+  {name:'EcoFrame Triple Glaze',cat:'glass',icon:'🌿',badge:'BEE 5-Star'},
+  {name:'SolarShield Low-E',cat:'glass',icon:'☀️',badge:'Energy Star'},
+  {name:'SmartGlass Switchable',cat:'glass',icon:'💡',badge:'Smart'},
+  {name:'ThermaGuard UPVC Bay',cat:'upvc',icon:'🏠',badge:'Statement'},
+  {name:'ArchForm Pivot Door',cat:'villa',icon:'🚪',badge:'Luxury'},
+  {name:'SecureCore SmartLock',cat:'commercial',icon:'🔒',badge:'RC2 Rated'},
+  {name:'CurtainWall CW-50',cat:'commercial',icon:'🏗️',badge:'Commercial'},
+  {name:'StormShield High-Wind',cat:'commercial',icon:'💨',badge:'AW Class 5'},
+  {name:'BiGlide Bi-fold System',cat:'sliding',icon:'🔄',badge:'Space Saver'},
+  {name:'EcoFrame Casement',cat:'upvc',icon:'🌱',badge:'Eco'},
+];
+let mobProdFilter='all',mobProdSearch='';
+
+function renderMobProducts(){
+  const list=document.getElementById('mob-prod-list');if(!list)return;
+  list.innerHTML='';
+  const items=MOB_PRODUCTS.filter(p=>{
+    const catMatch=mobProdFilter==='all'||p.cat===mobProdFilter;
+    const searchMatch=!mobProdSearch||p.name.toLowerCase().includes(mobProdSearch.toLowerCase());
+    return catMatch&&searchMatch;
+  });
+  if(!items.length){
+    const empty=document.createElement('div');
+    empty.style.cssText='text-align:center;color:var(--txt-3);padding:40px 16px;font-size:14px';
+    empty.textContent='No products found. Try a different search.';
+    list.appendChild(empty);return;
+  }
+  items.forEach(p=>{
+    const row=document.createElement('div');row.className='prod-item';
+    row.innerHTML=`<div class="prod-item-icon">${p.icon}</div>
+      <div style="flex:1">
+        <div class="prod-item-name">${p.name}</div>
+        <div class="prod-item-cat">${p.cat.toUpperCase()}</div>
+        <span class="prod-item-badge">${p.badge}</span>
+      </div>
+      <div class="prod-item-chevron">›</div>`;
+    row.onclick=()=>{
+      switchTab('home');
+      setTimeout(()=>ask&&ask('Tell me about '+p.name),300);
+      if(navigator.vibrate)navigator.vibrate(8);
+    };
+    list.appendChild(row);
+  });
+}
+function filterMobProducts(v){mobProdSearch=v;renderMobProducts();}
+function setMobCat(cat,btn){
+  mobProdFilter=cat;
+  document.querySelectorAll('.prod-cat-chip').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  renderMobProducts();
+  playSound&&playSound('click');
+}
+
+/* =====================================================
+   PWA — SWIPE GESTURE NAVIGATION
+===================================================== */
+(function(){
+  let startX=0,startY=0,startTime=0;
+  let isDragging=false;
+  const mc=document.getElementById('mc');
+  document.addEventListener('touchstart',e=>{
+    if(e.touches.length!==1)return;
+    startX=e.touches[0].clientX;startY=e.touches[0].clientY;
+    startTime=Date.now();isDragging=true;
+  },{passive:true});
+  document.addEventListener('touchend',e=>{
+    if(!isDragging)return;isDragging=false;
+    const dx=e.changedTouches[0].clientX-startX;
+    const dy=e.changedTouches[0].clientY-startY;
+    const dt=Date.now()-startTime;
+    /* Horizontal swipe only, fast enough, more horizontal than vertical */
+    if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*2&&dt<400){
+      /* Swipe right from left edge — go home */
+      if(dx>0&&startX<30&&activeTab!=='home')switchTab('home');
+    }
+  },{passive:true});
+})();
+
+/* =====================================================
+   PWA — SETTINGS HELPERS
+===================================================== */
+function setPersonaFromSettings(p){
+  const btns=document.querySelectorAll('#persona-grid .persona-btn');
+  btns.forEach(b=>{
+    const isMatch=b.dataset.persona===p;
+    b.classList.toggle('active',isMatch);
+    b.setAttribute('aria-pressed',isMatch?'true':'false');
+  });
+  currentPersona=p;
+  localStorage.setItem('ais_persona',p);
+  playSound&&playSound('notif');
+  toast(`Persona: ${p.charAt(0).toUpperCase()+p.slice(1)} mode active`,'i');
+  /* Update settings UI */
+  document.querySelectorAll('#sr-persona-grid .settings-row').forEach(row=>{
+    const name=row.querySelector('.settings-row-name')?.textContent?.toLowerCase();
+    const match=name&&name.includes(p.split('').slice(0,4).join(''));
+    row.style.borderColor=match?'var(--ac1)':'var(--glass-b)';
+    row.style.background=match?'rgba(0,212,255,.07)':'var(--glass)';
+  });
+}
+
+function clearCache(){
+  if('caches' in window){
+    caches.keys().then(keys=>Promise.all(keys.map(k=>caches.delete(k)))).then(()=>{
+      toast('Cache cleared successfully','s');playSound&&playSound('notif');
+    });
+  }else{toast('Cache cleared','s');}
+}
+
+function updateSettingsUI(){
+  /* Theme */
+  const isDark=document.documentElement.getAttribute('data-theme')==='dark';
+  const themeIcon=document.getElementById('sr-theme-icon');
+  const themeVal=document.getElementById('sr-theme-val');
+  const swTheme=document.getElementById('sw-theme');
+  if(themeIcon)themeIcon.textContent=isDark?'🌙':'☀️';
+  if(themeVal)themeVal.textContent=isDark?'Dark Mode':'Light Mode';
+  if(swTheme){swTheme.className='sw-toggle '+(isDark?'on':'off');}
+  /* CV toggle */
+  const swCV=document.getElementById('sw-cv');
+  if(swCV)swCV.className='sw-toggle '+(continuousVoiceActive?'on':'off');
+  /* Mic status */
+  const micEl=document.getElementById('sr-mic-status');
+  const micVal=document.getElementById('sr-mic-val');
+  const pStatus=typeof PermManager!=='undefined'?PermManager.status:'unknown';
+  if(micEl){
+    const labels={granted:'Ready to use',denied:'Blocked by browser',prompt:'Tap to enable',unknown:'Status unknown'};
+    micEl.textContent=labels[pStatus]||'Unknown';
+  }
+  if(micVal){
+    const icons={granted:'✅',denied:'❌',prompt:'⚠️',unknown:'❓'};
+    micVal.textContent=icons[pStatus]||'❓';
+  }
+  /* Install status */
+  const ib=document.getElementById('install-badge');
+  if(ib){
+    ib.textContent=isInstalled?'Installed':'Install';
+    ib.className='install-badge '+(isInstalled?'installed':'not-installed');
+  }
+  /* Mob header status */
+  const mobStatus=document.getElementById('mob-aria-status');
+  if(mobStatus){
+    const personas={homeowner:'Homeowner Mode',architect:'Architect Mode',builder:'Builder Mode',dealer:'Dealer Mode'};
+    mobStatus.textContent=`ARIA v5 · ${personas[currentPersona||'homeowner']||'Neural Consultant'}`;
+  }
+}
+
+/* =====================================================
+   PWA — PATCH toggleTheme TO UPDATE SETTINGS UI
+===================================================== */
+const _origToggleTheme2=typeof toggleTheme==='function'?toggleTheme:null;
+window.toggleTheme=function(){
+  if(_origToggleTheme2)_origToggleTheme2();
+  setTimeout(updateSettingsUI,50);
+};
+
+/* Patch toggleContinuousVoice to update settings */
+const _origTCV=typeof toggleContinuousVoice==='function'?toggleContinuousVoice:null;
+window.toggleContinuousVoice=function(){
+  if(_origTCV)_origTCV();
+  setTimeout(()=>{
+    const sw=document.getElementById('sw-cv');
+    if(sw)sw.className='sw-toggle '+(continuousVoiceActive?'on':'off');
+    const badge=document.getElementById('cv-badge');
+    if(badge){
+      badge.className='cv-mode-badge'+(continuousVoiceActive?'':' off');
+      badge.querySelector('.cv-label').textContent=continuousVoiceActive?'Voice Mode ON':'Voice Mode OFF';
+    }
+  },50);
+};
+
+/* Patch VOICE.setState to update bnav mic */
+if(typeof VOICE!=='undefined'){
+  const _origSetState=VOICE.setState.bind(VOICE);
+  VOICE.setState=function(s){
+    _origSetState(s);
+    const btn=document.getElementById('bnav-mic');
+    if(btn){
+      btn.textContent={idle:'🎙️',listening:'👂',thinking:'🧠',speaking:'🔊'}[s]||'🎙️';
+      btn.classList.toggle('listening',s==='listening');
+    }
+    const mobStatus=document.getElementById('mob-aria-status');
+    if(mobStatus){
+      const labels={idle:'ARIA v5 · Ready',listening:'Listening…',thinking:'Thinking…',speaking:'Speaking…'};
+      mobStatus.textContent=labels[s]||'ARIA v5 · Ready';
+    }
+  };
+}
+
+/* =====================================================
+   PWA — META TAGS (Apple PWA support)
+===================================================== */
+(function(){
+  const metas=[
+    {name:'apple-mobile-web-app-capable',content:'yes'},
+    {name:'apple-mobile-web-app-status-bar-style',content:'black-translucent'},
+    {name:'apple-mobile-web-app-title',content:'AIS ARIA'},
+    {name:'mobile-web-app-capable',content:'yes'},
+    {name:'application-name',content:'AIS Smart Assistant'},
+    {name:'msapplication-TileColor',content:'#06060f'},
+  ];
+  metas.forEach(m=>{
+    if(document.querySelector(`meta[name="${m.name}"]`))return;
+    const el=document.createElement('meta');
+    el.name=m.name;el.content=m.content;
+    document.head.appendChild(el);
+  });
+})();
+
+/* =====================================================
+   PWA — INIT
+===================================================== */
+(function initPWA(){
+  /* Wait for DOM */
+  function run(){
+    /* Render mobile products */
+    renderMobProducts();
+    /* Initial tab */
+    switchTab('home');
+    /* Settings UI */
+    setTimeout(updateSettingsUI,500);
+    /* Prevent double-tap zoom */
+    let lastTap=0;
+    document.addEventListener('touchend',e=>{
+      const now=Date.now();
+      if(now-lastTap<300&&e.target.tagName!=='INPUT'&&e.target.tagName!=='TEXTAREA'){
+        e.preventDefault();
+      }
+      lastTap=now;
+    },{passive:false});
+    /* iOS scroll fix for panels */
+    document.querySelectorAll('.pwa-panel').forEach(p=>{
+      p.addEventListener('touchmove',e=>e.stopPropagation(),{passive:true});
+    });
+    /* Update viewport for standalone */
+    if(window.matchMedia('(display-mode:standalone)').matches){
+      document.body.classList.add('is-pwa');
+    }
+    /* Periodically update settings UI */
+    setInterval(updateSettingsUI,5000);
+    /* Watch hash for deep links */
+    if(location.hash==='#consult')switchTab('consult');
+    else if(location.hash==='#products')switchTab('products');
+    /* Keyboard nav — escape returns home */
+    document.addEventListener('keydown',e=>{
+      if(e.key==='Escape'&&activeTab!=='home'){switchTab('home');}
+    });
+  }
+  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',run);}
+  else{setTimeout(run,200);}
+})();
 
 </script>
 </body>
