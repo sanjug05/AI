@@ -5348,6 +5348,599 @@ if(typeof VOICE!=='undefined'){
   else{setTimeout(run,200);}
 })();
 
+
+/* ============ CONSULTANT ENGINE v7 ============ */
+
+/* =====================================================
+   PREMIUM CONSULTANT ENGINE — v7
+   Behaves like the best AIS Experience Centre advisor
+===================================================== */
+
+/* ---- PERSONALITY VOICES ---- */
+const VOICES = {
+  consultant: {
+    name:'Premium Consultant',
+    greeting: m => `Wonderful to meet you! I'm ARIA — your personal window and door consultant at AIS. Before I make any recommendations, I'd love to understand your project properly. The right glazing system makes an enormous difference to comfort, energy bills, and resale value.\n\nShall we take about 2 minutes to go through a few quick questions? I promise it'll be worth it.`,
+    ack: (info) => [`Excellent — ${info} is a great choice.`, `Perfect, noted — ${info}.`, `Wonderful, that really helps me narrow things down.`, `Got it — ${info}. That's very useful.`][Math.floor(Math.random()*4)],
+    transition: () => [`Now, my next question —`, `Building on that —`, `Great. Moving on —`, `That noted, could you also tell me —`][Math.floor(Math.random()*4)],
+    closing: `Based on everything you've shared, I've put together a tailored recommendation. This is exactly what I'd suggest to a client walking into our Experience Centre with your requirements.`,
+  },
+  luxury: {
+    name:'Luxury Designer',
+    greeting: m => `Welcome — I'm so glad you're here. Premium doors and windows are one of the most important investments in a luxury property, and I want to make sure you get exactly the right system.\n\nEvery project I work on is unique. May I ask a few questions to personalise your consultation?`,
+    ack: (info) => [`Exquisite taste — ${info}.`, `A discerning choice — ${info}.`, `That speaks volumes about the quality you're aiming for — noted.`, `Wonderful aesthetic direction — ${info}.`][Math.floor(Math.random()*4)],
+    transition: () => [`To refine the design further —`, `From an aesthetic standpoint —`, `To elevate this further —`, `One more thing to perfect the specification —`][Math.floor(Math.random()*4)],
+    closing: `I've curated a premium specification that matches the calibre of your project. These are the choices our most discerning villa clients make.`,
+  },
+  architect: {
+    name:'Architect Advisor',
+    greeting: m => `Good day. I'll assist you with a technical specification for your project. To generate an accurate recommendation, I need to collect a few key parameters — property type, location climate zone, performance priorities, and budget envelope.\n\nShall we proceed?`,
+    ack: (info) => [`Noted — ${info}. This informs the specification.`, `Recorded — ${info}.`, `Understood. That affects the profile selection and glazing specification.`, `Confirmed — ${info}.`][Math.floor(Math.random()*4)],
+    transition: () => [`Next parameter —`, `To complete the specification —`, `For the performance model —`, `Technically speaking, I also need —`][Math.floor(Math.random()*4)],
+    closing: `Based on your parameters, I've generated a technical specification. U-values, Rw ratings, and hardware grades are all accounted for.`,
+  },
+};
+
+/* ---- CUSTOMER PROFILE ---- */
+function freshProfile() {
+  return {
+    name:null, phone:null, email:null, city:null,
+    propertyType:null, floors:null, projectStage:null,
+    climate:null, noiseLevel:null, security:null,
+    privacy:null, energyPriority:null, budget:null,
+    design:null, openingStyle:null, maintenance:null,
+    colorPref:null, timeline:null,
+    architect:null, builder:null,
+    width:null, height:null, openings:null,
+    concerns:[], extras:[],
+    leadScore:0, consultComplete:false,
+  };
+}
+
+/* ---- CONSULTANT STATE MACHINE ---- */
+const CE = {
+  active: false,
+  state: 'idle', // idle|greeting|q_property|q_city|q_stage|q_noise|q_security|q_budget|q_design|q_timeline|q_contact|recommending|closed
+  profile: freshProfile(),
+  voice: null,         // current voice key
+  turnCount: 0,
+  questionQueue: [],   // remaining questions to ask
+  lastIntent: null,
+  sessionStarted: false,
+
+  /* Initialise a new consultation */
+  start(voiceKey) {
+    this.active = true;
+    this.state = 'greeting';
+    this.voice = voiceKey || 'consultant';
+    this.profile = freshProfile();
+    this.turnCount = 0;
+    this.questionQueue = ['property','city','stage','noise','security','budget','design','timeline','contact'];
+    updateLeadScoreBadge(0);
+  },
+
+  /* Main entry — process a user message, return AI response */
+  process(userMsg) {
+    this.turnCount++;
+    extractInfo(userMsg, this.profile);
+    updateLeadScoreBadge(calcLeadScore(this.profile));
+
+    /* Greeting turn */
+    if (this.state === 'greeting') {
+      const v = VOICES[this.voice] || VOICES.consultant;
+      this.state = 'qualifying';
+      return {
+        text: v.greeting(userMsg) + `\n\n**What type of property is this for?**\n\nVilla · Apartment · Office · Commercial · Hotel · School · Hospital · Farmhouse · Retail`,
+        chips: ['Villa / Bungalow','Apartment / Flat','Office / Commercial','Hotel / Hospitality','Builder Project'],
+        card: null,
+      };
+    }
+
+    /* Qualifying turns */
+    if (this.state === 'qualifying') {
+      /* Mark answered questions off queue */
+      this.updateQueue();
+
+      /* Check if we have enough for a recommendation */
+      if (this.isReadyToRecommend()) {
+        this.state = 'recommending';
+        return this.buildRecommendationResponse();
+      }
+
+      /* Ask the next needed question */
+      return this.askNextQuestion(userMsg);
+    }
+
+    /* Recommending — answer follow-ups in context */
+    if (this.state === 'recommending' || this.state === 'closed') {
+      return this.handlePostRecommend(userMsg);
+    }
+
+    return null; // fall through to main KB
+  },
+
+  updateQueue() {
+    const p = this.profile;
+    this.questionQueue = this.questionQueue.filter(q => {
+      if (q === 'property' && p.propertyType) return false;
+      if (q === 'city' && p.city) return false;
+      if (q === 'stage' && p.projectStage) return false;
+      if (q === 'noise' && (p.noiseLevel || p.concerns.length > 0)) return false;
+      if (q === 'security' && p.security) return false;
+      if (q === 'budget' && p.budget) return false;
+      if (q === 'design' && p.design) return false;
+      if (q === 'timeline' && p.timeline) return false;
+      if (q === 'contact' && (p.name || p.phone)) return false;
+      return true;
+    });
+  },
+
+  isReadyToRecommend() {
+    const p = this.profile;
+    const hasCore = p.propertyType && (p.budget || p.city);
+    const hasEnough = this.turnCount >= 4;
+    const askedEnough = this.questionQueue.length <= 3;
+    return hasCore && hasEnough && askedEnough;
+  },
+
+  askNextQuestion(userMsg) {
+    const v = VOICES[this.voice] || VOICES.consultant;
+    const p = this.profile;
+    const next = this.questionQueue[0];
+    const ack = p.propertyType ? v.ack(p.propertyType) + ' ' : '';
+    const trans = v.transition() + ' ';
+
+    const QMap = {
+      property: {
+        text: `${trans}**What type of property is this for?**\n\nIs it a villa, apartment, office, commercial space, hotel, or something else?`,
+        chips: ['Villa / Bungalow','Apartment','Office','Commercial','Hotel','Builder Project'],
+      },
+      city: {
+        text: `${trans}**Which city or region is the property in?**\n\nThis matters a lot — Chandigarh's temperature swings, Mumbai's humidity, and coastal areas all need different specifications.`,
+        chips: ['Ludhiana / Punjab','Delhi NCR','Chandigarh','Mumbai','Bengaluru','Coastal location','Hill station'],
+      },
+      stage: {
+        text: `${trans}**Where is the project in its timeline?**\n\nAre you at the planning stage, under construction, or ready to install soon?`,
+        chips: ['Planning / Design stage','Under construction','Ready to install (1–3 months)','Renovation of existing'],
+      },
+      noise: {
+        text: `${trans}**What level of outside noise does the property face?**\n\nThis determines the acoustic specification — which can make a life-changing difference to comfort.`,
+        chips: ['Heavy traffic / highway nearby','Moderate urban noise','Railway line nearby','Fairly quiet area','Airport nearby'],
+      },
+      security: {
+        text: `${trans}**How important is security to you?**\n\nFrom basic multi-point locking to smart fingerprint entry and RC2-certified burglar-resistant glass — the range is wide.`,
+        chips: ['Standard security is fine','Premium security required','Maximum protection (RC2)','Smart lock integration'],
+      },
+      budget: {
+        text: `${trans}**What is your approximate budget envelope per sq.ft?**\n\nThis helps me recommend the right product tier — all of them are premium, just at different price points.`,
+        chips: ['₹400–600 / sq.ft (Standard)','₹600–1,000 / sq.ft (Premium)','₹1,000–1,800 / sq.ft (Ultra Luxury)','Not decided yet'],
+      },
+      design: {
+        text: `${trans}**What design aesthetic are you going for?**\n\nThis guides the profile selection, colour, and hardware recommendation.`,
+        chips: ['Modern / Minimal','Contemporary Luxury','Traditional / Classic','Eco-conscious / Sustainable','Let the architect decide'],
+      },
+      timeline: {
+        text: `${trans}**When are you hoping to have the windows installed?**`,
+        chips: ['Within 1 month','1–3 months','3–6 months','6+ months','Just exploring for now'],
+      },
+      contact: {
+        text: `${trans}I'd like to send you a personalised proposal with detailed specifications and pricing.\n\n**Could I have your name and a contact number?** I'll have our design consultant call you within 24 hours — no obligation at all.`,
+        chips: null,
+      },
+    };
+
+    const q = QMap[next] || {
+      text: `${trans}Is there anything specific about performance — noise, heat, security, or energy savings — that matters most to you?`,
+      chips: ['Noise reduction is priority','Heat/energy efficiency','Security first','Luxury aesthetics','Low maintenance'],
+    };
+
+    const prefix = (this.turnCount > 1 && p.propertyType) ? ack : '';
+    return { text: prefix + q.text, chips: q.chips || null, card: null };
+  },
+
+  buildRecommendationResponse() {
+    const rec = buildFullRec(this.profile);
+    this.profile.consultComplete = true;
+    lastConsultData = {
+      propertyType: rec.propertyLabel,
+      climate: rec.climateLabel,
+      priority: rec.priorityLabel,
+      budget: rec.budgetLabel,
+      design: rec.design || '—',
+      system: rec.frame,
+      glass: rec.glass,
+      hardware: rec.hardware,
+      mesh: rec.mesh,
+      security: rec.lockingSystem,
+      budgetRange: rec.budgetRange,
+    };
+    MEM.profile.propertyType = this.profile.propertyType;
+    ANL && ANL.trackRec && ANL.trackRec();
+    this.state = 'closed';
+    const v = VOICES[this.voice] || VOICES.consultant;
+    return {
+      text: v.closing,
+      chips: ['Tell me more about the frame','What glass would you recommend?','How does the pricing work?','Can I book a site visit?','Export this recommendation'],
+      card: rec,
+    };
+  },
+
+  handlePostRecommend(userMsg) {
+    const m = userMsg.toLowerCase();
+    if (m.includes('export') || m.includes('pdf') || m.includes('report')) {
+      exportPDFReport && exportPDFReport(lastConsultData);
+      return { text: `Report generated! I've opened the PDF — use Print → Save as PDF to save it.\n\nIs there anything else you'd like to know about the specification?`, chips: ['Book consultation','Schedule site visit','Pricing breakdown'], card: null };
+    }
+    if (m.includes('book') || m.includes('consult') || m.includes('call')) {
+      openM && openM('cm');
+      prefillFromLead && prefillFromLead();
+      return { text: `I've opened the consultation booking form — I've pre-filled your details. Our design consultant will visit you at your convenience, completely free of charge.\n\nAnything else I can help with?`, chips: null, card: null };
+    }
+    if (m.includes('site visit') || m.includes('survey')) {
+      openM && openM('svm');
+      return { text: `Site visit booking opened. Our surveyor will arrive with professional measuring equipment and the full product sample kit. No cost, no commitment.`, chips: null, card: null };
+    }
+    return null; // fall through to KB
+  },
+
+  reset() {
+    this.active = false; this.state = 'idle'; this.profile = freshProfile();
+    this.turnCount = 0; this.questionQueue = []; this.sessionStarted = false;
+  },
+};
+
+/* ---- INFO EXTRACTOR ---- */
+function extractInfo(msg, profile) {
+  const m = msg.toLowerCase();
+  /* Property type */
+  const propMap = {villa:['villa','bungalow','farmhouse','estate','mansion'],apartment:['apartment','flat','condo','residential','housing'],office:['office','corporate','commercial','workplace','business'],hotel:['hotel','resort','hospitality','guest'],hospital:['hospital','clinic','medical','healthcare'],school:['school','college','university','educational'],retail:['retail','shop','showroom','store']};
+  for (const [type, words] of Object.entries(propMap)) {
+    if (words.some(w => m.includes(w))) { profile.propertyType = type; break; }
+  }
+  /* City detection */
+  const cities = ['ludhiana','delhi','chandigarh','mumbai','bangalore','bengaluru','hyderabad','pune','amritsar','jalandhar','patiala','mohali','gurgaon','noida','jaipur','ahmedabad','surat','kolkata','chennai','goa','dehradun','shimla'];
+  for (const city of cities) { if (m.includes(city)) { profile.city = city.charAt(0).toUpperCase()+city.slice(1); break; } }
+  /* Budget */
+  if (m.match(/ultra|luxury|1000|1,000|premium.{0,15}high|high.{0,15}budget/)) profile.budget = 'ultra';
+  else if (m.match(/premium|600|700|800|900|mid.{0,10}range|good budget/)) profile.budget = 'premium';
+  else if (m.match(/standard|basic|affordable|400|500|value|economy/)) profile.budget = 'standard';
+  else if (m.match(/not decided|flexible|open|tbd/)) profile.budget = 'open';
+  /* Noise */
+  if (m.match(/highway|traffic|noisy|loud|airport|railway|train/)) { profile.noiseLevel = 'high'; if (!profile.concerns.includes('noise')) profile.concerns.push('noise'); }
+  else if (m.match(/quiet|peaceful|silent/)) profile.noiseLevel = 'low';
+  else if (m.match(/moderate|some noise|urban/)) profile.noiseLevel = 'medium';
+  /* Security */
+  if (m.match(/rc2|maximum|highest security|biometric|fingerprint/)) profile.security = 'rc2';
+  else if (m.match(/smart lock|app.{0,10}lock|remote/)) profile.security = 'smart';
+  else if (m.match(/standard security|basic lock/)) profile.security = 'standard';
+  /* Timeline */
+  if (m.match(/immediate|now|asap|urgent|this month/)) profile.timeline = 'immediate';
+  else if (m.match(/1.{0,5}month|soon|couple/)) profile.timeline = '1-3months';
+  else if (m.match(/3.{0,5}month|quarter/)) profile.timeline = '3-6months';
+  else if (m.match(/6.{0,5}month|year|later|exploring/)) profile.timeline = 'future';
+  /* Design */
+  if (m.match(/modern|minimal|clean|slim/)) profile.design = 'modern';
+  else if (m.match(/traditional|classic|heritage|wood/)) profile.design = 'traditional';
+  else if (m.match(/luxury|premium|bold|statement/)) profile.design = 'luxury';
+  else if (m.match(/eco|green|sustainable|leed/)) profile.design = 'eco';
+  else if (m.match(/contemporary/)) profile.design = 'contemporary';
+  /* Project stage */
+  if (m.match(/planning|design stage|drawing/)) profile.projectStage = 'planning';
+  else if (m.match(/construction|building|under/)) profile.projectStage = 'construction';
+  else if (m.match(/ready|install|now|renovation/)) profile.projectStage = 'ready';
+  /* Contact info */
+  const nameM = msg.match(/(?:i am|i'm|my name is|call me|this is)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)/);
+  if (nameM && !profile.name) profile.name = nameM[1];
+  const phoneM = msg.match(/(?:\+91|0)?[6-9]\d{9}/);
+  if (phoneM) profile.phone = phoneM[0];
+  const emailM = msg.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
+  if (emailM) profile.email = emailM[0];
+  /* Climate inference from city */
+  const hotCities = ['ludhiana','delhi','jaipur','ahmedabad','hyderabad','amritsar','patiala'];
+  const coldCities = ['shimla','dehradun','chandigarh','mussoorie'];
+  const coastalCities = ['mumbai','goa','chennai','kochi','surat'];
+  if (profile.city) {
+    const cl = profile.city.toLowerCase();
+    if (hotCities.includes(cl)) profile.climate = 'hot';
+    else if (coldCities.includes(cl)) profile.climate = 'cold';
+    else if (coastalCities.includes(cl)) profile.climate = 'coastal';
+    else profile.climate = 'mixed';
+  }
+}
+
+/* ---- RECOMMENDATION BUILDER ---- */
+function buildFullRec(profile) {
+  const p = profile;
+  const prop = p.propertyType || 'apartment';
+  const budget = p.budget || 'premium';
+  const noise = p.noiseLevel || 'medium';
+  const security = p.security || 'standard';
+  const climate = p.climate || 'mixed';
+  const design = p.design || 'modern';
+
+  /* Frame recommendation */
+  const frameMap = {
+    villa: { ultra:'GrandSlide XL Lift & Slide — 7m panoramic panels', premium:'ArchForm Aluminium Elite Casement', standard:'ThermaGuard UPVC+ Sliding' },
+    apartment: { ultra:'SlimLine Pro 30 Aluminium — ultra-slim profiles', premium:'ThermaGuard UPVC+ Casement', standard:'ThermaGuard UPVC Standard' },
+    office: { ultra:'Curtain Wall CW-50 — floor-to-ceiling structural glazing', premium:'SlimLine Pro 30 Aluminium', standard:'ArchForm Aluminium Casement' },
+    hotel: { ultra:'GrandSlide XL + Pivot Entrance Doors', premium:'ArchForm Aluminium Elite', standard:'ThermaGuard UPVC+ Commercial' },
+    hospital: { ultra:'Acoustic UPVC + Fire-rated partitions', premium:'ThermaGuard UPVC Acoustic', standard:'ThermaGuard UPVC Standard' },
+    school: { ultra:'Acoustic UPVC + Toughened safety glass', premium:'ThermaGuard UPVC Tilt & Turn', standard:'ThermaGuard UPVC Casement' },
+    retail: { ultra:'Structural Glazing — frameless glass facade', premium:'SlimLine Pro 30 Aluminium', standard:'ArchForm Aluminium Casement' },
+  };
+  const frame = (frameMap[prop] || frameMap.apartment)[budget] || frameMap.apartment.premium;
+
+  /* Glass */
+  const priorities = p.concerns.length ? p.concerns : [noise === 'high' ? 'noise' : climate === 'hot' ? 'heat' : 'thermal'];
+  let glass;
+  if (noise === 'high' || priorities.includes('noise')) glass = 'Acoustic Laminated Double Glazing — 45 dB Rw (argon-filled, 16mm gap)';
+  else if (climate === 'hot') glass = 'Solar Control Low-E Double Glazing — 70% heat rejection, argon-filled';
+  else if (climate === 'cold') glass = 'Triple Glazed Low-E Argon — U-value 0.8 W/m²K, maximum winter warmth';
+  else if (climate === 'coastal') glass = 'Laminated Low-E Double Glazing — salt-air rated, UV-blocking interlayer';
+  else glass = 'Low-E Argon Double Glazing — thermal + acoustic balance, IS 2835 certified';
+
+  /* Hardware */
+  const hardwareMap = { rc2:'RC2-certified anti-drill cylinder + 7-point multi-point locking', smart:'Smart lock — fingerprint + PIN + app control + Grade 6 multi-point', standard:'Grade 6 multi-point locking + anti-pick cylinder', premium:'Grade 6 multi-point + security cylinder + concealed hinges' };
+  const hardware = hardwareMap[security] || hardwareMap.standard;
+
+  /* Colour */
+  const colorMap = { modern:'Matte Black or Satin Silver anodised', traditional:'Oak Wood Grain or Antique Bronze', luxury:'Brushed Gold anodised or Champagne Anodised', eco:'White or Natural Grey — reflective exterior', contemporary:'Space Grey or Graphite' };
+  const color = colorMap[design] || 'Space Grey — versatile, premium';
+
+  /* Mesh */
+  const mesh = prop === 'villa' || budget === 'ultra' ? 'Integrated retractable stainless steel fly screen' : budget === 'premium' ? 'Integrated pleated mesh — folds flat when not in use' : 'Fixed fibreglass insect screen';
+
+  /* Locking system */
+  const lockingSystem = security === 'rc2' ? 'RC2 burglar resistance — highest certified level (PAS 24 compliant)' : security === 'smart' ? 'Smart multi-point with remote monitoring + Alexa/Google Home integration' : 'Multi-point locking, Grade 6 hardware — standard insurance requirement';
+
+  /* Thermal package */
+  const thermalPkg = climate === 'cold' ? 'Triple-glaze thermal package — U-value 0.8, argon-filled, warm-edge spacer' : 'Double-glaze Low-E thermal package — U-value 1.4, 25% energy saving';
+
+  /* Acoustic package */
+  const acousticPkg = noise === 'high' ? 'Full acoustic package — 45 dB laminated glass + acoustic EPDM seals + compression locking' : noise === 'medium' ? 'Standard acoustic package — 35 dB double glaze + EPDM seals' : 'Basic sound attenuation — 28 dB standard double glaze';
+
+  /* Security package */
+  const secPkg = security === 'rc2' ? 'RC2 Security Package — anti-intrusion glass + RC2 cylinder + 7-point locking + steel-reinforced frame' : security === 'smart' ? 'Smart Security Package — fingerprint entry + 5-point locking + app alerts' : 'Standard Security Package — multi-point locking + Grade 6 hardware';
+
+  /* Budget range */
+  const budgetRangeMap = { standard:'₹400–600 / sq.ft (inclusive of hardware & installation)', premium:'₹600–1,000 / sq.ft (inclusive of hardware & installation)', ultra:'₹1,000–1,800 / sq.ft (inclusive of premium hardware & installation)', open:'₹600–1,000 / sq.ft (estimated — subject to final specification)' };
+  const budgetRange = budgetRangeMap[budget] || budgetRangeMap.premium;
+
+  /* Luxury rating */
+  const luxMap = { ultra:5, premium:4, standard:3, open:3 };
+  const luxuryRating = luxMap[budget] || 3;
+
+  /* Labels */
+  const propLabels = { villa:'Luxury Villa', apartment:'Apartment / Home', office:'Office / Commercial', hotel:'Hotel / Hospitality', hospital:'Healthcare Facility', school:'Educational Building', retail:'Retail / Showroom' };
+  const climateLabels = { hot:'Hot Climate', cold:'Cold Climate', coastal:'Coastal', mixed:'Mixed / Moderate' };
+  const budgetLabels = { standard:'Standard', premium:'Premium', ultra:'Ultra Luxury', open:'Flexible / TBD' };
+  const priorityLabel = noise === 'high' ? 'Noise Reduction' : climate === 'hot' ? 'Thermal Efficiency' : security === 'rc2' ? 'Maximum Security' : design === 'luxury' ? 'Luxury Design' : 'Performance Balance';
+
+  return { frame, glass, hardware, color, mesh, lockingSystem, thermalPkg, acousticPkg, secPkg, budgetRange, luxuryRating, propertyLabel:propLabels[prop]||prop, climateLabel:climateLabels[climate]||climate, budgetLabel:budgetLabels[budget]||budget, priorityLabel, design };
+}
+
+/* ---- LEAD SCORE CALCULATOR ---- */
+function calcLeadScore(profile) {
+  let s = 10;
+  if (profile.name) s += 15;
+  if (profile.phone) s += 25;
+  if (profile.email) s += 10;
+  if (profile.propertyType) s += 8;
+  if (profile.city) s += 7;
+  if (profile.budget === 'ultra') s += 20;
+  else if (profile.budget === 'premium') s += 14;
+  else if (profile.budget === 'standard') s += 6;
+  if (profile.timeline === 'immediate') s += 20;
+  else if (profile.timeline === '1-3months') s += 14;
+  else if (profile.timeline === '3-6months') s += 8;
+  if (profile.projectStage === 'ready') s += 10;
+  else if (profile.projectStage === 'construction') s += 7;
+  if (profile.consultComplete) s += 5;
+  profile.leadScore = Math.min(100, s);
+  return profile.leadScore;
+}
+
+/* ---- LEAD SCORE BADGE (sidebar) ---- */
+function injectLeadBadge() {
+  if (document.getElementById('lead-score-badge')) return;
+  const ssc = document.querySelector('.ssc');
+  if (!ssc) return;
+  const div = document.createElement('div');
+  div.className = 'ss';
+  div.id = 'lead-score-badge-wrap';
+  div.innerHTML = `<div class="sst">Lead Score</div>
+    <div class="card" style="padding:12px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px">
+        <span style="font-size:11px;color:var(--txt-2)">Consultation Progress</span>
+        <span style="font-size:13px;font-weight:700;background:var(--grad1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text" id="lead-score-val">0%</span>
+      </div>
+      <div style="height:4px;background:rgba(255,255,255,.07);border-radius:100px;overflow:hidden">
+        <div id="lead-score-bar" style="height:100%;border-radius:100px;background:var(--grad1);width:0%;transition:width 1s ease"></div>
+      </div>
+      <div style="font-size:10px;color:var(--txt-3);margin-top:6px" id="lead-score-lbl">Answer questions to see your profile</div>
+    </div>`;
+  const firstChild = ssc.children[0];
+  if (firstChild) ssc.insertBefore(div, firstChild.nextSibling || firstChild);
+  else ssc.appendChild(div);
+}
+function updateLeadScoreBadge(score) {
+  const bar = document.getElementById('lead-score-bar');
+  const val = document.getElementById('lead-score-val');
+  const lbl = document.getElementById('lead-score-lbl');
+  if (bar) bar.style.width = score + '%';
+  if (val) val.textContent = score + '%';
+  if (lbl) {
+    const labels = [[80,'Excellent — ready for proposal 🎯'],[60,'Good — almost there'],[40,'Building profile…'],[20,'Consultation started'],[0,'Answer questions to build profile']];
+    lbl.textContent = (labels.find(([t]) => score >= t) || labels[4])[1];
+  }
+}
+
+/* ---- RECOMMENDATION CARD RENDERER ---- */
+function renderFullRecCard(rec) {
+  const stars = '★'.repeat(rec.luxuryRating) + '☆'.repeat(5 - rec.luxuryRating);
+  const card = document.createElement('div');
+  card.style.cssText = 'margin-top:14px;border:1px solid rgba(0,212,255,.2);border-radius:var(--r-xl);background:linear-gradient(135deg,rgba(0,212,255,.04),rgba(123,47,255,.04));overflow:hidden;animation:wi .4s ease';
+
+  const header = document.createElement('div');
+  header.style.cssText = 'padding:16px 18px 12px;background:rgba(0,212,255,.06);border-bottom:1px solid rgba(0,212,255,.1)';
+  header.innerHTML = `<div style="font-size:10px;color:var(--ac1);font-weight:700;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:5px">Your Personalised Recommendation</div>
+    <div style="font-size:15px;font-weight:800;color:var(--txt-1)">${rec.frame}</div>
+    <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap">
+      <span style="font-size:10px;padding:2px 8px;border-radius:var(--r-full);background:rgba(0,212,255,.1);color:var(--ac1);border:1px solid rgba(0,212,255,.18)">${rec.propertyLabel}</span>
+      <span style="font-size:10px;padding:2px 8px;border-radius:var(--r-full);background:rgba(123,47,255,.1);color:var(--ac2);border:1px solid rgba(123,47,255,.18)">${rec.priorityLabel}</span>
+      <span style="font-size:11px;color:#ffaa00">${stars}</span>
+    </div>`;
+
+  const body = document.createElement('div');
+  body.style.cssText = 'padding:14px 18px';
+  const rows = [
+    ['💎 Glass',rec.glass], ['🔑 Hardware',rec.hardware], ['🎨 Colour',rec.color],
+    ['🦟 Mesh',rec.mesh], ['🔒 Security',rec.lockingSystem],
+    ['🌡️ Thermal Package',rec.thermalPkg], ['🔇 Acoustic Package',rec.acousticPkg],
+  ];
+  body.innerHTML = rows.map(([label, val]) => `
+    <div style="display:flex;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px">
+      <span style="color:var(--txt-3);width:130px;flex-shrink:0">${label}</span>
+      <span style="color:var(--txt-1);font-weight:600;flex:1">${val}</span>
+    </div>`).join('') +
+    `<div style="margin-top:12px;padding:12px;background:rgba(0,212,255,.06);border-radius:var(--r-md)">
+      <div style="font-size:9px;color:var(--ac1);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:4px">Budget Estimate</div>
+      <div style="font-size:15px;font-weight:800;color:var(--txt-1)">${rec.budgetRange}</div>
+    </div>`;
+
+  const footer = document.createElement('div');
+  footer.style.cssText = 'padding:12px 18px 16px;display:flex;gap:8px;flex-wrap:wrap';
+  [['📅 Book Consultation',()=>openM&&openM('cm')],['📄 Export PDF',()=>exportPDFReport&&exportPDFReport(lastConsultData)],['🏠 Site Visit',()=>openM&&openM('svm')]].forEach(([label,fn])=>{
+    const btn = document.createElement('button');
+    btn.style.cssText = 'flex:1;min-width:120px;padding:10px 8px;border-radius:var(--r-full);font-size:12px;font-weight:600;cursor:pointer;transition:all var(--tn)';
+    btn.textContent = label;
+    if (label.includes('Book')) { btn.style.background = 'var(--grad1)'; btn.style.color = '#fff'; btn.style.border = 'none'; }
+    else { btn.style.background = 'var(--glass)'; btn.style.border = '1px solid var(--glass-b)'; btn.style.color = 'var(--txt-2)'; }
+    btn.onclick = fn;
+    footer.appendChild(btn);
+  });
+
+  card.appendChild(header); card.appendChild(body); card.appendChild(footer);
+  return card;
+}
+
+/* ---- OVERRIDE sendMsg ---- */
+const __origSendMsg = typeof window.sendMsg === 'function' ? window.sendMsg : null;
+window.sendMsg = function(txt) {
+  const inp = document.getElementById('mi2');
+  const m = (txt || inp?.value || '').trim();
+  if (!m || (typeof typing !== 'undefined' && typing)) return;
+  if (!txt && inp) { inp.value = ''; autoR && autoR(inp); }
+  VOICE && VOICE.interrupt && VOICE.interrupt();
+  playSound && playSound('send');
+  document.getElementById('wc') && (document.getElementById('wc').style.display = 'none');
+  document.querySelectorAll('.fu-chips').forEach(el => el.remove());
+  const now = ts ? ts() : new Date().toLocaleTimeString();
+  addMsg('u', m, now);
+  if (typeof history !== 'undefined') { history.push({r:'u',c:m,t:now}); saveH && saveH(); }
+  if (typeof ANL !== 'undefined') { ANL.questionsAsked = (ANL.questionsAsked || 0) + 1; }
+  showTyp && showTyp();
+
+  /* Route through consultant engine */
+  const isFirstMsg = !CE.sessionStarted;
+  if (!CE.sessionStarted) {
+    CE.sessionStarted = true;
+    /* Pick voice based on persona */
+    const voiceMap = { architect:'architect', homeowner:'consultant', builder:'consultant', dealer:'luxury' };
+    CE.start(voiceMap[currentPersona] || 'consultant');
+  }
+
+  const delay = 900 + Math.random() * 700;
+  setTimeout(() => {
+    hideTyp && hideTyp();
+    /* Try consultant engine first */
+    const ceResp = CE.process(m);
+    if (ceResp) {
+      const rt = ts ? ts() : new Date().toLocaleTimeString();
+      /* Render message */
+      const container = document.getElementById('mc');
+      const wrap = document.createElement('div');
+      wrap.className = 'msg a'; wrap.style.maxWidth = '860px';
+      const av = document.createElement('div'); av.className = 'ma'; av.textContent = '🤖';
+      const mc2 = document.createElement('div'); mc2.className = 'mc2'; mc2.style.maxWidth = 'calc(100% - 46px)';
+      const bubble = document.createElement('div'); bubble.className = 'mb';
+      const timEl = document.createElement('div'); timEl.className = 'mt2'; timEl.textContent = rt;
+      mc2.appendChild(bubble); mc2.appendChild(timEl);
+      wrap.appendChild(av); wrap.appendChild(mc2);
+      container.appendChild(wrap);
+      playSound && playSound('recv');
+      streamResponse(bubble, ceResp.text, () => {
+        /* Recommendation card */
+        if (ceResp.card) mc2.appendChild(renderFullRecCard(ceResp.card));
+        /* Follow-up chips */
+        if (ceResp.chips) {
+          const chipRow = document.createElement('div'); chipRow.className = 'fu-chips';
+          ceResp.chips.forEach(c => {
+            const btn = document.createElement('button'); btn.className = 'fu-chip'; btn.textContent = c;
+            btn.onclick = () => { chipRow.remove(); sendMsg(c); };
+            chipRow.appendChild(btn);
+          });
+          container.appendChild(chipRow);
+        }
+        scrollBot && scrollBot();
+        /* Auto voice reply */
+        if (typeof continuousVoiceActive !== 'undefined' && continuousVoiceActive && document.getElementById('vwo')?.classList.contains('on')) {
+          setTimeout(() => VOICE && VOICE.speak && VOICE.speak(ceResp.text), 350);
+        }
+      });
+      if (typeof history !== 'undefined') { history.push({r:'a',c:ceResp.text,t:rt}); saveH && saveH(); }
+      updateLeadScoreBadge(calcLeadScore(CE.profile));
+      /* Save lead info */
+      if (CE.profile.phone || CE.profile.name) {
+        LeadCapture && LeadCapture.save && LeadCapture.save({ name:CE.profile.name, phone:CE.profile.phone, email:CE.profile.email, proj:CE.profile.propertyType, action:'consultation', ts:new Date().toISOString() });
+        ['lead-name','c-name','sv-name'].forEach(id => { const el=document.getElementById(id); if(el&&CE.profile.name)el.value=CE.profile.name; });
+        ['lead-phone','c-phone','sv-phone'].forEach(id => { const el=document.getElementById(id); if(el&&CE.profile.phone)el.value=CE.profile.phone; });
+        ['lead-email','c-email'].forEach(id => { const el=document.getElementById(id); if(el&&CE.profile.email)el.value=CE.profile.email; });
+      }
+      return;
+    }
+
+    /* Fall through to KB for pure product questions */
+    const res = getResp ? getResp(m) : { r:'I\'m here to help!', intent:'general', confidence:70, intents:[] };
+    if (!res || !res.r) return;
+    const rt = ts ? ts() : new Date().toLocaleTimeString();
+    addMsg && addMsg('a', res.r, rt, true, res.intent, res.confidence, res.intents || []);
+    MEM && MEM.push && MEM.push(m, res.r, res.intents || []);
+    if (typeof history !== 'undefined') { history.push({r:'a',c:res.r,t:rt}); saveH && saveH(); }
+    updateSidebarRec && updateSidebarRec(res.intent);
+    if (typeof continuousVoiceActive !== 'undefined' && continuousVoiceActive && document.getElementById('vwo')?.classList.contains('on')) {
+      setTimeout(() => VOICE && VOICE.speak && VOICE.speak(res.r), 350);
+    }
+    updateConfData && updateConfData(res.confidence || 70);
+  }, delay);
+};
+
+/* ---- INIT ---- */
+(function initConsultant() {
+  function run() {
+    injectLeadBadge();
+    /* Reset consultation when chat is cleared */
+    const origClear = typeof clearChat === 'function' ? clearChat : null;
+    window.clearChat = function() {
+      if (origClear) origClear();
+      CE.reset();
+      injectLeadBadge();
+      updateLeadScoreBadge(0);
+    };
+    /* Reset CE on persona change */
+    const origSetPersona = typeof window.setPersona === 'function' ? window.setPersona : null;
+    window.setPersona = function(p, btn) {
+      if (origSetPersona) origSetPersona(p, btn);
+      CE.reset(); CE.sessionStarted = false;
+    };
+    /* Welcome card CTA text update */
+    const wsub = document.querySelector('.wsub');
+    if (wsub) wsub.innerHTML = 'Your personal AI window consultant — I\'ll guide you through a tailored recommendation for your project.<br><span style="font-size:12px;opacity:.7">Just say hello or tap a suggestion below to begin.</span>';
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run);
+  else setTimeout(run, 300);
+})();
+
 </script>
 </body>
 </html>
