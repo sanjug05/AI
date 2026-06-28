@@ -5941,6 +5941,616 @@ window.sendMsg = function(txt) {
   else setTimeout(run, 300);
 })();
 
+
+/* ============ AIS KNOWLEDGE ENGINE v8 ============ */
+
+/* =====================================================
+   AIS KNOWLEDGE ENGINE — v8
+   Master Knowledge Source: AIS Buying Guide
+   Structured as Expert Consultant Knowledge Model
+===================================================== */
+
+/* =====================================================
+   DOMAIN 1 — GLOSSARY ENGINE
+===================================================== */
+const GLOSSARY = {
+  /* Hardware */
+  'espag': {full:'Espagnolette',desc:'A multi-point locking mechanism that runs vertically along the door or window sash. When the handle is turned, it simultaneously engages multiple locking points along the frame — providing far greater security than a single-point lock. Standard on all our casement and tilt & turn systems.',category:'hardware'},
+  '3d hinge': {full:'3D Adjustable Hinge',desc:'A hinge for casement doors that allows adjustment in three dimensions — up/down, left/right, and in/out. This lets the door be perfectly aligned after installation, critical for weather sealing and smooth operation.',category:'hardware'},
+  'corner drive': {full:'Corner Drive',desc:'A component in tilt & turn hardware that transfers movement around the corner of the frame, allowing the window to both tilt inward for ventilation and swing fully open. It\'s what makes the two-mode operation of tilt & turn possible.',category:'hardware'},
+  'deadbolt': {full:'Deadbolt Lock',desc:'A dedicated lock with a strong bolt that slides into a strike plate, requiring a key to operate. Unlike a latch, it cannot be opened without the key — significantly more secure. We recommend deadbolts on all external doors in addition to the espag multipoint system.',category:'hardware'},
+  'latch': {full:'Spring Latch',desc:'A simple mechanism using a spring-loaded bolt that engages a strike plate when the door closes. A latch alone is not sufficient security — always combine with a deadbolt or multipoint system on external doors.',category:'hardware'},
+  'multipoint locking': {full:'Multipoint Locking System',desc:'A system where multiple locking points around the door or window frame are all activated simultaneously by a single key turn. This distributes the closing force along the full height of the door, creating an exceptional weather seal and dramatically improving both security and energy efficiency. All our premium systems include this as standard.',category:'hardware'},
+  'sliding roller': {full:'Sliding Roller',desc:'A precision-engineered component that allows sliding door and window panels to glide smoothly along their tracks. Our premium systems use stainless steel rollers rated for 100,000+ cycles — the difference between a door that feels luxurious after 10 years versus one that becomes stiff and heavy.',category:'hardware'},
+  'fly mullion': {full:'Fly Mullion',desc:'A removable centre post in sliding window systems that can be removed to create a fully open, unobstructed aperture — useful for cleaning or when maximum airflow is needed.',category:'hardware'},
+  'friction stay': {full:'Friction Stay',desc:'A fitting that holds a window open at a chosen position and resists wind force. Particularly important for top-hung and twin sash windows to prevent the window from slamming in wind.',category:'hardware'},
+  /* Performance metrics */
+  'air permeability': {full:'Air Permeability',desc:'How much uncontrolled air passes through the window system, measured in cubic metres per hour per square metre. Lower is better — it directly impacts your heating and cooling bills. Our best systems achieve Class 4, the highest classification.',category:'performance'},
+  'water tightness': {full:'Water Tightness',desc:'Measured in Pascals — how much wind-driven rain pressure the window resists without water ingress. Our systems are tested at 300–900 Pa, equivalent to severe monsoon conditions. Crucial for Indian weather.',category:'performance'},
+  'burglar resistance': {full:'Burglar Resistance',desc:'Rated from RC1 (basic) to RC6 (maximum security). RC2 is what we recommend for premium residential — it requires 3+ minutes to defeat with standard tools, which statistics show deters most opportunistic burglars.',category:'performance'},
+  'sound transmission': {full:'Sound Transmission Class (STC/Rw)',desc:'The weighted sound reduction index — how many decibels of noise the window system attenuates. Every 10 dB reduction roughly halves the perceived loudness. Standard systems: 28 dB. Our acoustic range: up to 45 dB.',category:'performance'},
+  'u-value': {full:'U-Value (Thermal Transmittance)',desc:'Measures heat loss through the window in Watts per square metre per degree Kelvin. Lower is better. Single glass: ~5.8 W/m²K. Our premium DGU Low-E: ~1.4 W/m²K. Triple glaze: 0.7–0.8 W/m²K. The lower the U-value, the warmer your home stays in winter and the cooler in summer.',category:'performance'},
+  'shgc': {full:'Solar Heat Gain Coefficient',desc:'Measures how much solar radiation passes through glass on a scale of 0 to 1. Lower SHGC = less heat entering. For hot Indian climates facing south or west, a SHGC of 0.25–0.35 is ideal. Our Low-E glass can be specified to your exact requirement.',category:'performance'},
+  'emissivity': {full:'Emissivity',desc:'A surface\'s ability to emit thermal radiation (0 to 1). Low-emissivity glass has a microscopically thin metallic coating that reflects infrared heat back into the room in winter, or reflects it away in summer, depending on application.',category:'performance'},
+  'solar protection': {full:'Solar Protection',desc:'The ability of glass to block or reflect solar radiation, measured as Solar Reflectance (SR) or Solar Heat Gain Coefficient (SHGC). Critical for west-facing windows in Punjab, Rajasthan, and all hot climate zones.',category:'performance'},
+  'pvb': {full:'Polyvinyl Butyral (PVB)',desc:'The transparent film bonded between glass panes in laminated glass. In the event of breakage, PVB holds the glass fragments together, preventing injury — and providing continued security against forced entry even when the glass is cracked.',category:'technical'},
+  'level and plumb': {full:'Level & Plumb',desc:'Level = horizontal flatness. Plumb = vertical straightness. These are non-negotiable requirements for proper window installation. An out-of-level window will not seal correctly, will have drainage problems, will stress the hardware, and will look misaligned. We use precision spirit levels and plumb bobs on every installation.',category:'technical'},
+  'argon gas': {full:'Argon Gas Fill',desc:'An inert gas used to fill the space between glass panes in double-glazed units (DGU). Argon conducts heat ~34% less than air, significantly improving the U-value of the unit without adding visible weight or thickness.',category:'technical'},
+  'site survey': {full:'Site Survey',desc:'A professional visit to measure and assess the openings where windows and doors will be installed. This is not a formality — precise measurements prevent costly remakes, and the survey identifies structural considerations that affect the specification. All our quotations are based on a completed site survey.',category:'process'},
+  'lead time': {full:'Lead Time',desc:'The time from confirmed order to completed installation. At AIS Windows, this is typically 45–60 days from the final site measurement. All apertures need to be ready for measurement at least 45 days before your desired installation date.',category:'process'},
+};
+
+function lookupGlossary(term) {
+  const t = term.toLowerCase().trim();
+  if (GLOSSARY[t]) return GLOSSARY[t];
+  // Fuzzy match
+  const keys = Object.keys(GLOSSARY);
+  const match = keys.find(k => t.includes(k) || k.includes(t));
+  return match ? GLOSSARY[match] : null;
+}
+
+/* =====================================================
+   DOMAIN 2 — FRAME SYSTEMS KNOWLEDGE
+===================================================== */
+const FRAME_KB = {
+  aluminium: {
+    name: 'Aluminium Frame',
+    tagline: 'The architect\'s choice — precision, strength, and modern aesthetics',
+    advantages: ['Lightweight yet extremely strong — handles large openings impossible with uPVC','Sleek slim profiles from 30mm — maximises glass area and views','Endlessly recyclable — genuinely sustainable material','Weatherproof, rodent-resistant, and does not rot or corrode','Highly customisable — any RAL colour via powder coating','Ideal for high-rise buildings — structural grade available','50+ year design life with minimal maintenance'],
+    limitations: ['Higher upfront cost than uPVC','Without thermal break, aluminium conducts heat/cold (always specify thermally broken)','Powder coating can chip if struck — though standard scratching won\'t penetrate'],
+    bestFor: ['Villas and luxury homes','Large-format openings (sliding, lift & slide)','Modern and contemporary architecture','Commercial buildings and offices','Coastal properties (with marine-grade specification)','Any application where slim profiles matter aesthetically'],
+    maintenance: 'Wipe with non-abrasive cleaner every 6 months. Apply protective wax in coastal environments. Lubricate hardware annually. Powder coating is self-maintaining — no painting ever required.',
+    colours: ['Walnut wood grain','Chrome White','Silver Grey','Noir Grey','Grey','Graphite Black','Any RAL colour on request'],
+    warranty: '15 years on profiles, 5 years on hardware',
+    thermalNote: 'Always specify thermally broken aluminium — polyamide PA66 strips interrupt the metal path and reduce thermal conductivity by 80%',
+  },
+  upvc: {
+    name: 'uPVC Frame',
+    tagline: 'Superior thermal performance, zero maintenance, outstanding value',
+    advantages: ['Thermally superior to aluminium by nature — multi-chamber profiles trap still air','UV-resistant — will not fade, discolour, or become brittle','Termite-resistant, rot-proof, rust-proof — nothing degrades it','Virtually maintenance-free — wipe clean, no painting ever','More cost-effective than aluminium or wood','30–40 year design life','Available in white and a wide range of colour foils'],
+    limitations: ['Cannot span as large as aluminium — limited to medium-format openings','Wider profile sight lines compared to slim aluminium','Fewer colour options (though foils give good variety)','Not suitable for very high-rise or large curtain wall applications'],
+    bestFor: ['Apartments and residential homes','Noise reduction applications (better damping properties)','Energy efficiency priority projects','Budget-conscious projects without compromising quality','Cold climates — inherently better thermal performance','Schools, hospitals, institutional buildings'],
+    maintenance: 'Wipe with mild soapy water every 3–6 months. Clear drainage holes with a thin rod. Silicone spray on hinges and locks annually. That\'s genuinely all it requires.',
+    colours: ['White (standard)','Chrome White','Silver Grey','Noir Grey','Grey','Graphite Black','Walnut wood grain foil','Other foils on request'],
+    warranty: '10 years on profiles, 5 years on hardware',
+    thermalNote: 'Multi-chamber hollow sections trap still air, acting as natural insulation. U-values significantly better than aluminium without thermal break.',
+  },
+};
+
+/* =====================================================
+   DOMAIN 3 — WINDOW TYPOLOGY KNOWLEDGE
+===================================================== */
+const TYPOLOGY_KB = {
+  casement: {
+    name:'Casement Window',
+    desc:'Hinged on one side, opens outward or inward like a door panel. The most versatile and popular window typology.',
+    advantages:['Full ventilation — the entire opening provides airflow','Maximum control over ventilation direction','Excellent weather seal when closed — all edges compress against the frame','Best for noise reduction among opening windows','Easy to clean from inside if inward-opening'],
+    limitations:['Requires clearance on the outside for the opening sash','Not suitable for very wide single openings (use French window for wider spans)'],
+    bestFor:['Bedrooms — controlled ventilation and easy operation','Living rooms — maximum natural light and airflow','Schools and hospitals — safe opening, easy for children and patients','Any room where acoustic performance matters'],
+    glass:['All glass types compatible','Acoustic laminated DGU for noise applications'],
+    hardware:['Espag locking mechanism (32–35mm BS)','3D hinges','Casement door handle and striker'],
+    acSolutionRating: 5, thermalRating: 5, securityRating: 4, maintenanceRating: 5,
+  },
+  sliding: {
+    name:'Sliding Window / Door',
+    desc:'Panels slide horizontally or vertically along tracks, with one fixed and one or more moving panels.',
+    advantages:['Space-efficient — no swing clearance needed inside or outside','Easy to operate — suitable for all ages','Aesthetically clean — horizontal movement feels architectural','Available in very wide configurations','Good for balconies and areas with limited space'],
+    limitations:['Cannot achieve the same weatherseal as casement — some air infiltration is inherent','Lower acoustic performance vs casement (panels overlap rather than compress)','Not ideal as primary acoustic solution — best for quiet areas'],
+    bestFor:['Balconies and terraces where outward swing is not possible','Bedroom or living room with restricted floor space','Wide openings where multiple panels are needed','Properties in moderate noise environments'],
+    hardware:['Espag BS-7.5mm locking','Sliding striker','Pop-up handle (windows), D-handle (doors)','Precision stainless steel rollers','Fly mullion (removable centre post)'],
+    acSolutionRating: 3, thermalRating: 3, securityRating: 3, maintenanceRating: 4,
+  },
+  fixed: {
+    name:'Fixed Window',
+    desc:'Non-opening window, also called a picture window. Glass is set directly in the frame with no moving parts.',
+    advantages:['Maximum thermal performance — no moving joints or seals to compromise','Widest range of shapes — circular, arched, triangular, any geometry','Largest available glass sizes','Lower cost per sq.ft than equivalent opening windows','Maximum daylight and views'],
+    limitations:['No ventilation — must be combined with opening windows','Cannot be cleaned from outside without scaffolding or window cleaning system'],
+    bestFor:['Feature walls and statement glazing','Stairwells and double-height spaces','Above doors (fanlights) and beside doors (sidelights)','Anywhere views and light are the priority and ventilation comes from elsewhere'],
+    acSolutionRating: 5, thermalRating: 5, securityRating: 5, maintenanceRating: 5,
+  },
+  french: {
+    name:'French Window',
+    desc:'Two casement panels hinged on opposite sides of a central opening, creating a double-door style window. Elegant and light-filled.',
+    advantages:['Classic, elegant proportions — timeless architectural detail','Wide opening without a central post obstructing the view','Excellent natural light and ventilation when both panels are open','Creates a sense of indoor-outdoor connection'],
+    limitations:['Requires more clearance for both panels to swing open','Less weathertight than single casement at the meeting edge','Not ideal for high noise environments at that meeting point'],
+    bestFor:['Living rooms opening to gardens or terraces','Heritage and traditional architecture styles','Master bedrooms with garden views','Any space where a wide, elegant opening is desired'],
+    hardware:['Espag locking on both sashes','3D adjustable hinges','Locking cremone bolt on meeting stile'],
+    acSolutionRating: 3, thermalRating: 4, securityRating: 3, maintenanceRating: 4,
+  },
+  tophung: {
+    name:'Top Hung (Awning) Window',
+    desc:'Hinged at the top, opens outward from the bottom. The distinctive feature is that it can be left open in light rain — the sash acts as a canopy.',
+    advantages:['Can be open during light rain — water runs off the outward-tilting sash','Good ventilation without compromising internal floor space','Suitable for bathrooms and kitchens where steam ventilation is needed','Can be positioned high in a wall for security with ventilation'],
+    limitations:['Limited opening angle — not maximum ventilation','Requires clearance outside at the bottom of the sash'],
+    bestFor:['Bathrooms — ventilation even in rain','Kitchens — steam removal','High-level windows — ventilation without security compromise','Basements with limited head height outside'],
+    acSolutionRating: 4, thermalRating: 4, securityRating: 4, maintenanceRating: 4,
+  },
+  sidehung: {
+    name:'Side Hung Window',
+    desc:'Similar to a casement but typically slimmer sash, hinged at the side and swinging outward. Common in steel-look aluminium profiles.',
+    advantages:['Provides efficient airflow control','Easy access to the outside for cleaning','Clean aesthetic in slim profiles'],
+    limitations:['Similar to casement limitations — needs external clearance'],
+    bestFor:['Bathrooms','Utility rooms','Supplementary ventilation openings'],
+    acSolutionRating: 4, thermalRating: 4, securityRating: 4, maintenanceRating: 4,
+  },
+  tiltandturn: {
+    name:'Tilt & Turn Window',
+    desc:'A European engineering masterpiece. A single handle operates two distinct modes: tilt inward 10° for secure ventilation, or swing fully open inward for full access and cleaning.',
+    advantages:['Two functions in one frame — security ventilation (tilt) and full opening (turn)','Can be left tilted for ventilation when you\'re out — secure gap of ~10cm','Interior cleaning without going outside — the sash swings in completely','Superior weatherseal — multiple EPDM gaskets in all positions','Anti-slam mechanism — cannot be caught by wind in tilt position'],
+    limitations:['Sash opens inward — requires clear interior space','More complex hardware — must be from quality suppliers (GU or Siegenia recommended)','Slightly higher cost than standard casement'],
+    bestFor:['High-rise apartments — can ventilate without risk','Bedrooms — leave on tilt all night safely','Properties where outside cleaning access is impossible','Anywhere maximum weatherseal performance is required'],
+    hardware:['Corner drive mechanism','Stay guide','Tilt and turn centre lock (hinge and bottom)','Gear connector','Handle','Espag'],
+    suppliers:['GU Hardware','Siegenia Hardware'],
+    acSolutionRating: 5, thermalRating: 5, securityRating: 5, maintenanceRating: 4,
+  },
+  liftandslide: {
+    name:'Lift & Slide Door',
+    desc:'The engineering pinnacle of sliding door technology. When the handle is turned, the panel lifts 3–5mm off the track on precision rollers, creating a near-perfect seal. When open, it glides on those rollers with a single finger.',
+    advantages:['Extraordinary airtight seal when closed — far superior to standard sliding','Panels up to 7 metres wide and 400 kg can be moved effortlessly','Dramatically large openings — connects interior to exterior completely','Superior weatherproofing vs standard sliding','Motorised automation available for ultimate luxury'],
+    limitations:['Premium cost — the most expensive door system','Requires level, flat floor threshold for the rollers','Heavier panels require a higher floor structure specification'],
+    bestFor:['Luxury villas — the defining feature','Living rooms opening to swimming pools or gardens','Penthouses — wide panoramic apertures','Any project where "statement" is the brief'],
+    hardware:['Espag locking system','Pull handle and lockable handle','Strikers','Precision engineered lift & slide rollers','Connecting rod'],
+    acSolutionRating: 4, thermalRating: 4, securityRating: 4, maintenanceRating: 3,
+  },
+  slideandfold: {
+    name:'Slide & Fold (Bi-fold) Door',
+    desc:'Multiple panels that fold accordion-style and stack to one side, creating a completely open aperture — the wall literally disappears.',
+    advantages:['Maximum opening — the entire wall becomes open space','Flexible stacking — choose which side to stack based on your layout','Creates genuine indoor-outdoor flow for entertaining','3–8 panels possible depending on opening width'],
+    limitations:['Panels cannot individually slide — all must move together','Slightly more complex threshold detail than lift & slide','Stacked panels need space on one side'],
+    bestFor:['Entertainment spaces opening to terraces','Kitchen-dining areas opening to gardens','Resort and hotel lobbies','Any space that transforms between enclosed and open'],
+    hardware:['Guide roller system','Espag locking','Hinges at every panel junction','Aluminium track'],
+    acSolutionRating: 3, thermalRating: 3, securityRating: 4, maintenanceRating: 3,
+  },
+  twinsash: {
+    name:'Twin Sash Window',
+    desc:'A window with two independently operable sashes — one fixed and one opening, or both opening in different directions. Offers ventilation flexibility.',
+    advantages:['Independent operation of each sash','Can have lower ventilation sash for security with upper light fixed','Combines fixed glass area with operable section for ventilation'],
+    limitations:['More complex frame — slightly more material'],
+    bestFor:['Bathrooms — lower sash frosted/fixed, upper sash for ventilation','Children\'s rooms — restrict lower sash, allow upper for air','Rooms where cross-ventilation strategy requires specific placement'],
+    hardware:['Friction stay for glass panel','Offset handle','Casement striker','Espag 22mm BS','Sash catch mesh panel'],
+    acSolutionRating: 4, thermalRating: 4, securityRating: 4, maintenanceRating: 4,
+  },
+};
+
+/* =====================================================
+   DOMAIN 4 — GLASS STUDIO KNOWLEDGE
+===================================================== */
+const GLASS_KB = {
+  toughened: {
+    name:'Toughened Safety Glass (Single)',
+    also:'Tempered Glass',
+    desc:'Float glass heated to 620°C and rapidly cooled — this process creates internal compression that makes it 4–5× stronger than annealed glass. When it does break, it shatters into thousands of small blunt pebbles rather than dangerous sharp shards.',
+    whenToUse:['All ground-floor windows and doors (mandatory)','Anywhere children could contact glass','Shower screens and partitions','Balustrading and stair glass','Any application where human impact is possible'],
+    benefits:['5× stronger than annealed glass','Safe breakage pattern — blunt pebbles, not shards','Thermal resistance: −20°C to +300°C','Cannot be cut after tempering'],
+    tradeoffs:['Once tempered, cannot be cut or drilled','Slightly distorted view compared to float glass','Nickel sulphide inclusions can cause spontaneous breakage — heat-soaking eliminates this risk'],
+    isMandatory: true,
+    code: 'IS 2553',
+    thickness:'4mm to 19mm',
+  },
+  laminated: {
+    name:'Laminated Glass',
+    also:'PVB Laminated Safety Glass',
+    desc:'Two panes of glass (tempered or annealed) with a transparent PVB film bonded between them under heat and pressure. When broken, fragments remain bonded to the film — the window stays in place.',
+    whenToUse:['Security applications — forces entry tools to work significantly longer','Acoustic priority — PVB film dampens sound vibration','Overhead glazing — broken glass cannot fall on people below','Cyclone and high-wind areas','Privacy or UV-blocking requirements'],
+    benefits:['Remains in frame when broken — sustained weather protection and security','Acoustic improvement: 35–42 dB Rw','Blocks 99% of UV radiation','Available as anti-intrusion Grade RC2/RC3','Can incorporate tinted, coloured, or printed interlayers'],
+    tradeoffs:['Heavier than toughened alone','Slightly lower clarity in very thick versions','More expensive than single toughened'],
+    pvbNote:'PVB = Polyvinyl Butyral. The thickness of the PVB interlayer determines acoustic and security performance.',
+  },
+  dgu: {
+    name:'Double Glazed Unit (DGU)',
+    also:'Insulated Glass Unit (IGU)',
+    desc:'Two glass panes separated by an aluminium or warm-edge spacer bar, filled with argon gas and hermetically sealed around the perimeter. The air/gas gap is the insulating layer.',
+    whenToUse:['Any project with thermal performance as a priority','Wherever energy bills are a concern','Noise reduction when combined with the right glass types','All our premium systems — we recommend DGU as the minimum specification'],
+    benefits:['Reduces U-value from 5.8 (single) to ~2.8 (DGU air) to ~1.4 (DGU Low-E argon)','Eliminates condensation on interior glass surface','Reduces solar heat gain when specified with solar control glass','25–30% energy bill reduction typical'],
+    gasOptions:{'Air':'Lowest cost, good performance',Argon:'34% lower conductivity than air — standard recommendation',Krypton:'Superior performance, thinner gap possible — premium option'},
+    gapSizes:'6mm, 12mm, 16mm, 20mm — wider gap improves acoustic performance up to 16mm then plateaus',
+    tradeoffs:['Heavier than single glass — frame and structure must accommodate weight','Hermetic seal warranty important — verify this in any quotation'],
+    sealWarranty:'10 years — confirm in every supplier quotation',
+  },
+  laminatedDGU: {
+    name:'Laminated DGU',
+    also:'Acoustic Security DGU',
+    desc:'The best of all worlds: two glass panes separated by an argon-filled gap, with one pane being laminated. Combines thermal insulation from the DGU with the acoustic and security benefits of laminated glass.',
+    whenToUse:['Highway, airport, railway adjacent properties — maximum acoustic priority','Security-critical applications with thermal requirement','Premium installations where specification is not a compromise'],
+    benefits:['Thermal + acoustic + security in one unit','Acoustic performance up to 45+ dB Rw','Continues providing weather protection even if outer pane is broken','Best overall specification for most premium applications'],
+    tradeoffs:['Highest cost glass unit','Heaviest glass unit — must verify frame capacity'],
+    bestSpec:'Laminated DGU with argon fill and Low-E coating on inner pane face 3 — the complete specification',
+  },
+  lowE: {
+    name:'Low-E Glass',
+    also:'Low Emissivity Glass',
+    desc:'Float or toughened glass with a microscopically thin metallic oxide coating (invisible to the naked eye) that reflects infrared radiation while allowing visible light to pass through.',
+    whenToUse:['Hot climates — all south and west facing glazing','Cold climates — retains interior heat in winter','Energy efficiency priority','Any DGU — Low-E dramatically improves DGU performance'],
+    benefits:['Keeps interiors 4–5°C cooler in summer without tinting the view','Reduces heating energy by reflecting indoor warmth back inside in winter','SHGC selectable from 0.2 (high rejection) to 0.7 (more solar gain)','Invisible coating — no visual difference from standard glass'],
+    hardCoat:'Pyrolytic coating applied during float glass manufacture. Can be used as single glass. More durable but slightly lower performance.',
+    softCoat:'Sputter coating applied after manufacture. Higher performance but must be enclosed in a DGU (coating faces into the gas gap, protected from atmosphere). Our recommendation for premium applications.',
+    tradeoffs:['Soft-coat must be used inside a sealed DGU unit','Slightly higher cost than clear glass'],
+  },
+  acoustic: {
+    name:'Acoustic Glass',
+    also:'Sound Reduction Glass',
+    desc:'Laminated glass with a specialist acoustic PVB interlayer of varying thickness. The interlayer decouples the two glass panes from a vibration standpoint — sound energy converts to heat in the PVB rather than transmitting through.',
+    performanceLevels:{
+      'Standard DGU': '28–32 dB Rw',
+      'Laminated DGU': '35–38 dB Rw',
+      'Acoustic Laminated DGU': '40–45 dB Rw',
+      'Secondary glazing added': '48–52 dB Rw',
+    },
+    whenToUse:['Highway or busy road frontage','Urban areas with traffic/commercial noise','Near railways or stations','Airport flight paths','Any home where noise is disrupting sleep or wellbeing'],
+    perceptionNote:'10 dB reduction halves the perceived loudness. At 45 dB reduction, a highway that sounds like a conversation becomes barely perceptible.',
+    recommendation:'For Indian urban conditions, I recommend acoustic laminated DGU as the minimum specification for any property within 200m of a major road.',
+  },
+  smartGlass: {
+    name:'Smart Switchable Glass (PDLC)',
+    also:'Privacy Glass, Electrochromic Glass',
+    desc:'Glass incorporating Polymer Dispersed Liquid Crystal (PDLC) technology. When an electrical current is applied (12V DC), the liquid crystals align and the glass becomes clear. When power is off, crystals are randomly oriented and the glass appears frosted.',
+    whenToUse:['Conference rooms needing instant privacy','Bathroom windows for privacy on demand','Office partitions','Hospital partitions','High-end residential bathrooms and dressing rooms'],
+    benefits:['Frosted privacy at the touch of a button — or automated on timer/sensor','Maintains natural light transmission in both states','Eliminates the need for blinds or curtains','UV blocking in both states — 99%','Can be integrated with smart home systems','Remote control, app control, or occupancy sensor operated'],
+    powerConsumption:'~5 W/m² — negligible running cost',
+    tradeoffs:['Premium cost — significant investment per square metre','Requires electrical supply to the frame','Power failure = frosted (fail-safe for privacy, but consider power resilience)'],
+    ourNote:'This is one of the most impressive product demonstrations in our Experience Centres — I recommend visiting to see it in person.',
+  },
+};
+
+/* =====================================================
+   DOMAIN 5 — SOLUTION ADVISOR ENGINE
+===================================================== */
+const SOLUTION_ADVISOR = {
+  acoustic: {
+    title:'Acoustic Solution',
+    challenge:'Outside noise disrupting your home — traffic, trains, airports, neighbours',
+    principle:'Acoustic performance comes from two elements: the frame (sealing) and the glass (sound damping). Both must be addressed together.',
+    primaryFrame:'Casement or fixed windows — compression seal is critical. Sliding windows have inherent gaps.',
+    primaryGlass:'Acoustic Laminated DGU with 16mm+ argon gap',
+    hardwareNote:'Multipoint espag locking is not just for security — it compresses the sash against the gaskets, sealing out sound',
+    performanceRange:'Standard: 28 dB → Our acoustic package: 45 dB',
+    upgrades:['Add secondary glazing for 52 dB maximum','Heavier outer glass pane asymmetric configuration breaks sound frequency resonance'],
+    avoidFor:'Sliding windows as primary solution in noisy environments',
+    realWorldNote:'A client near the Chandigarh bypass told me after installation they had to check whether their windows were open because the silence was so unexpected.',
+  },
+  privacy: {
+    title:'Privacy Solution',
+    challenge:'Natural light without exposure to neighbours, street, or shared spaces',
+    options:[
+      {name:'Frosted / Obscure Glass',desc:'Permanent privacy — light passes, images cannot. Fixed solution.',bestFor:'Bathrooms, ground floor windows facing neighbours'},
+      {name:'Smart PDLC Glass',desc:'Clear or frosted on demand — electrical switching.',bestFor:'Premium bathrooms, home offices, conference rooms, any space where flexibility is valued'},
+      {name:'Reflective Glass',desc:'One-way mirror effect in daylight — see out, cannot see in.',bestFor:'Urban apartments at street level, offices, any south/west facing elevation'},
+      {name:'High Sill / Top Hung',desc:'Position window high in wall — light enters without sightlines from outside.',bestFor:'Bathrooms, bedrooms, anywhere structural changes are acceptable'},
+    ],
+    recommendation:'For most residential bathrooms: frosted glass in casement or top-hung profile. For premium applications: PDLC smart glass for ultimate flexibility.',
+  },
+  energyEfficiency: {
+    title:'Energy Efficiency Solution',
+    challenge:'High air conditioning bills in summer, cold rooms in winter — thermal discomfort year-round',
+    principle:'Heat enters your home through the glass primarily, not the frame. The glass specification is the primary lever.',
+    hotClimate:{
+      glass:'Solar Control Low-E DGU — blocks 65–70% of solar heat while maintaining views',
+      frame:'Either aluminium or uPVC — thermal break mandatory in aluminium',
+      position:'Most critical on south and west facing facades where afternoon sun is strongest',
+      savings:'30–50% reduction in air conditioning energy consumption',
+    },
+    coldClimate:{
+      glass:'Low-E DGU argon — retains interior warmth, U-value 1.4 W/m²K',
+      premium:'Triple glazed Low-E — U-value 0.7–0.8 W/m²K for maximum retention',
+      frame:'uPVC for inherent thermal superiority in cold conditions',
+    },
+    certification:['BEE 5-star rated systems available','ECBC compliance for green building requirements','GRIHA and LEED credit-eligible specifications'],
+    roi:'₹25,000–40,000 annual saving on a typical 3BHK with premium glazing. Payback period: 3–5 years.',
+  },
+  antiPollution: {
+    title:'Anti-Pollution Solution',
+    challenge:'Particulate matter, dust, and smog entering the home — particularly relevant in Delhi NCR, Ludhiana, and other high-AQI cities',
+    principle:'Pollution solution is fundamentally an airtightness solution — if no uncontrolled air enters, no pollutants enter. Sealing quality is everything.',
+    bestFrame:'Casement or fixed windows with multipoint espag locking — maximum compression of all seals',
+    avoidFrame:'Sliding windows — have inherent air gaps in the sliding rail system',
+    additional:'HEPA mesh — ultra-fine mesh that blocks PM2.5 particles while allowing some air flow',
+    primaryGlass:'DGU with Low-E — the sealed unit itself contributes to the airtight envelope',
+    performance:'Our anti-pollution systems reduce particulate ingress by 90%+ when closed',
+    practicalNote:'No window completely eliminates pollution when open — the solution is an airtight closed system with mechanical ventilation providing filtered fresh air.',
+  },
+  safetyAndSecurity: {
+    title:'Safety & Security Solution',
+    glassTiers:[
+      {name:'Toughened Glass',security:'RC0 — safe breakage but not intrusion-resistant',when:'Internal glazing, above ground floor'},
+      {name:'Laminated Glass',security:'RC1 — holds together when broken, delays entry significantly',when:'Ground floor, any accessible location'},
+      {name:'Laminated Intruder-Resistant',security:'RC2 — 3+ minutes with standard tools, tested and certified',when:'High-security requirement, ground floor, detached homes'},
+      {name:'Laminated DGU',security:'RC2 with thermal performance',when:'Premium specification — security + energy + acoustic combined'},
+    ],
+    frameSecurity:['Multi-point espag locking — 5–7 locking points simultaneously engaged','Steel reinforcement within uPVC profiles','Anti-lift blocks in all sliding systems','Security hinges — internal mounting prevents external removal'],
+    hardwareSecurity:['RC2 certified cylinder — anti-drill, anti-pick, anti-snap','Smart lock integration — fingerprint, PIN, app monitoring','Deadbolt on all external casement doors'],
+    certifications:'PAS 24 and RC2 — the two independent standards we certify to',
+    childSafety:['Anti-trap profiles — no finger-pinch risk','Window restrictors — limits opening to 100mm max','Toughened or laminated glass throughout — no sharp shards'],
+  },
+};
+
+/* =====================================================
+   DOMAIN 6 — RECOMMENDATION RULES ENGINE
+   "If customer says X → recommend Y"
+===================================================== */
+const REC_RULES = [
+  // NOISE / ACOUSTIC
+  {trigger:['highway','near road','traffic noise','airport','railway','train','noisy area','cannot sleep','noise problem','sound issue'],
+   rec:{solution:'Acoustic',frame:'Casement (compression seal mandatory)',glass:'Acoustic Laminated DGU — 45 dB Rw',hardware:'Multipoint espag locking',note:'The compression seal of casement windows is as important as the glass — sliding windows cannot achieve the same acoustic performance regardless of glass specification.'}},
+  // HEAT / SOLAR
+  {trigger:['afternoon heat','room gets hot','sun facing','west facing','south facing','summer heat','too hot','reduce heat','low-e','heat coming in','ac bills'],
+   rec:{solution:'Solar Control',frame:'Either aluminium or thermally broken uPVC',glass:'Solar Control Low-E DGU — 70% solar heat rejection',hardware:'Standard multipoint',note:'Position of the Low-E coating matters: for hot climates, specify coating on face 2 (inner surface of outer pane) for maximum solar rejection.'}},
+  // COLD / WINTER
+  {trigger:['cold room','winter warmth','heat escaping','cold climate','hill station','shimla','himachal','high altitude','heating bills'],
+   rec:{solution:'Thermal Insulation',frame:'uPVC preferred — inherently superior thermal performance',glass:'Low-E argon DGU (U-value 1.4) or triple glaze (U-value 0.7)',hardware:'Multipoint compression locking',note:'Every 10% reduction in U-value reduces heating bills proportionally. Triple glaze pays back in 4–6 years in cold climates.'}},
+  // SECURITY
+  {trigger:['security','burglar','break in','theft','safe home','protection','intrusion','forced entry','rc2','multipoint'],
+   rec:{solution:'Security',frame:'Both materials available — steel reinforced uPVC or aluminium',glass:'Laminated anti-intrusion glass — RC2 certified',hardware:'RC2 cylinder + 7-point multipoint espag + security hinges',note:'Most burglaries are opportunistic — a window that takes more than 3 minutes to defeat is statistically not attacked. RC2 certification guarantees this minimum.'}},
+  // PRIVACY
+  {trigger:['neighbours can see','privacy','overlooked','bathroom window','frosted','cannot see in','ground floor'],
+   rec:{solution:'Privacy',frame:'Any — frame choice does not affect privacy solution',glass:'Frosted/obscure glass (permanent) or Smart PDLC glass (switchable)',hardware:'Standard',note:'For bathrooms, frosted obscure glass in a top-hung frame gives both privacy and rain-safe ventilation. For living spaces, PDLC smart glass gives you privacy on demand without sacrificing the view.'}},
+  // COASTAL
+  {trigger:['coastal','sea facing','beach','salt air','marine','goa','mumbai','humidity','corrosion'],
+   rec:{solution:'Marine Grade',frame:'Marine-grade aluminium with hard anodising — not standard powder coat',glass:'Laminated Low-E DGU — laminated outer pane resists debris impact',hardware:'Grade 316 stainless steel throughout',note:'Standard powder coating will fail in marine environments within 5–7 years. Marine-grade hard anodising is a different and far more durable process — always specify this for coastal projects.'}},
+  // HIGH WIND
+  {trigger:['high wind','exposed site','hilltop','wind load','storm','cyclone','plains','open field'],
+   rec:{solution:'Wind Load',frame:'Structural grade aluminium — verify AW wind load classification',glass:'Laminated glass on windward facade — holds in frame if cracked',hardware:'Reinforced multipoint with additional espag locks',note:'For exposed sites, request the wind load calculation for your specific location. We design to IS 875 Part 3 wind load code.'}},
+  // VILLA
+  {trigger:['villa','bungalow','luxury home','farmhouse','estate','premium'],
+   rec:{solution:'Premium Villa Package',frame:'Aluminium Elite — thermally broken, full RAL colour range',glass:'Laminated DGU Low-E with argon — combines all performance benefits',hardware:'Smart lock + motorised option + Grade 316 SS handles',typology:'Lift & Slide for living areas, Tilt & Turn for bedrooms, Fixed for feature glazing',note:'Villa specifications are our speciality. The combination of lift & slide doors with fixed corner glazing creates a visual effect that\'s transformative — I recommend visiting an Experience Centre to see this in person.'}},
+  // APARTMENT
+  {trigger:['apartment','flat','condo','builder project','society','residential complex'],
+   rec:{solution:'Residential Efficiency Package',frame:'uPVC — optimal thermal + acoustic + maintenance value for apartments',glass:'Acoustic DGU — most apartments face urban noise',hardware:'Multipoint with anti-lift blocks on sliders',typology:'Casement for bedrooms (noise), Sliding for balconies (space efficiency)',note:'The most common apartment mistake I see is specifying sliding windows throughout. Bedrooms benefit enormously from casement — the acoustic seal difference is audible.'}},
+  // OFFICE
+  {trigger:['office','commercial','corporate','workplace','curtain wall'],
+   rec:{solution:'Commercial Performance Package',frame:'Aluminium SlimLine — structural grade for large openings',glass:'Solar control Low-E DGU for facades, acoustic laminated for street-facing',hardware:'Multipoint with master key system',typology:'Fixed and casement mix — fixed for maximum light, casement for ventilation control',note:'Commercial specifications must address ECBC energy code compliance and NBC fire safety requirements — we provide full documentation for building plan approval.'}},
+  // MAINTENANCE LOW
+  {trigger:['no maintenance','easy care','low maintenance','busy','cannot maintain','clean easily'],
+   rec:{solution:'Zero Maintenance Specification',frame:'uPVC — simply wipe with soapy water, never paint',glass:'Self-cleaning glass coating — photocatalytic, breaks down dirt in sunlight',hardware:'Stainless steel — no rust, no corrosion',typology:'Any opening style — maintenance is about material choice, not typology',note:'Self-cleaning glass is a genuine technology — photocatalytic TiO₂ coating breaks down organic dirt in UV light and rainwater sheets cleanly off. It doesn\'t eliminate cleaning but dramatically reduces frequency.'}},
+  // POLLUTION / DELHI
+  {trigger:['pollution','smog','aqi','dust','delhi','particulate','pm2.5','air quality'],
+   rec:{solution:'Anti-Pollution Package',frame:'Casement or fixed — sliding windows cannot fully seal against pollution',glass:'DGU Low-E — sealed unit contributes to airtight envelope',hardware:'Multipoint espag — compression seal eliminates air gaps',mesh:'HEPA-rated fine mesh on ventilation openings',note:'This is particularly important in Delhi NCR, Ludhiana, and other high-AQI cities. The key insight: pollution solution is an airtightness solution. If no uncontrolled air enters, no pollutants enter.'}},
+  // ENERGY BILLS
+  {trigger:['electricity bills','energy bills','ac cost','power consumption','energy saving','green building','leed','griha','ecbc'],
+   rec:{solution:'Energy Efficiency Package',frame:'Thermally broken aluminium or uPVC — both work',glass:'Low-E argon DGU minimum — solar control Low-E for south/west faces',hardware:'Multipoint compression locking — airtight seal prevents infiltration losses',certification:'BEE 5-star rated, ECBC compliant, GRIHA/LEED credit eligible',note:'Premium glazing typically saves ₹25,000–40,000 per year on a 3BHK in a hot climate. The payback period on the glass upgrade alone is 3–5 years — everything after that is pure saving.'}},
+  // SMART HOME
+  {trigger:['smart home','alexa','google home','automation','motorised','remote control','app controlled'],
+   rec:{solution:'Smart Integration Package',frame:'Aluminium — mechanical precision required for motorisation',glass:'Smart PDLC available for privacy applications',hardware:'Smart lock (fingerprint/PIN/app) + motorised opener',integration:'Amazon Alexa, Google Home, Apple HomeKit, KNX/Modbus for commercial',note:'We\'ve done full smart home integrations with voice control for windows, doors, locks, and privacy glass in a single system. The experience is genuinely remarkable — worth discussing with our technical team.'}},
+  // WARRANTY QUERY
+  {trigger:['warranty','guarantee','how long','product life','durability','how many years'],
+   rec:{solution:'Warranty & Lifespan',details:{upvcProfile:'10 years',aluminiumProfile:'15 years',hardwareFittings:'5 years',glazingSeal:'10 years',installationQuality:'3 years',waterproofing:'5 years'},note:'Our warranty covers manufacturing defects, colour degradation, hardware malfunction under normal use, and water ingress through frames. Post-handover breakage is not covered — hence our recommendation to visit an Experience Centre and see the quality before committing.'}},
+];
+
+function matchRecRule(userMsg) {
+  const m = userMsg.toLowerCase();
+  for (const rule of REC_RULES) {
+    if (rule.trigger.some(t => m.includes(t))) return rule;
+  }
+  return null;
+}
+
+/* =====================================================
+   DOMAIN 7 — BUYING GUIDE WIZARD KNOWLEDGE
+===================================================== */
+const BUYING_GUIDE = {
+  process:[
+    {step:1,name:'Enquiry & Requirements',desc:'Share your project details, location, and what you\'re trying to achieve. The more I know, the better the recommendation.'},
+    {step:2,name:'Consultation',desc:'A detailed conversation about your project — this is what we\'re doing right now. Understanding priorities before specifying products.'},
+    {step:3,name:'Site Survey',desc:'Our surveyor visits to take precise measurements and assess the openings. This is free and non-obligatory. Typically takes 1–2 hours for a standard home.'},
+    {step:4,name:'Quotation & Specification',desc:'Based on the survey, we prepare a detailed quotation covering materials, glass, hardware, installation, and warranties. Verify: glass spec, locking type, warranty terms, and request drawings.'},
+    {step:5,name:'Order Confirmation',desc:'Once you\'re happy with the specification and pricing, confirm the order with a deposit.'},
+    {step:6,name:'Manufacturing',desc:'10–14 days typically. Profiles are cut to precise dimensions, glass units are manufactured and quality-checked.'},
+    {step:7,name:'Logistics',desc:'Delivery to your site, coordinated with your construction programme.'},
+    {step:8,name:'Installation',desc:'2–7 days depending on scope. Our teams work in sections to minimise disruption. Daily site cleanup. WhatsApp photo updates.'},
+    {step:9,name:'Post-Installation Support',desc:'Final inspection and sign-off. Warranty documentation. AMC options. Our team remains your contact for any queries.'},
+  ],
+  leadTime:'45–60 days from final site measurement to completed installation. Rush track available for standard sizes: 28–35 days.',
+  sitesurvey:'A professional visit to measure every aperture precisely and assess structural conditions. Without this, we cannot guarantee the fit. All apertures must be ready for measurement.',
+  warranty:{
+    upvc:'10 years on profile',
+    aluminium:'15 years on profile',
+    hardware:'5 years (1 year at AIS Windows — verify with your supplier)',
+    glazingSeal:'10 years hermetic seal',
+    installation:'3 years workmanship',
+    waterproofing:'5 years',
+    notCovered:'Physical damage after handover, normal wear, damage from incorrect operation',
+    tip:'Ask your supplier for warranty in writing. Verbal warranties are worthless.',
+  },
+  quotationChecklist:[
+    'Confirm exactly what is included — materials, labour, hardware, glass, installation, sealant',
+    'Glass specification in detail — type, thickness, coating, gas fill, U-value',
+    'Opening mechanism clearly described for each window',
+    'Locking mechanism type — insist on multipoint',
+    'Warranty terms in writing — what is and is not covered',
+    'Request shop drawings or technical diagrams — they confirm the design intent',
+    'Lead time committed in writing',
+    'Payment terms and milestone schedule',
+  ],
+  maintenance:{
+    upvc:['Wipe frames with mild soapy water every 3–6 months','Clear drainage slots with thin rod — prevents water pooling','Silicone lubricant on hinges and lock points annually','Never use abrasive cleaners or solvents'],
+    aluminium:['Non-abrasive cleaner on powder-coated surfaces','Protective wax every 12 months (coastal: every 6 months)','Lubricate hardware annually'],
+    glass:['Standard glass cleaner','Microfibre cloth — prevents scratching','Self-cleaning glass: simply rinse with water'],
+    amc:'Annual Maintenance Contract — professional inspection, hardware servicing, seal checks, priority response. Highly recommended after warranty period.',
+  },
+  experienceCentre:'Visiting an AIS Experience Centre before finalising your specification is something I genuinely recommend to every client. You can open and close every product, feel the quality of the hardware, see the colour samples in natural light, and watch PDLC smart glass switch in person. No brochure or conversation replaces this.',
+  levelAndPlumb:'Critically important — the cavity where the window is installed must be level (horizontal) and plumb (vertical). If not, the window will not seal correctly, will have drainage problems, hardware will wear prematurely, and the visual appearance will look misaligned. We measure and verify this before installation.',
+};
+
+/* =====================================================
+   DOMAIN 8 — COLOUR & SILICON KNOWLEDGE
+===================================================== */
+const COLOUR_KB = {
+  popularColours:['Walnut (wood grain)','Chrome White','Silver Grey','Noir Grey','Grey','Graphite Black'],
+  silicon:{
+    purpose:'Silicon sealant is applied at the junction between frame and wall during installation — critical for weatherproofing and appearance.',
+    colours:['White','Black','Dark Grey','Champagne Gold'],
+    tip:'Always specify silicon colour to match your frame colour — mismatched silicon is one of the most common reasons installations look unprofessional despite good products.',
+    properties:['Weatherproof — resists rain, wind, UV','Flexible — accommodates frame movement without cracking','Waterproof — prevents mould and water damage'],
+    note:'At AIS we always use colour-matched silicon as standard. Ask any supplier to show you their silicon colour range before confirming.',
+  },
+};
+
+/* =====================================================
+   DOMAIN 9 — TEACH MODE ENGINE
+===================================================== */
+const TEACH = {
+  explain(topic) {
+    const t = topic.toLowerCase();
+    // Glossary lookup first
+    const glossaryEntry = lookupGlossary(t);
+    if (glossaryEntry) {
+      return `**${glossaryEntry.full || topic}**\n\n${glossaryEntry.desc}`;
+    }
+    // Typology lookup
+    for (const [key, val] of Object.entries(TYPOLOGY_KB)) {
+      if (t.includes(key) || key.includes(t)) {
+        return `**${val.name}**\n\n${val.desc}\n\n**Best for:** ${val.bestFor.join(' · ')}\n\n**Advantages:**\n${val.advantages.map(a=>'- '+a).join('\n')}`;
+      }
+    }
+    // Glass lookup
+    for (const [key, val] of Object.entries(GLASS_KB)) {
+      if (t.includes(key)) {
+        return `**${val.name}**\n\n${val.desc}\n\n**When to use:** ${val.whenToUse?.join(' · ')}\n\n**Key benefits:**\n${val.benefits?.map(b=>'- '+b).join('\n')}`;
+      }
+    }
+    return null;
+  }
+};
+
+/* =====================================================
+   DOMAIN 10 — AIS COMPANY KNOWLEDGE (from Guide)
+===================================================== */
+const AIS_COMPANY = {
+  fullName:'AIS Windows — A Division of Asahi India Glass Ltd.',
+  parentCompany:'Asahi India Glass Ltd. (AIS)',
+  parentDesc:'India\'s leading integrated glass and window solutions company, dominant player in automotive and building & construction segments.',
+  about:'AIS Windows offers a premium range of doors & windows in uPVC and Aluminium. End-to-end solutions from recommendation through installation and after-sales service.',
+  leadTime:'45–60 days from final measurement to installation',
+  warrantyHighlights:{profile:'10 years (uPVC) / 15 years (aluminium)',hardware:'5 years',gasketWeatherstripping:'5 years'},
+  officeAddress:'17F, New Industrial Town, Industrial Area, Rajiv Gandhi Colony, New Industrial Township, Faridabad, Haryana 121 001',
+  experienceCentres:['Delhi: B-86 First Floor, South Extension, Block B, Defence Colony, New Delhi 110 024','Bengaluru: Ground Floor, HMG Ambassador, 137, Residency Rd, Shanthala Nagar, Ashok Nagar, Bengaluru, Karnataka 560 025'],
+  contact:{email:'ais-windows@aisglass.com',website:'www.aiswindows.com',phone:'1800 103 4805'},
+  idealWindowFeatures:['Solar Protection','Thermal Insulation','Sound Insulation','Water Tightness','Air Permeability','Emissivity (Thermal Radiation)','Resistance to Wind Load','Resistance to Impact Load','Burglar Resistance'],
+};
+
+/* =====================================================
+   KNOWLEDGE ENGINE — MAIN RESPONSE ENRICHER
+===================================================== */
+function enrichResponseWithKnowledge(userMsg, baseResponse, intent) {
+  const m = userMsg.toLowerCase();
+
+  // Check recommendation rules
+  const rule = matchRecRule(m);
+  if (rule && rule.rec) {
+    return buildRuleResponse(rule);
+  }
+
+  // Glossary query
+  if (m.match(/what is|what does|explain|define|meaning of|difference between/)) {
+    const words = m.replace(/what is|what does|explain|define|meaning of|difference between/g,'').trim();
+    const taught = TEACH.explain(words);
+    if (taught) return taught;
+  }
+
+  // Typology query
+  for (const [key, val] of Object.entries(TYPOLOGY_KB)) {
+    if (m.includes(key.replace('and',' & ')) || m.includes(key)) {
+      return buildTypologyResponse(val);
+    }
+  }
+
+  // Glass query
+  if (m.match(/glass|glaz|dgu|laminated|toughened|tempered|low.e|smart glass|acoustic glass/)) {
+    for (const [key, val] of Object.entries(GLASS_KB)) {
+      if (m.includes(key.toLowerCase().replace('_',' '))) {
+        return buildGlassResponse(val);
+      }
+    }
+  }
+
+  // Process query
+  if (m.match(/site survey|survey|lead time|how long|warranty|maintenance|quotation|checklist|experience centre/)) {
+    return buildProcessResponse(m);
+  }
+
+  return null; // Fall through to main KB/consultant
+}
+
+function buildRuleResponse(rule) {
+  const rec = rule.rec;
+  let text = `**${rec.solution}**\n\n`;
+  if (rec.frame) text += `**Frame:** ${rec.frame}\n`;
+  if (rec.glass) text += `**Glass:** ${rec.glass}\n`;
+  if (rec.hardware) text += `**Hardware:** ${rec.hardware}\n`;
+  if (rec.typology) text += `**Window Type:** ${rec.typology}\n`;
+  if (rec.mesh) text += `**Mesh:** ${rec.mesh}\n`;
+  if (rec.certification) text += `**Certification:** ${rec.certification}\n`;
+  if (rec.note) text += `\n${rec.note}`;
+  return text;
+}
+
+function buildTypologyResponse(typo) {
+  return `**${typo.name}**\n\n${typo.desc}\n\n**Advantages:**\n${typo.advantages.map(a=>'- '+a).join('\n')}\n\n**Best for:**\n${typo.bestFor.map(b=>'- '+b).join('\n')}\n\n**Limitations:**\n${typo.limitations?.map(l=>'- '+l).join('\n')||'None significant for appropriate applications'}`;
+}
+
+function buildGlassResponse(glass) {
+  let text = `**${glass.name}**\n\n${glass.desc}\n\n`;
+  if (glass.whenToUse) text += `**When to specify this:**\n${glass.whenToUse.map(w=>'- '+w).join('\n')}\n\n`;
+  if (glass.benefits) text += `**Benefits:**\n${glass.benefits.map(b=>'- '+b).join('\n')}\n\n`;
+  if (glass.tradeoffs) text += `**Considerations:**\n${glass.tradeoffs.map(t=>'- '+t).join('\n')}`;
+  return text;
+}
+
+function buildProcessResponse(msg) {
+  if (msg.includes('site survey')) return `**Site Survey — What to Expect**\n\n${BUYING_GUIDE.sitesurvey}\n\nThis is always free of charge and takes 1–2 hours for a standard home.`;
+  if (msg.includes('lead time') || msg.includes('how long')) return `**Lead Time at AIS Windows**\n\n${BUYING_GUIDE.leadTime}\n\n**The 8-step journey:**\n${BUYING_GUIDE.process.map(p=>`${p.step}. **${p.name}** — ${p.desc}`).join('\n')}`;
+  if (msg.includes('warranty')) return `**AIS Windows Warranty**\n\n${Object.entries(BUYING_GUIDE.warranty).filter(([k])=>!['tip','notCovered'].includes(k)).map(([k,v])=>`- **${k.replace(/([A-Z])/g,' $1').trim()}:** ${v}`).join('\n')}\n\n**Not covered:** ${BUYING_GUIDE.warranty.notCovered}\n\n**Pro tip:** ${BUYING_GUIDE.warranty.tip}`;
+  if (msg.includes('quotation') || msg.includes('checklist')) return `**What to Verify in Any Quotation**\n\n${BUYING_GUIDE.quotationChecklist.map((c,i)=>`${i+1}. ${c}`).join('\n')}`;
+  if (msg.includes('maintenance')) return `**Maintenance Guide**\n\n**uPVC:**\n${BUYING_GUIDE.maintenance.upvc.map(m=>'- '+m).join('\n')}\n\n**Aluminium:**\n${BUYING_GUIDE.maintenance.aluminium.map(m=>'- '+m).join('\n')}\n\n**Glass:**\n${BUYING_GUIDE.maintenance.glass.map(m=>'- '+m).join('\n')}\n\n${BUYING_GUIDE.maintenance.amc}`;
+  if (msg.includes('experience centre')) return `**Why Visit an AIS Experience Centre?**\n\n${BUYING_GUIDE.experienceCentre}\n\n**Locations:**\n${AIS_COMPANY.experienceCentres.map(l=>'- '+l).join('\n')}`;
+  return null;
+}
+
+/* =====================================================
+   PATCH THE CONSULTANT ENGINE RESPONSE
+===================================================== */
+const _kbOrigGetResp = typeof window.getResp === 'function' ? window.getResp : null;
+window.getResp = function(rawQ) {
+  // Try knowledge engine first for specific technical/process queries
+  const knowledgeResp = enrichResponseWithKnowledge(rawQ, null, null);
+  if (knowledgeResp) {
+    const intents = typeof detectIntents === 'function' ? detectIntents(rawQ) : [];
+    const conf = intents[0]?.score ? calcConfidence(intents[0].score) : 82;
+    if (typeof updateDiag === 'function') updateDiag('knowledge_engine', 100, conf, conf);
+    return { r: knowledgeResp, intent: 'knowledge', confidence: conf, intents };
+  }
+  // Fall back to previous response engine
+  if (_kbOrigGetResp) return _kbOrigGetResp(rawQ);
+  return { r: 'Let me help you with that.', intent: 'general', confidence: 70, intents: [] };
+};
+
+/* =====================================================
+   KB EXPANSION — Add guide-derived intents to KB_COMPLETE
+===================================================== */
+const KB_GUIDE_EXTRA = [
+  {id:'system_window',k:['system window','what is a system window','window system','profiles hardware glazing'],r:`**What is a System Window?**\n\nA system window is a comprehensive design approach where all components — frame profiles, sashes, hardware, glass seals, and weatherstripping — are engineered together as an integrated system rather than assembled from separate sources.\n\n**Three key components:**\n1. **Profiles** — the structural frame, made from uPVC or aluminium in precise shapes\n2. **Hardware** — hinges, espag locks, handles, rollers — all matched to the profile system\n3. **Glazing** — the glass unit, single or double, with coatings and gas fills as required\n\n**Why it matters:** When all components are designed together, they achieve better thermal performance, acoustic sealing, and long-term durability than mixed-source assemblies. Our systems are tested as complete units to IS and European standards.`},
+  {id:'tilt_turn',k:['tilt and turn','tilt & turn','tilt turn','european window','two mode'],r:`**Tilt & Turn — The Most Versatile Window Available**\n\nThis is my personal favourite window typology, and I recommend it for almost every bedroom project.\n\n**Two modes from one handle position:**\n- **Tilt inward** (handle horizontal) — window opens ~10cm inward at the bottom. Secure ventilation — impossible to open further from outside. You can leave it all night without worry\n- **Turn fully open** (handle vertical) — sash swings inward completely. Full ventilation, easy cleaning from inside\n\n**Hardware suppliers matter:** We specify GU Hardware or Siegenia for all tilt & turn — these are the systems that ensure smooth, reliable dual-function operation for decades.\n\n**Best for:** High-rise apartments (tilt for night ventilation), bedrooms, any application where security and ventilation both matter.`},
+  {id:'lift_slide',k:['lift and slide','lift & slide','lift slide','panoramic door','large sliding door'],r:`**Lift & Slide — The Engineering Masterpiece for Luxury Living**\n\nThis system resolves the fundamental compromise in standard sliding doors — the need to choose between a good seal when closed or smooth operation when moving.\n\n**How it works:** When you turn the handle, a mechanism lifts the entire panel 3–5mm onto precision rollers. The door then glides with almost no force — a 400 kg panel moves with one finger. When you lock, it lowers onto a compression seal.\n\n**Result:** Closed: airtight seal like a casement. Open: effortless operation of enormous panels.\n\nPanels can span up to 7 metres wide. This is the system in every luxury villa project I've worked on.\n\n**Motorisation available** — fully automated with smart home integration.`},
+  {id:'slide_fold',k:['slide and fold','slide & fold','bifold','bi fold','accordion door'],r:`**Slide & Fold — The Wall That Disappears**\n\nBi-fold doors fold accordion-style to stack completely at one or both sides, creating an opening that is essentially the full width of the wall.\n\n**Configuration options:** 2, 3, 4, 5, 6, 7, or 8 panels — the more panels, the larger the opening possible\n\n**Track types:** Bottom rail system (standard) with guide roller at top\n\n**Stacking:** Choose which side to stack based on your space — or split-stack with panels folding both ways from the centre\n\n**Ideal for:** Kitchen openings to gardens, entertainment spaces, resort and hotel lobbies. Creates genuine indoor-outdoor flow that fixed-to-open systems simply cannot match.`},
+  {id:'espag_explained',k:['espag','espagnolette','how does locking work','multipoint locking how'],r:`**Espag (Espagnolette) — Multi-Point Locking Explained**\n\nThe espag is the most important security component in your window or door — yet most people have never heard of it.\n\nHere's what it does: when you turn the handle, a steel rod running along the edge of the sash simultaneously engages 4–7 locking mushrooms into the frame at multiple points. The entire perimeter compresses.\n\n**Why this matters:**\n1. **Security** — multiple simultaneous locking points means enormous force required to force entry\n2. **Weather sealing** — compression at every locking point eliminates air and water gaps\n3. **Acoustic** — tight compression is essential for noise reduction\n\n**Espag sizes:** BS 7.5mm (sliding), BS 15mm (sliding door), BS 32–35mm (casement, tilt & turn)\n\nEvery AIS window includes multipoint espag as standard. Always verify this when comparing quotations from other suppliers.`},
+  {id:'dgu_explained',k:['double glazing explained','dgu explained','how does double glazing work','argon gas why'],r:`**Double Glazing — What It Actually Does**\n\nThe performance of double glazing comes from one thing: the gas gap between the two panes. Argon gas conducts heat 34% less efficiently than air. Combined with a Low-E coating, this creates a very effective thermal barrier.\n\n**The four faces of a DGU:**\n- Face 1: exterior surface of outer pane\n- Face 2: interior surface of outer pane ← Low-E soft coat position for solar control\n- Face 3: exterior surface of inner pane ← Low-E soft coat position for thermal retention\n- Face 4: interior surface of inner pane (inside room)\n\n**Gap size:** 12–16mm is optimal for thermal and acoustic performance. Wider is not necessarily better — acoustic performance plateaus around 16mm.\n\n**The hermetic seal:** Critical. If this fails, you get condensation inside the unit (fogging). Look for a 10-year seal warranty in every quotation.`},
+  {id:'warranty_explained',k:['warranty terms','what does warranty cover','warranty period','product guarantee'],r:`**Understanding Your Window Warranty**\n\nThere are two terms that sound similar but mean different things:\n\n**Guarantee:** A commitment by the manufacturer to repair or replace if the product becomes defective due to manufacturing issues within the specified period.\n\n**Warranty:** Written assurance that the product will perform as expected for the period stated, with repairs or replacement at no extra cost if it doesn't.\n\n**At AIS Windows:**\n- uPVC profiles: 10 years\n- Aluminium profiles: 15 years\n- Double glazing hermetic seal: 10 years\n- Hardware and fittings: 5 years\n- Installation workmanship: 3 years\n- Waterproofing: 5 years\n\n**Critical point:** Any breakage that occurs after handover due to physical damage is not covered. Proper care extends the life of your windows dramatically — think of them like a car.\n\nAlways get warranty terms in writing before signing any order.`},
+  {id:'quotation_guide',k:['how to read quotation','what to check in quote','quotation tips','supplier quote'],r:`**How to Evaluate a Window Quotation — My Honest Guide**\n\nAfter 20 years in this industry, I can tell you that most disputes come from misunderstandings about what was included in the quotation. Here's what to verify:\n\n1. **Confirm exactly what's included:** Labour, hardware, glass, silicon, and additional services — or is this supply-only?\n\n2. **Glass specification in detail:** Single or DGU? Air or argon fill? Clear or Low-E? Thickness of each pane? This is where hidden quality differences live.\n\n3. **Opening mechanism for each window:** Sliding, casement, tilt & turn, fixed? Don't let the fabricator decide this without your input.\n\n4. **Locking system:** Insist on multipoint espag. Any quotation offering single-point locking is offering inferior product.\n\n5. **Warranty terms in writing:** Duration and what is/isn't covered.\n\n6. **Request shop drawings:** A dimensioned drawing of each window confirms the design intent. If a supplier won't provide drawings, that's a warning sign.\n\n7. **Lead time commitment:** Get this in writing — verbal timelines are not binding.`},
+  {id:'experience_centre',k:['experience centre','showroom','visit','see products','touch and feel'],r:`**Why I Always Recommend Visiting an AIS Experience Centre**\n\nEvery product in our range is on display, fully operational — you can open and close them, feel the weight of the hardware, hear the sound seal click into place.\n\nSpecifically, here's what you cannot appreciate from a conversation or brochure:\n- The **weight and smoothness** of a Lift & Slide door gliding on its rollers\n- The **acoustic difference** between a standard sliding window and an acoustic casement — we can demonstrate this with our sound demo\n- **PDLC smart glass switching** — from frosted to clear with the touch of a button\n- **Colour accuracy** — seeing powder coat colours and wood grain foils in natural light versus a printed sample\n- **Hardware quality** — the feel of a GU espag mechanism versus a budget option\n\n**Locations:**\n- **Delhi:** B-86 First Floor, South Extension, Block B, Defence Colony, 110 024\n- **Bengaluru:** Ground Floor, HMG Ambassador, 137 Residency Rd, Ashok Nagar, 560 025\n\nI genuinely recommend this before finalising any specification above ₹5 lakhs.`},
+  {id:'silicon_importance',k:['silicon','sealant','colour silicon','installation silicon'],r:`**Silicon in Window Installation — Often Overlooked, Always Important**\n\nThe silicon sealant at the junction between frame and wall is the last line of defence against water ingress and air infiltration — and it's also what determines whether the installation looks professional or not.\n\n**Key properties:** Weatherproof, UV-resistant, flexible (accommodates movement), permanently waterproof.\n\n**Available colours:** White · Black · Dark Grey · Champagne Gold\n\n**My strong recommendation:** Always match silicon colour to your frame colour. A white frame with grey silicon, or a black frame with white silicon, immediately looks unprofessional regardless of the quality of the window itself.\n\nAt AIS, we specify colour-matched silicon as standard — not an afterthought.`},
+  {id:'level_plumb',k:['level and plumb','installation quality','cavity measurement','frame not fitting','window not closing'],r:`**Level & Plumb — Why Installation Quality Is Everything**\n\n**Level:** The horizontal flatness of the window cavity\n**Plumb:** The vertical straightness\n\nIf either is off by more than 2mm across a window width, problems cascade:\n\n**Operational:** The window won't close or lock properly. Handles become stiff. Sliding panels won't run true.\n\n**Weather:** Drainage channels sit at wrong angles — water pools. Seals compress unevenly — air and water find paths through.\n\n**Structural:** Uneven stress on hardware accelerates wear. Glass is put in torsion — risk of cracking.\n\n**Aesthetic:** Frames look visibly misaligned against the wall finish.\n\nOur installation teams use precision spirit levels and calibrated measuring equipment on every window before fixing. Never skip this step — it is not a formality.`},
+  {id:'colours_explained',k:['colour options','available colours','powder coating','wood grain','colour choice'],r:`**Colour Options for uPVC and Aluminium Windows**\n\n**Most Popular Colours:**\n- Walnut (wood grain foil — popular for traditional and warm aesthetics)\n- Chrome White (bright white, clean contemporary)\n- Silver Grey (versatile neutral)\n- Noir Grey (modern, architectural)\n- Grey (classic mid-tone)\n- Graphite Black (dramatic, premium — particularly popular for villa projects)\n\n**For Aluminium:** Any RAL colour available on request — powder coated to order. Lead time for custom RAL is slightly longer.\n\n**For uPVC:** Wood grain foils available in Walnut, Oak, and other options. Solid colour foils for the popular range above.\n\n**My guidance on colour choice:** Visit our Experience Centre to see colours in natural light. Sample chips look different under artificial lighting. I've seen clients fall in love with Graphite Black in the showroom and it transforms their home — but this decision should be made in person, not from a brochure.`},
+];
+
+if (typeof KB_COMPLETE !== 'undefined') {
+  // Remove any duplicate IDs before adding
+  const existingIds = new Set(KB_COMPLETE.map(k => k.id));
+  KB_GUIDE_EXTRA.forEach(entry => {
+    if (!existingIds.has(entry.id)) KB_COMPLETE.push(entry);
+  });
+}
+
+console.log('[AIS Knowledge Engine] Loaded:', Object.keys(GLOSSARY).length, 'glossary terms,', REC_RULES.length, 'recommendation rules,', Object.keys(TYPOLOGY_KB).length, 'typologies,', Object.keys(GLASS_KB).length, 'glass types');
+
 </script>
 </body>
 </html>
