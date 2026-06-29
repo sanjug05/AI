@@ -1246,6 +1246,21 @@ body.offline-mode #app{padding-top:36px}
   #pwa-learn,#pwa-practice,#pwa-profile-ent{display:block}
 }
 
+
+/* =====================================================
+   DESKTOP GUARD — keep existing layout on wide screens
+===================================================== */
+@media(min-width:769px){
+  /* Chat area always visible on desktop */
+  #ca{display:flex!important}
+  /* Hide ALL mobile-only panels and chrome */
+  #pwa-home,#pwa-learn,#pwa-practice,#pwa-profile-ent{display:none!important}
+  #pwa-consult,#pwa-products,#pwa-settings{display:none!important}
+  #mob-header{display:none!important}
+  #bnav{display:none!important}
+  /* Role overlay still allowed (position:fixed — handled by JS) */
+}
+
 </style>
 </head>
 <body>
@@ -7504,6 +7519,18 @@ window.switchTab = function(tab) {
     settings: '#pwa-settings',
   };
   activeTab = tab;
+  const isDesktop = window.innerWidth > 768;
+  if (isDesktop) {
+    /* Desktop: sidebar drives layout — always keep #ca visible */
+    const ca = document.getElementById('ca');
+    if (ca) ca.style.display = 'flex';
+    /* Update nav highlights in sidebar if they exist */
+    document.querySelectorAll('.bnav-btn').forEach(b =>
+      b.classList.toggle('active', b.id === 'bnav-' + tab));
+    if (navigator.vibrate) navigator.vibrate(8);
+    return;
+  }
+  /* Mobile-only panel switching below */
   /* Hide all panels */
   document.querySelectorAll('.pwa-panel').forEach(p => p.classList.remove('active'));
   const ca = document.getElementById('ca');
@@ -7584,8 +7611,16 @@ function initKOS() {
   updateMobHeader();
   patchAppTitle();
   initKOSDashboard();
-  /* Default to enterprise home */
-  switchTab('home');
+  /* On mobile: show dashboard panel. On desktop: keep #ca visible. */
+  if (window.innerWidth <= 768) {
+    switchTab('home');
+  } else {
+    /* Desktop: ensure chat area stays visible */
+    const ca = document.getElementById('ca');
+    if (ca) ca.style.display = 'flex';
+    /* Ensure mobile panels are hidden */
+    document.querySelectorAll('.pwa-panel').forEach(p => p.classList.remove('active'));
+  }
 }
 
 function showAnnouncement() {
@@ -7597,16 +7632,44 @@ function showAnnouncement() {
   function run() {
     patchAppTitle();
     if (!currentRole) {
-      /* First launch — show role selection */
+      /* First launch — show role selection (works on both mobile & desktop) */
       const overlay = document.getElementById('role-overlay');
       if (overlay) { overlay.style.display = 'flex'; }
     } else {
-      /* Returning user — go straight to dashboard */
+      /* Returning user — init KOS (mobile shows dashboard, desktop keeps #ca) */
       setTimeout(initKOS, 200);
+    }
+    /* Always ensure #ca is visible on desktop regardless of role state */
+    if (window.innerWidth > 768) {
+      const ca = document.getElementById('ca');
+      if (ca) ca.style.display = 'flex';
     }
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run);
   else setTimeout(run, 250);
+})();
+
+
+/* ── RESPONSIVE RESIZE HANDLER ── */
+(function() {
+  let _lastW = window.innerWidth;
+  window.addEventListener('resize', () => {
+    const w = window.innerWidth;
+    if (_lastW === w) return;
+    const wasDesktop = _lastW > 768;
+    const isDesktop  = w > 768;
+    _lastW = w;
+    if (wasDesktop === isDesktop) return; // no breakpoint crossing
+    if (isDesktop) {
+      /* Switched to desktop: restore #ca, hide mobile panels */
+      document.querySelectorAll('.pwa-panel').forEach(p => p.classList.remove('active'));
+      const ca = document.getElementById('ca');
+      if (ca) ca.style.display = 'flex';
+    } else {
+      /* Switched to mobile: show dashboard panel */
+      switchTab(activeTab || 'home');
+    }
+  }, { passive: true });
 })();
 
 </script>
