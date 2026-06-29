@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
 <meta name="description" content="AIS Smart Assistant v3.0 — Neural Consultant Platform for premium doors and windows">
 <meta name="theme-color" content="#06060f">
-<title>AIS Smart Assistant v3.0 — Neural Consultant Platform</title>
+<title>AIS KnowledgeOS — Enterprise Learning & Sales Enablement Platform</title>
 <style>
 
 /* =====================================================
@@ -1011,6 +1011,241 @@ body.offline-mode #app{padding-top:36px}
   .mob-header-inner{height:52px}
 }
 
+
+/* =====================================================
+   AIS KnowledgeOS — ENTERPRISE DESIGN SYSTEM
+===================================================== */
+:root{
+  --gold:#ffaa00;--gold-dim:rgba(255,170,0,.12);--gold-b:rgba(255,170,0,.25);
+  --green-ent:#00ff88;--green-dim:rgba(0,255,136,.1);
+  --red-ent:#ff2d78;--red-dim:rgba(255,45,120,.1);
+  --orange-ent:#ff9500;--orange-dim:rgba(255,149,0,.1);
+  --mod-h:52px;
+}
+
+/* ROLE SELECTION OVERLAY */
+#role-overlay{position:fixed;inset:0;z-index:99990;
+  background:radial-gradient(ellipse at 30% 40%,rgba(0,212,255,.08) 0%,transparent 60%),
+  radial-gradient(ellipse at 70% 60%,rgba(123,47,255,.08) 0%,transparent 60%),
+  var(--bg-0);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:20px;opacity:1;transition:opacity .5s ease;overflow-y:auto}
+#role-overlay.hidden{opacity:0;pointer-events:none}
+.role-overlay-logo{display:flex;align-items:center;gap:14px;margin-bottom:10px}
+.role-overlay-icon{width:52px;height:52px;border-radius:14px;background:var(--grad1);
+  display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:900;color:#fff;
+  box-shadow:var(--glow1)}
+.role-overlay-brand{font-size:22px;font-weight:800;color:var(--txt-1)}
+.role-overlay-tag{font-size:12px;color:var(--txt-3);margin-top:1px}
+.role-overlay-title{font-size:16px;font-weight:600;color:var(--txt-2);margin:24px 0 16px;text-align:center}
+.role-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;max-width:540px;margin-bottom:20px}
+.role-card{background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r-lg);
+  padding:14px 10px;text-align:center;cursor:pointer;transition:all var(--tn);
+  -webkit-tap-highlight-color:transparent}
+.role-card:hover,.role-card:active{border-color:var(--ac1);background:rgba(0,212,255,.08);transform:scale(.98)}
+.role-card.selected{border-color:var(--ac1);background:rgba(0,212,255,.12);box-shadow:var(--glow1)}
+.role-card-icon{font-size:26px;margin-bottom:7px}
+.role-card-name{font-size:11px;font-weight:700;color:var(--txt-1);line-height:1.3}
+.role-start-btn{width:100%;max-width:540px;padding:18px;border-radius:var(--r-full);
+  background:var(--grad1);border:none;color:#fff;font-size:16px;font-weight:700;
+  cursor:pointer;box-shadow:var(--glow1);transition:all var(--tn)}
+.role-start-btn:hover{opacity:.9;transform:scale(1.01)}
+
+/* ENTERPRISE DASHBOARD */
+#pwa-home{padding:0}
+.kos-dashboard{padding-bottom:calc(var(--bnav-h) + var(--safe-b) + 20px)}
+.kos-header{padding:16px 16px 12px;background:linear-gradient(135deg,rgba(0,212,255,.05),rgba(123,47,255,.05));
+  border-bottom:1px solid var(--glass-b)}
+.kos-greeting{font-size:18px;font-weight:800;color:var(--txt-1);margin-bottom:2px}
+.kos-role-tag{font-size:11px;color:var(--ac1);font-weight:600;letter-spacing:.5px;margin-bottom:10px;
+  display:flex;align-items:center;gap:6px}
+.kos-role-dot{width:6px;height:6px;border-radius:50%;background:var(--ac1);animation:sp 2s ease-in-out infinite}
+.kos-progress-bar-wrap{height:4px;background:rgba(255,255,255,.07);border-radius:var(--r-full);overflow:hidden;margin-bottom:4px}
+.kos-progress-bar-fill{height:100%;border-radius:var(--r-full);background:var(--grad1);transition:width 1.2s ease}
+.kos-progress-lbl{font-size:10px;color:var(--txt-3);display:flex;justify-content:space-between}
+
+/* STAT ROW */
+.kos-stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:12px 16px}
+.kos-stat{background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r-md);padding:12px 10px;text-align:center}
+.kos-stat-val{font-size:20px;font-weight:800;background:var(--grad1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.kos-stat-lbl{font-size:10px;color:var(--txt-3);margin-top:2px}
+
+/* ANNOUNCEMENT CARD */
+.kos-announce{margin:0 16px 14px;background:linear-gradient(135deg,rgba(255,170,0,.12),rgba(255,45,120,.08));
+  border:1px solid var(--gold-b);border-radius:var(--r-lg);padding:14px 16px;display:flex;align-items:center;gap:12px;
+  cursor:pointer;transition:all var(--tn)}
+.kos-announce:hover{border-color:var(--gold);box-shadow:0 0 20px rgba(255,170,0,.15)}
+.kos-announce-icon{font-size:24px;flex-shrink:0}
+.kos-announce-title{font-size:12px;font-weight:700;color:var(--gold);margin-bottom:2px}
+.kos-announce-body{font-size:11px;color:var(--txt-2);line-height:1.4}
+.kos-announce-badge{flex-shrink:0;background:var(--gold-dim);color:var(--gold);font-size:9px;font-weight:700;
+  padding:3px 8px;border-radius:var(--r-full);border:1px solid var(--gold-b)}
+
+/* MODULE SECTION TITLE */
+.kos-section{padding:0 16px 8px;font-size:10px;font-weight:700;text-transform:uppercase;
+  letter-spacing:2px;color:var(--txt-3);display:flex;align-items:center;justify-content:space-between}
+.kos-section-link{font-size:10px;color:var(--ac1);cursor:pointer;text-transform:none;letter-spacing:0}
+
+/* MODULE CARD GRID */
+.kos-mod-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:0 16px 16px}
+.kos-mod-card{background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r-lg);
+  padding:16px;cursor:pointer;transition:all .18s ease;position:relative;overflow:hidden;
+  -webkit-tap-highlight-color:transparent}
+.kos-mod-card::before{content:'';position:absolute;top:0;right:0;width:60px;height:60px;
+  border-radius:0 0 0 60px;opacity:.08;transition:opacity .3s ease}
+.kos-mod-card:hover{border-color:var(--mod-color,var(--ac1));box-shadow:0 0 20px var(--mod-glow,rgba(0,212,255,.12))}
+.kos-mod-card:hover::before{opacity:.15}
+.kos-mod-card:active{transform:scale(.97)}
+.kos-mod-ico{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+  font-size:20px;margin-bottom:10px}
+.kos-mod-name{font-size:13px;font-weight:700;color:var(--txt-1);margin-bottom:3px;line-height:1.2}
+.kos-mod-desc{font-size:10px;color:var(--txt-3);line-height:1.45}
+.kos-mod-progress{height:2px;border-radius:var(--r-full);background:rgba(255,255,255,.07);margin-top:10px;overflow:hidden}
+.kos-mod-prog-fill{height:100%;border-radius:var(--r-full);background:var(--mod-color,var(--ac1));transition:width 1s ease}
+.kos-mod-badge{position:absolute;top:10px;right:10px;font-size:9px;font-weight:700;padding:2px 7px;
+  border-radius:var(--r-full);background:var(--gold-dim);color:var(--gold);border:1px solid var(--gold-b)}
+.kos-mod-card.locked{opacity:.5;cursor:not-allowed}
+.kos-mod-card.locked::after{content:'🔒';position:absolute;top:10px;right:10px;font-size:12px}
+
+/* LEARN PANEL */
+.learn-topic-list{padding:8px 16px 16px;display:flex;flex-direction:column;gap:8px}
+.learn-topic-card{background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r-lg);
+  padding:16px;cursor:pointer;transition:all var(--tn);display:flex;align-items:center;gap:14px}
+.learn-topic-card:hover{border-color:var(--ac1)}
+.learn-topic-card:active{transform:scale(.98)}
+.lt-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.lt-info{flex:1}
+.lt-name{font-size:13px;font-weight:700;color:var(--txt-1);margin-bottom:2px}
+.lt-desc{font-size:11px;color:var(--txt-3)}
+.lt-meta{display:flex;align-items:center;gap:8px;margin-top:5px}
+.lt-pill{font-size:9px;padding:2px 7px;border-radius:var(--r-full);font-weight:600}
+.lt-pill.blue{background:rgba(0,212,255,.1);color:var(--ac1);border:1px solid rgba(0,212,255,.2)}
+.lt-pill.gold{background:var(--gold-dim);color:var(--gold);border:1px solid var(--gold-b)}
+.lt-pill.green{background:var(--green-dim);color:var(--green-ent);border:1px solid rgba(0,255,136,.2)}
+.lt-chevron{color:var(--txt-3);font-size:18px;flex-shrink:0}
+.lt-prog-ring{width:36px;height:36px;flex-shrink:0;position:relative}
+.lt-prog-ring svg{transform:rotate(-90deg)}
+
+/* QUIZ ENGINE */
+.quiz-panel{padding:0 16px 16px}
+.quiz-progress{display:flex;gap:4px;margin-bottom:18px}
+.quiz-prog-dot{flex:1;height:3px;border-radius:var(--r-full);background:var(--glass-b);transition:background .3s ease}
+.quiz-prog-dot.done{background:var(--ac4)}.quiz-prog-dot.active{background:var(--ac1)}
+.quiz-q-card{background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r-xl);padding:22px;margin-bottom:16px}
+.quiz-q-num{font-size:10px;color:var(--txt-3);font-weight:700;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px}
+.quiz-q-text{font-size:15px;font-weight:700;color:var(--txt-1);line-height:1.5;margin-bottom:18px}
+.quiz-opts{display:flex;flex-direction:column;gap:9px}
+.quiz-opt{padding:14px 16px;border-radius:var(--r-md);border:1px solid var(--glass-b);background:var(--glass);
+  cursor:pointer;font-size:13px;color:var(--txt-2);transition:all var(--tn);text-align:left;width:100%}
+.quiz-opt:hover{border-color:var(--ac1);color:var(--txt-1)}
+.quiz-opt.correct{border-color:var(--ac4);background:var(--green-dim);color:var(--green-ent)}
+.quiz-opt.wrong{border-color:var(--ac3);background:var(--red-dim);color:var(--ac3)}
+.quiz-opt.selected{border-color:var(--ac1)}
+.quiz-exp{margin-top:12px;padding:12px;background:rgba(0,212,255,.06);border-radius:var(--r-md);
+  font-size:12px;color:var(--txt-2);line-height:1.55;display:none;animation:wi .3s ease}
+.quiz-exp.show{display:block}
+.quiz-score-card{background:linear-gradient(135deg,rgba(0,212,255,.08),rgba(123,47,255,.06));
+  border:1px solid rgba(0,212,255,.2);border-radius:var(--r-xl);padding:28px;text-align:center;animation:wi .5s ease}
+.quiz-score-ring{font-size:48px;margin-bottom:12px}
+.quiz-score-pct{font-size:36px;font-weight:800;background:var(--grad1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.quiz-score-lbl{font-size:13px;color:var(--txt-2);margin-bottom:16px}
+.cert-btn{padding:14px 32px;border-radius:var(--r-full);background:var(--grad1);border:none;color:#fff;font-size:14px;font-weight:700;cursor:pointer;box-shadow:var(--glow1)}
+
+/* OBJECTION HANDLING */
+.obj-search-wrap{padding:12px 16px;position:sticky;top:0;background:var(--bg-0);z-index:2}
+.obj-card{background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r-lg);
+  margin:0 16px 10px;overflow:hidden;transition:all var(--tn)}
+.obj-card-header{padding:16px;cursor:pointer;display:flex;align-items:center;gap:12px}
+.obj-icon{width:38px;height:38px;border-radius:10px;background:var(--red-dim);
+  border:1px solid rgba(255,45,120,.2);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.obj-title{font-size:13px;font-weight:700;color:var(--txt-1);flex:1}
+.obj-expand-icon{color:var(--txt-3);font-size:14px;transition:transform .25s ease;flex-shrink:0}
+.obj-card.expanded .obj-expand-icon{transform:rotate(90deg)}
+.obj-body{display:none;padding:0 16px 16px}
+.obj-card.expanded .obj-body{display:block;animation:wi .3s ease}
+.obj-section{margin-bottom:14px}
+.obj-sec-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px}
+.obj-sec-label.wrong{color:var(--ac3)}.obj-sec-label.correct{color:var(--ac4)}.obj-sec-label.tip{color:var(--gold)}
+.obj-sec-body{font-size:12px;color:var(--txt-2);line-height:1.6;padding:10px;border-radius:var(--r-md)}
+.obj-sec-body.wrong{background:var(--red-dim);border:1px solid rgba(255,45,120,.15)}
+.obj-sec-body.correct{background:var(--green-dim);border:1px solid rgba(0,255,136,.15)}
+.obj-sec-body.tip{background:var(--gold-dim);border:1px solid var(--gold-b)}
+.obj-practice-btn{width:100%;padding:12px;border-radius:var(--r-md);background:var(--grad1);border:none;
+  color:#fff;font-size:12px;font-weight:700;cursor:pointer;margin-top:8px}
+
+/* ROLE PLAY */
+.rp-persona-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:0 16px 16px}
+.rp-persona{background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r-lg);
+  padding:16px;text-align:center;cursor:pointer;transition:all var(--tn)}
+.rp-persona:hover{border-color:var(--gold);box-shadow:0 0 20px rgba(255,170,0,.1)}
+.rp-persona:active{transform:scale(.97)}
+.rp-persona.active{border-color:var(--gold);background:var(--gold-dim)}
+.rp-persona-emoji{font-size:32px;margin-bottom:8px}
+.rp-persona-name{font-size:12px;font-weight:700;color:var(--txt-1);margin-bottom:2px}
+.rp-persona-desc{font-size:10px;color:var(--txt-3)}
+.rp-chat{padding:0 16px;display:flex;flex-direction:column;gap:10px;max-height:50vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.rp-bubble{max-width:85%;padding:12px 14px;border-radius:16px;font-size:13px;line-height:1.5}
+.rp-bubble.customer{background:rgba(255,170,0,.1);border:1px solid var(--gold-b);color:var(--txt-1);align-self:flex-start;border-bottom-left-radius:4px}
+.rp-bubble.sales{background:var(--grad1);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+.rp-bubble-label{font-size:9px;font-weight:700;margin-bottom:4px;opacity:.7;text-transform:uppercase;letter-spacing:.5px}
+.rp-input-row{display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--glass-b);background:var(--bg-0)}
+.rp-input{flex:1;padding:10px 14px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r-full);
+  color:var(--txt-1);font-size:13px;outline:none;transition:border-color var(--tn)}
+.rp-input:focus{border-color:var(--ac1)}
+.rp-send-btn{width:40px;height:40px;border-radius:50%;background:var(--grad1);border:none;color:#fff;font-size:18px;cursor:pointer;flex-shrink:0}
+.rp-score-card{margin:0 16px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r-xl);padding:20px}
+.rp-score-title{font-size:13px;font-weight:700;color:var(--txt-1);margin-bottom:14px;text-align:center}
+.rp-score-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;
+  border-bottom:1px solid rgba(255,255,255,.04);font-size:12px}
+.rp-score-row:last-child{border-bottom:none}
+.rp-score-metric{color:var(--txt-2)}
+.rp-score-val{font-weight:700;color:var(--txt-1)}
+.rp-score-bar-wrap{width:80px;height:4px;background:rgba(255,255,255,.07);border-radius:var(--r-full);overflow:hidden;margin-left:8px}
+.rp-score-bar-fill{height:100%;border-radius:var(--r-full);background:var(--grad1)}
+
+/* CERTIFICATION CERTIFICATE */
+.cert-card{background:linear-gradient(135deg,rgba(255,170,0,.08),rgba(0,212,255,.06));
+  border:2px solid var(--gold-b);border-radius:var(--r-xl);padding:28px;text-align:center;margin:0 16px}
+.cert-logo{font-size:40px;margin-bottom:10px}
+.cert-title{font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+.cert-name{font-size:22px;font-weight:800;color:var(--txt-1);margin-bottom:4px}
+.cert-desc{font-size:13px;color:var(--txt-2);margin-bottom:14px}
+.cert-module{font-size:14px;font-weight:700;color:var(--ac1);margin-bottom:8px}
+.cert-date{font-size:11px;color:var(--txt-3)}
+.cert-score-badge{display:inline-block;background:var(--grad1);color:#fff;font-size:14px;font-weight:800;padding:8px 20px;border-radius:var(--r-full);margin:14px 0}
+.cert-share-btn{width:100%;padding:14px;border-radius:var(--r-full);border:1px solid var(--gold-b);background:var(--gold-dim);color:var(--gold);font-size:13px;font-weight:700;cursor:pointer;margin-top:8px}
+
+/* SALES COACH */
+.coach-step{background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r-lg);
+  padding:16px;margin:0 16px 10px;transition:all var(--tn)}
+.coach-step.active{border-color:var(--ac1);background:rgba(0,212,255,.05)}
+.coach-step.done{border-color:var(--ac4);background:var(--green-dim)}
+.coach-step-header{display:flex;align-items:center;gap:12px}
+.coach-step-num{width:30px;height:30px;border-radius:50%;background:var(--glass-b);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--txt-2);flex-shrink:0}
+.coach-step.active .coach-step-num{background:var(--grad1);color:#fff}
+.coach-step.done .coach-step-num{background:rgba(0,255,136,.2);color:var(--ac4)}
+.coach-step-q{font-size:13px;font-weight:600;color:var(--txt-1);flex:1}
+.coach-step-why{font-size:11px;color:var(--txt-3);margin-top:6px;padding-left:42px;line-height:1.5;display:none}
+.coach-step.active .coach-step-why,.coach-step.done .coach-step-why{display:block}
+.coach-step.done .coach-step-why{color:var(--ac4)}
+
+/* PROFILE PANEL */
+.prof-header{padding:24px 16px 16px;text-align:center}
+.prof-avatar{width:70px;height:70px;border-radius:50%;background:var(--grad1);display:flex;align-items:center;justify-content:center;font-size:30px;margin:0 auto 10px;box-shadow:var(--glow1)}
+.prof-role-name{font-size:18px;font-weight:800;color:var(--txt-1);margin-bottom:4px}
+.prof-role-badge{display:inline-block;font-size:11px;padding:3px 12px;border-radius:var(--r-full);background:rgba(0,212,255,.1);color:var(--ac1);border:1px solid rgba(0,212,255,.2);font-weight:600;margin-bottom:14px}
+.cert-progress-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px 16px}
+.cert-prog-card{background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r-md);padding:14px;text-align:center}
+.cert-prog-val{font-size:22px;font-weight:800;margin-bottom:3px}
+.cert-prog-lbl{font-size:10px;color:var(--txt-3)}
+
+/* BOTTOM NAV ENTERPRISE RELABEL */
+@media(max-width:768px){
+  .pwa-panel{padding-top:calc(var(--mod-h) + var(--safe-t) + var(--header-h))}
+  #pwa-home{display:block}
+  #pwa-learn,#pwa-practice,#pwa-profile-ent{display:block}
+}
+
 </style>
 </head>
 <body>
@@ -1716,6 +1951,143 @@ body.offline-mode #app{padding-top:36px}
   </div>
   <div style="font-size:9px;color:var(--txt-3);margin-top:10px;text-align:center">Press Ctrl+Shift+D to toggle</div>
 </div>
+
+
+<!-- ===== ROLE SELECTION OVERLAY ===== -->
+<div id="role-overlay" style="display:none">
+  <div class="role-overlay-logo">
+    <div class="role-overlay-icon">A</div>
+    <div>
+      <div class="role-overlay-brand">AIS KnowledgeOS</div>
+      <div class="role-overlay-tag">AI Powered Learning &amp; Sales Enablement Platform</div>
+    </div>
+  </div>
+  <div class="role-overlay-title">Who are you? Select your role to personalise your experience.</div>
+  <div class="role-grid" id="role-grid">
+    <div class="role-card" data-role="new_joiner" onclick="selectRole('new_joiner',this)"><div class="role-card-icon">🌱</div><div class="role-card-name">New Joiner</div></div>
+    <div class="role-card" data-role="sales" onclick="selectRole('sales',this)"><div class="role-card-icon">🎯</div><div class="role-card-name">Sales Executive</div></div>
+    <div class="role-card" data-role="dealer" onclick="selectRole('dealer',this)"><div class="role-card-icon">🤝</div><div class="role-card-name">Dealer / Partner</div></div>
+    <div class="role-card" data-role="technical" onclick="selectRole('technical',this)"><div class="role-card-icon">⚙️</div><div class="role-card-name">Technical Engineer</div></div>
+    <div class="role-card" data-role="service" onclick="selectRole('service',this)"><div class="role-card-icon">🔧</div><div class="role-card-name">Service Engineer</div></div>
+    <div class="role-card" data-role="architect" onclick="selectRole('architect',this)"><div class="role-card-icon">📐</div><div class="role-card-name">Architect Support</div></div>
+    <div class="role-card" data-role="manager" onclick="selectRole('manager',this)"><div class="role-card-icon">👔</div><div class="role-card-name">Regional Manager</div></div>
+    <div class="role-card" data-role="trainer" onclick="selectRole('trainer',this)"><div class="role-card-icon">🎓</div><div class="role-card-name">Trainer</div></div>
+    <div class="role-card" data-role="admin" onclick="selectRole('admin',this)"><div class="role-card-icon">🛡️</div><div class="role-card-name">Admin / BDM</div></div>
+  </div>
+  <button class="role-start-btn" id="role-start-btn" onclick="confirmRole()" style="opacity:.5;pointer-events:none" disabled>
+    Select your role to continue →
+  </button>
+</div>
+
+<!-- ===== KnowledgeOS DASHBOARD PANEL ===== -->
+<section class="pwa-panel" id="pwa-home" aria-label="KnowledgeOS Dashboard">
+  <div class="kos-dashboard">
+    <!-- Header -->
+    <div class="kos-header">
+      <div class="kos-greeting" id="kos-greeting">Good morning 👋</div>
+      <div class="kos-role-tag"><div class="kos-role-dot"></div><span id="kos-role-lbl">Sales Executive</span></div>
+      <div class="kos-progress-bar-wrap"><div class="kos-progress-bar-fill" id="kos-prog-fill" style="width:0%"></div></div>
+      <div class="kos-progress-lbl"><span id="kos-prog-lbl">Overall progress</span><span id="kos-prog-pct">0%</span></div>
+    </div>
+    <!-- Stats -->
+    <div class="kos-stat-row">
+      <div class="kos-stat"><div class="kos-stat-val" id="kos-modules-done">0</div><div class="kos-stat-lbl">Modules Done</div></div>
+      <div class="kos-stat"><div class="kos-stat-val" id="kos-quiz-score">—</div><div class="kos-stat-lbl">Quiz Score</div></div>
+      <div class="kos-stat"><div class="kos-stat-val" id="kos-certs">0</div><div class="kos-stat-lbl">Certificates</div></div>
+    </div>
+    <!-- Announcement -->
+    <div class="kos-announce" onclick="showAnnouncement()">
+      <div class="kos-announce-icon">📢</div>
+      <div style="flex:1">
+        <div class="kos-announce-title">Latest Update</div>
+        <div class="kos-announce-body">New Lift &amp; Slide product range now available — training module updated with specs and sales scripts.</div>
+      </div>
+      <span class="kos-announce-badge">NEW</span>
+    </div>
+    <!-- Daily Quiz CTA -->
+    <div class="kos-announce" style="background:linear-gradient(135deg,rgba(0,255,136,.08),rgba(0,212,255,.06));border-color:rgba(0,255,136,.25)" onclick="openModule('quiz')">
+      <div class="kos-announce-icon">✅</div>
+      <div style="flex:1">
+        <div class="kos-announce-title" style="color:var(--green-ent)">Daily Quiz — 5 mins</div>
+        <div class="kos-announce-body">Today's topic: Glass Solutions. Test your knowledge and earn points.</div>
+      </div>
+      <span class="kos-announce-badge" style="background:var(--green-dim);color:var(--green-ent);border-color:rgba(0,255,136,.2)">START</span>
+    </div>
+    <!-- Core Modules -->
+    <div class="kos-section">Core Knowledge <span class="kos-section-link" onclick="switchTab('learn')">See all →</span></div>
+    <div class="kos-mod-grid" id="kos-core-grid"></div>
+    <!-- Sales Modules -->
+    <div class="kos-section">Sales Excellence <span class="kos-section-link" onclick="switchTab('practice')">Practice →</span></div>
+    <div class="kos-mod-grid" id="kos-sales-grid"></div>
+    <!-- Tools -->
+    <div class="kos-section">Tools &amp; AI</div>
+    <div class="kos-mod-grid" id="kos-tools-grid"></div>
+  </div>
+</section>
+
+<!-- ===== LEARN PANEL ===== -->
+<section class="pwa-panel" id="pwa-learn" aria-label="Learning Centre">
+  <div class="prod-search-wrap">
+    <input type="search" class="prod-search" id="learn-search" placeholder="Search topics…" oninput="filterLearnTopics(this.value)">
+  </div>
+  <div class="prod-cats" id="learn-cats">
+    <button class="prod-cat-chip active" onclick="setLearnCat('all',this)">All</button>
+    <button class="prod-cat-chip" onclick="setLearnCat('product',this)">Products</button>
+    <button class="prod-cat-chip" onclick="setLearnCat('glass',this)">Glass</button>
+    <button class="prod-cat-chip" onclick="setLearnCat('hardware',this)">Hardware</button>
+    <button class="prod-cat-chip" onclick="setLearnCat('installation',this)">Installation</button>
+    <button class="prod-cat-chip" onclick="setLearnCat('sales',this)">Sales</button>
+    <button class="prod-cat-chip" onclick="setLearnCat('warranty',this)">Warranty</button>
+  </div>
+  <div class="learn-topic-list" id="learn-topic-list"></div>
+</section>
+
+<!-- ===== PRACTICE PANEL ===== -->
+<section class="pwa-panel" id="pwa-practice" aria-label="Practice Centre">
+  <div style="padding:14px 16px 8px">
+    <div style="font-size:18px;font-weight:800;color:var(--txt-1);margin-bottom:4px">Practice Centre</div>
+    <div style="font-size:12px;color:var(--txt-2)">Quizzes · Role Play · Objection Handling · Sales Coach</div>
+  </div>
+  <div class="kos-mod-grid" id="kos-practice-grid"></div>
+  <!-- Active sub-panel -->
+  <div id="practice-subpanel"></div>
+</section>
+
+<!-- ===== PROFILE / PROGRESS PANEL ===== -->
+<section class="pwa-panel" id="pwa-profile-ent" aria-label="My Profile &amp; Progress">
+  <div class="prof-header">
+    <div class="prof-avatar" id="prof-avatar">🎯</div>
+    <div class="prof-role-name" id="prof-role-name">Sales Executive</div>
+    <div class="prof-role-badge" id="prof-role-badge">AIS KnowledgeOS</div>
+  </div>
+  <div class="cert-progress-grid">
+    <div class="cert-prog-card"><div class="cert-prog-val" id="pp-modules" style="background:var(--grad1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">0</div><div class="cert-prog-lbl">Modules Completed</div></div>
+    <div class="cert-prog-card"><div class="cert-prog-val" id="pp-quizzes" style="color:var(--gold)">0</div><div class="cert-prog-lbl">Quizzes Passed</div></div>
+    <div class="cert-prog-card"><div class="cert-prog-val" id="pp-certs" style="color:var(--green-ent)">0</div><div class="cert-prog-lbl">Certificates</div></div>
+    <div class="cert-prog-card"><div class="cert-prog-val" id="pp-streak" style="color:var(--ac3)">1</div><div class="cert-prog-lbl">Day Streak</div></div>
+  </div>
+  <div class="settings-list">
+    <div class="settings-group">
+      <div class="settings-group-title">My Account</div>
+      <div class="settings-row" onclick="showRoleOverlay()"><div class="settings-row-left"><div class="settings-row-icon">👤</div><div><div class="settings-row-name">Change Role</div><div class="settings-row-sub" id="pp-current-role">Sales Executive</div></div></div><div class="settings-row-right"><span class="settings-chevron">›</span></div></div>
+      <div class="settings-row" onclick="openModule('certification')"><div class="settings-row-left"><div class="settings-row-icon">🏆</div><div><div class="settings-row-name">My Certificates</div><div class="settings-row-sub">View earned certificates</div></div></div><div class="settings-row-right"><span class="settings-chevron">›</span></div></div>
+      <div class="settings-row" onclick="openModule('progress')"><div class="settings-row-left"><div class="settings-row-icon">📊</div><div><div class="settings-row-name">Detailed Progress</div><div class="settings-row-sub">Modules and quiz history</div></div></div><div class="settings-row-right"><span class="settings-chevron">›</span></div></div>
+    </div>
+    <div class="settings-group">
+      <div class="settings-group-title">App Settings</div>
+      <div class="settings-row" onclick="toggleTheme&&toggleTheme()"><div class="settings-row-left"><div class="settings-row-icon" id="pp-theme-ico">🌙</div><div><div class="settings-row-name">Theme</div><div class="settings-row-sub">Dark Mode</div></div></div><div class="settings-row-right"><button class="sw-toggle on" id="pp-sw-theme" onclick="event.stopPropagation();toggleTheme&&toggleTheme()"></button></div></div>
+      <div class="settings-row" onclick="toggleContinuousVoice&&toggleContinuousVoice()"><div class="settings-row-left"><div class="settings-row-icon">🎙️</div><div><div class="settings-row-name">Continuous Voice</div><div class="settings-row-sub">Auto-listen after AI speaks</div></div></div><div class="settings-row-right"><button class="sw-toggle off" id="pp-sw-cv" onclick="event.stopPropagation();toggleContinuousVoice&&toggleContinuousVoice()"></button></div></div>
+      <div class="settings-row" onclick="triggerInstallFromSettings()"><div class="settings-row-left"><div class="settings-row-icon">📲</div><div><div class="settings-row-name">Install App</div><div class="settings-row-sub">Add to Home Screen</div></div></div><div class="settings-row-right"><span class="install-badge not-installed" id="pp-install-badge">Install</span></div></div>
+      <div class="settings-row" onclick="clearCache()"><div class="settings-row-left"><div class="settings-row-icon">🗑️</div><div><div class="settings-row-name">Clear Cache</div><div class="settings-row-sub">Free storage</div></div></div><div class="settings-row-right"><span class="settings-chevron">›</span></div></div>
+    </div>
+    <div class="settings-group">
+      <div class="settings-group-title">About</div>
+      <div class="settings-row"><div class="settings-row-left"><div class="settings-row-icon">ℹ️</div><div><div class="settings-row-name">AIS KnowledgeOS</div><div class="settings-row-sub">Enterprise Edition</div></div></div><div class="settings-row-right"><span class="settings-row-val">v8.0</span></div></div>
+      <div class="settings-row"><div class="settings-row-left"><div class="settings-row-icon">🏢</div><div><div class="settings-row-name">AIS Windows</div><div class="settings-row-sub">1800 103 4805</div></div></div><div class="settings-row-right"><span class="settings-chevron">›</span></div></div>
+    </div>
+  </div>
+  <div class="app-version">AIS KnowledgeOS v8.0 · Enterprise Edition · © Asahi India Glass Ltd.</div>
+</section>
 
 <script>
 
@@ -6550,6 +6922,692 @@ if (typeof KB_COMPLETE !== 'undefined') {
 }
 
 console.log('[AIS Knowledge Engine] Loaded:', Object.keys(GLOSSARY).length, 'glossary terms,', REC_RULES.length, 'recommendation rules,', Object.keys(TYPOLOGY_KB).length, 'typologies,', Object.keys(GLASS_KB).length, 'glass types');
+
+
+/* ============ AIS KnowledgeOS ENTERPRISE ENGINE ============ */
+
+/* =====================================================
+   AIS KnowledgeOS — ENTERPRISE ENGINE v8
+===================================================== */
+
+/* ---- ROLE SYSTEM ---- */
+const ROLES = {
+  new_joiner:{name:'New Joiner',icon:'🌱',path:['learn-products','buying-guide','glass-studio','hardware-studio','partner-onboarding','quiz','certification']},
+  sales:{name:'Sales Executive',icon:'🎯',path:['sales-coach','objections','role-play','learn-products','competition','quiz','certification']},
+  dealer:{name:'Dealer / Partner',icon:'🤝',path:['partner-onboarding','learn-products','sales-coach','objections','warranty-centre','quiz','certification']},
+  technical:{name:'Technical Engineer',icon:'⚙️',path:['technical','learn-products','glass-studio','hardware-studio','sop-library','quiz','certification']},
+  service:{name:'Service Engineer',icon:'🔧',path:['service-knowledge','technical','warranty-centre','sop-library','quiz','certification']},
+  architect:{name:'Architect Support',icon:'📐',path:['learn-products','glass-studio','hardware-studio','technical','comparison','ai-search']},
+  manager:{name:'Regional Manager',icon:'👔',path:['sales-coach','competition','role-play','objections','certification','progress']},
+  trainer:{name:'Trainer',icon:'🎓',path:['learn-products','buying-guide','sales-coach','objections','role-play','quiz','certification']},
+  admin:{name:'Admin / BDM',icon:'🛡️',path:['competition','sales-coach','learn-products','certification','progress']},
+};
+let currentRole = localStorage.getItem('kos_role') || null;
+let selectedRoleTmp = null;
+
+function selectRole(role, el) {
+  selectedRoleTmp = role;
+  document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  const btn = document.getElementById('role-start-btn');
+  if (btn) {
+    btn.textContent = `Continue as ${ROLES[role]?.name || role} →`;
+    btn.style.opacity = '1'; btn.style.pointerEvents = 'auto'; btn.disabled = false;
+  }
+  if (navigator.vibrate) navigator.vibrate(8);
+}
+
+function confirmRole() {
+  if (!selectedRoleTmp) return;
+  currentRole = selectedRoleTmp;
+  localStorage.setItem('kos_role', currentRole);
+  const overlay = document.getElementById('role-overlay');
+  if (overlay) { overlay.classList.add('hidden'); setTimeout(() => { overlay.style.display = 'none'; }, 500); }
+  initKOS();
+}
+
+function showRoleOverlay() {
+  const overlay = document.getElementById('role-overlay');
+  if (overlay) { overlay.style.display = 'flex'; overlay.classList.remove('hidden'); }
+  if (currentRole) {
+    const card = document.querySelector(`[data-role="${currentRole}"]`);
+    if (card) { selectRole(currentRole, card); }
+  }
+}
+
+/* ---- MODULE DEFINITIONS ---- */
+const MODULES_DEF = [
+  {id:'learn-products',name:'Learn Products',icon:'🪟',color:'#00d4ff',glow:'rgba(0,212,255,.15)',desc:'Complete uPVC & Aluminium systems',cat:'core',badge:null},
+  {id:'buying-guide',name:'Buying Guide',icon:'📖',color:'#7b2fff',glow:'rgba(123,47,255,.15)',desc:'Interactive guide with quizzes',cat:'core',badge:'UPDATED'},
+  {id:'glass-studio',name:'Glass Studio',icon:'💎',color:'#00d4ff',glow:'rgba(0,212,255,.15)',desc:'All glass types & applications',cat:'core'},
+  {id:'hardware-studio',name:'Hardware Studio',icon:'🔧',color:'#ff9500',glow:'rgba(255,149,0,.15)',desc:'Locks, hinges & mechanisms',cat:'core'},
+  {id:'sales-coach',name:'Sales Coach',icon:'👨‍💼',color:'#ff2d78',glow:'rgba(255,45,120,.15)',desc:'AI coach for consultative selling',cat:'sales'},
+  {id:'objections',name:'Objection Handling',icon:'🛡️',color:'#ff2d78',glow:'rgba(255,45,120,.15)',desc:'Handle any objection confidently',cat:'sales'},
+  {id:'role-play',name:'AI Role Play',icon:'🎭',color:'#ffaa00',glow:'rgba(255,170,0,.15)',desc:'Practice with AI customer personas',cat:'sales',badge:'NEW'},
+  {id:'competition',name:'Competition Intel',icon:'🔍',color:'#ff2d78',glow:'rgba(255,45,120,.15)',desc:'Know your competition, win deals',cat:'sales'},
+  {id:'ai-search',name:'AI Search',icon:'🤖',color:'#00d4ff',glow:'rgba(0,212,255,.15)',desc:'Ask anything, get expert answers',cat:'tools'},
+  {id:'configurator',name:'Configurator',icon:'📐',color:'#00d4ff',glow:'rgba(0,212,255,.15)',desc:'Build specs & price estimates',cat:'tools'},
+  {id:'comparison',name:'Comparison',icon:'⚖️',color:'#7b2fff',glow:'rgba(123,47,255,.15)',desc:'Side-by-side product comparison',cat:'tools'},
+  {id:'quiz',name:'Daily Quiz',icon:'✅',color:'#00ff88',glow:'rgba(0,255,136,.15)',desc:'Test your knowledge daily',cat:'practice',badge:'TODAY'},
+  {id:'role-play',name:'AI Role Play',icon:'🎭',color:'#ffaa00',glow:'rgba(255,170,0,.15)',desc:'Practice selling with AI personas',cat:'practice'},
+  {id:'certification',name:'Certification',icon:'🏆',color:'#ffaa00',glow:'rgba(255,170,0,.15)',desc:'Earn certificates for each module',cat:'practice'},
+  {id:'technical',name:'Technical Academy',icon:'⚙️',color:'#00ff88',glow:'rgba(0,255,136,.15)',desc:'Installation & troubleshooting',cat:'core'},
+  {id:'warranty-centre',name:'Warranty Centre',icon:'🛡️',color:'#ff9500',glow:'rgba(255,149,0,.15)',desc:'Policies, claims & guidance',cat:'core'},
+  {id:'partner-onboarding',name:'Partner Onboarding',icon:'🤝',color:'#00ff88',glow:'rgba(0,255,136,.15)',desc:'Complete dealer onboarding path',cat:'core'},
+  {id:'service-knowledge',name:'Service Knowledge',icon:'🔨',color:'#ff9500',glow:'rgba(255,149,0,.15)',desc:'Complaints & service protocols',cat:'core'},
+  {id:'sop-library',name:'SOP Library',icon:'📋',color:'#7b2fff',glow:'rgba(123,47,255,.15)',desc:'Standard operating procedures',cat:'core'},
+  {id:'progress',name:'My Progress',icon:'📊',color:'#7b2fff',glow:'rgba(123,47,255,.15)',desc:'Track all learning & certs',cat:'profile'},
+];
+
+/* ---- PROGRESS TRACKING ---- */
+let KOS_PROGRESS = JSON.parse(localStorage.getItem('kos_progress') || '{"modules":{},"quizzes":{},"certs":[]}');
+
+function markModuleDone(moduleId) {
+  KOS_PROGRESS.modules[moduleId] = { done: true, ts: Date.now() };
+  saveProgress();
+  updateKOSStats();
+}
+
+function saveProgress() { localStorage.setItem('kos_progress', JSON.stringify(KOS_PROGRESS)); }
+
+function getModuleProgress(moduleId) {
+  return KOS_PROGRESS.modules[moduleId]?.done ? 100 : 0;
+}
+
+function updateKOSStats() {
+  const done = Object.keys(KOS_PROGRESS.modules).length;
+  const total = MODULES_DEF.length;
+  const pct = Math.round((done / total) * 100);
+  const quizPassed = Object.values(KOS_PROGRESS.quizzes).filter(q => q.pass).length;
+  const certs = KOS_PROGRESS.certs.length;
+
+  const el = id => document.getElementById(id);
+  if (el('kos-modules-done')) el('kos-modules-done').textContent = done;
+  if (el('kos-quiz-score')) el('kos-quiz-score').textContent = quizPassed > 0 ? quizPassed + ' pass' : '—';
+  if (el('kos-certs')) el('kos-certs').textContent = certs;
+  if (el('kos-prog-fill')) el('kos-prog-fill').style.width = pct + '%';
+  if (el('kos-prog-pct')) el('kos-prog-pct').textContent = pct + '%';
+  if (el('pp-modules')) el('pp-modules').textContent = done;
+  if (el('pp-quizzes')) el('pp-quizzes').textContent = quizPassed;
+  if (el('pp-certs')) el('pp-certs').textContent = certs;
+}
+
+/* ---- DASHBOARD RENDERER ---- */
+function buildModuleCard(mod) {
+  const prog = getModuleProgress(mod.id);
+  const card = document.createElement('div');
+  card.className = 'kos-mod-card';
+  card.style.setProperty('--mod-color', mod.color);
+  card.style.setProperty('--mod-glow', mod.glow);
+  card.innerHTML = `
+    ${mod.badge ? `<div class="kos-mod-badge">${mod.badge}</div>` : ''}
+    <div class="kos-mod-ico" style="background:${mod.color}18;border:1px solid ${mod.color}30">${mod.icon}</div>
+    <div class="kos-mod-name">${mod.name}</div>
+    <div class="kos-mod-desc">${mod.desc}</div>
+    <div class="kos-mod-progress"><div class="kos-mod-prog-fill" style="width:${prog}%;background:${mod.color}"></div></div>`;
+  card.onclick = () => openModule(mod.id);
+  if (navigator.vibrate) card.addEventListener('click', () => navigator.vibrate(8));
+  return card;
+}
+
+function initKOSDashboard() {
+  const role = ROLES[currentRole] || ROLES.sales;
+  const hour = new Date().getHours();
+  const greet = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+  const el = id => document.getElementById(id);
+  if (el('kos-greeting')) el('kos-greeting').textContent = `${greet} ${role.icon}`;
+  if (el('kos-role-lbl')) el('kos-role-lbl').textContent = role.name;
+  if (el('prof-avatar')) el('prof-avatar').textContent = role.icon;
+  if (el('prof-role-name')) el('prof-role-name').textContent = role.name;
+  if (el('prof-role-badge')) el('prof-role-badge').textContent = `AIS KnowledgeOS · ${role.name}`;
+  if (el('pp-current-role')) el('pp-current-role').textContent = role.name;
+
+  // Core grid
+  const coreGrid = el('kos-core-grid');
+  if (coreGrid) {
+    coreGrid.innerHTML = '';
+    ['learn-products','buying-guide','glass-studio','hardware-studio'].forEach(id => {
+      const mod = MODULES_DEF.find(m => m.id === id);
+      if (mod) coreGrid.appendChild(buildModuleCard(mod));
+    });
+  }
+  // Sales grid
+  const salesGrid = el('kos-sales-grid');
+  if (salesGrid) {
+    salesGrid.innerHTML = '';
+    ['sales-coach','objections','role-play','competition'].forEach(id => {
+      const mod = MODULES_DEF.find(m => m.id === id);
+      if (mod) salesGrid.appendChild(buildModuleCard(mod));
+    });
+  }
+  // Tools grid
+  const toolsGrid = el('kos-tools-grid');
+  if (toolsGrid) {
+    toolsGrid.innerHTML = '';
+    ['ai-search','configurator','comparison','quiz'].forEach(id => {
+      const mod = MODULES_DEF.find(m => m.id === id);
+      if (mod) toolsGrid.appendChild(buildModuleCard(mod));
+    });
+  }
+  // Practice grid
+  const practiceGrid = el('kos-practice-grid');
+  if (practiceGrid) {
+    practiceGrid.innerHTML = '';
+    [{id:'quiz',name:'Daily Quiz',icon:'✅',color:'#00ff88',glow:'rgba(0,255,136,.15)',desc:'5 questions · 5 minutes · earn points',cat:'practice',badge:'TODAY'},
+     {id:'role-play',name:'AI Role Play',icon:'🎭',color:'#ffaa00',glow:'rgba(255,170,0,.15)',desc:'Practice with AI customer personas',cat:'practice'},
+     {id:'objections',name:'Objection Handling',icon:'🛡️',color:'#ff2d78',glow:'rgba(255,45,120,.15)',desc:'Handle price, competition & service objections',cat:'practice'},
+     {id:'sales-coach',name:'Sales Coach',icon:'👨‍💼',color:'#ff2d78',glow:'rgba(255,45,120,.15)',desc:'AI coach guides your qualification process',cat:'practice'},
+    ].forEach(mod => practiceGrid.appendChild(buildModuleCard(mod)));
+  }
+  updateKOSStats();
+  initLearnPanel();
+}
+
+/* ---- LEARN PANEL ---- */
+const LEARN_TOPICS = [
+  {id:'upvc_frame',name:'uPVC Frame Systems',icon:'🪟',color:'#00d4ff',cat:'product',level:'Beginner',mins:8,desc:'Multi-chamber profiles, thermal performance, colour options'},
+  {id:'alu_frame',name:'Aluminium Frame Systems',icon:'🏗️',color:'#7b2fff',cat:'product',level:'Beginner',mins:8,desc:'Slim profiles, thermal break, structural grades'},
+  {id:'casement',name:'Casement Windows',icon:'🔲',color:'#00d4ff',cat:'product',level:'Beginner',mins:6,desc:'Operation, espag locking, acoustic performance'},
+  {id:'sliding_sys',name:'Sliding Systems',icon:'↔️',color:'#00d4ff',cat:'product',level:'Beginner',mins:6,desc:'Rollers, fly mullion, security considerations'},
+  {id:'lift_slide',name:'Lift & Slide Doors',icon:'🏰',color:'#ffaa00',cat:'product',level:'Intermediate',mins:7,desc:'Lifting mechanism, premium applications, motorisation'},
+  {id:'tilt_turn',name:'Tilt & Turn Windows',icon:'↩️',color:'#7b2fff',cat:'product',level:'Intermediate',mins:7,desc:'Dual mode, hardware components, benefits'},
+  {id:'glass_types',name:'Glass Types Masterclass',icon:'💎',color:'#00d4ff',cat:'glass',level:'Intermediate',mins:12,desc:'Toughened, Laminated, DGU, Low-E, Smart glass'},
+  {id:'acoustic_glass',name:'Acoustic Glass Solutions',icon:'🔇',color:'#7b2fff',cat:'glass',level:'Advanced',mins:10,desc:'Rw ratings, laminated DGU, performance levels'},
+  {id:'lowe_glass',name:'Low-E Glass Technology',icon:'☀️',color:'#ff9500',cat:'glass',level:'Advanced',mins:8,desc:'U-value, SHGC, hard vs soft coat, face positions'},
+  {id:'espag_hw',name:'Espag & Multipoint Locking',icon:'🔒',color:'#ff2d78',cat:'hardware',level:'Beginner',mins:5,desc:'How espag works, sizes, security benefits'},
+  {id:'hinges',name:'Hinges & 3D Adjustment',icon:'🔩',color:'#ff9500',cat:'hardware',level:'Beginner',mins:5,desc:'3D hinges, adjustment, load ratings'},
+  {id:'install_basics',name:'Installation Basics',icon:'🛠️',color:'#00ff88',cat:'installation',level:'Beginner',mins:10,desc:'Level & plumb, silicon, drainage, fixing'},
+  {id:'level_plumb',name:'Level & Plumb Mastery',icon:'📏',color:'#00ff88',cat:'installation',level:'Intermediate',mins:8,desc:'Why it matters, measurement, consequences'},
+  {id:'silicon_guide',name:'Silicon Application Guide',icon:'🔧',color:'#00ff88',cat:'installation',level:'Beginner',mins:6,desc:'Colour matching, application technique, curing'},
+  {id:'warranty_guide',name:'Warranty Masterclass',icon:'📜',color:'#ff9500',cat:'warranty',level:'Beginner',mins:7,desc:'Terms, coverage, claims process, what\'s excluded'},
+  {id:'quotation_skills',name:'Quotation Skills',icon:'📋',color:'#7b2fff',cat:'sales',level:'Intermediate',mins:10,desc:'What to verify, checklist, red flags in competitor quotes'},
+  {id:'sales_process',name:'AIS Sales Process',icon:'🎯',color:'#ff2d78',cat:'sales',level:'Beginner',mins:12,desc:'8-step from enquiry to handover, qualification, closing'},
+];
+
+let learnCatFilter = 'all', learnSearchFilter = '';
+
+function initLearnPanel() {
+  renderLearnTopics();
+}
+
+function renderLearnTopics() {
+  const list = document.getElementById('learn-topic-list');
+  if (!list) return;
+  list.innerHTML = '';
+  const filtered = LEARN_TOPICS.filter(t => {
+    const catMatch = learnCatFilter === 'all' || t.cat === learnCatFilter;
+    const searchMatch = !learnSearchFilter || t.name.toLowerCase().includes(learnSearchFilter) || t.desc.toLowerCase().includes(learnSearchFilter);
+    return catMatch && searchMatch;
+  });
+  if (!filtered.length) {
+    const empty = document.createElement('div');
+    empty.style.cssText = 'text-align:center;color:var(--txt-3);padding:40px;font-size:14px';
+    empty.textContent = 'No topics found.';
+    list.appendChild(empty); return;
+  }
+  filtered.forEach(t => {
+    const prog = getModuleProgress(t.id);
+    const card = document.createElement('div');
+    card.className = 'learn-topic-card';
+    card.innerHTML = `
+      <div class="lt-icon" style="background:${t.color}18;border:1px solid ${t.color}30">${t.icon}</div>
+      <div class="lt-info">
+        <div class="lt-name">${t.name}</div>
+        <div class="lt-desc">${t.desc}</div>
+        <div class="lt-meta">
+          <span class="lt-pill ${t.level==='Beginner'?'green':t.level==='Intermediate'?'blue':'gold'}">${t.level}</span>
+          <span class="lt-pill blue">⏱ ${t.mins} mins</span>
+          ${prog === 100 ? '<span class="lt-pill green">✓ Done</span>' : ''}
+        </div>
+      </div>
+      <div class="lt-chevron">›</div>`;
+    card.onclick = () => openLearnTopic(t);
+    list.appendChild(card);
+  });
+}
+
+function filterLearnTopics(v) { learnSearchFilter = v.toLowerCase(); renderLearnTopics(); }
+function setLearnCat(cat, btn) {
+  learnCatFilter = cat;
+  document.querySelectorAll('#learn-cats .prod-cat-chip').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  renderLearnTopics();
+  playSound && playSound('click');
+}
+
+function openLearnTopic(topic) {
+  /* Open AI search with the topic as context */
+  switchTab('ai');
+  setTimeout(() => {
+    const context = `Teach me about "${topic.name}" as if you are training an AIS sales professional. Start with the definition, then explain features and benefits, then tell me how to sell it, and end with a quiz question. I am a ${ROLES[currentRole]?.name || 'Sales Executive'}.`;
+    if (window.sendMsg) sendMsg(context);
+  }, 400);
+  markModuleDone(topic.id);
+}
+
+/* ---- QUIZ ENGINE ---- */
+const QUIZ_BANK = {
+  glass:[
+    {q:'What does DGU stand for?',opts:['Double Glazing Unit','Dual Glass Upgrade','Dense Glass Unit','Double Grid Unit'],ans:0,exp:'DGU = Double Glazing Unit. Two panes of glass with an argon-filled gap, hermetically sealed to provide thermal and acoustic insulation.'},
+    {q:'Which face position should Low-E soft coat be on for maximum solar control?',opts:['Face 1 (outside)','Face 2 (inner surface of outer pane)','Face 3 (inner pane, outer surface)','Face 4 (inside room)'],ans:1,exp:'For solar control, the Low-E coating should be on Face 2 — the inner surface of the outer pane — to reject solar heat before it enters the air gap.'},
+    {q:'PVB in laminated glass stands for?',opts:['Polyvinyl Butyral','Plastic Vinyl Bond','Polished Vinyl Base','Pressure-bonded Vinyl'],ans:0,exp:'PVB = Polyvinyl Butyral. The transparent interlayer film that holds glass fragments together on breakage, providing safety and acoustic benefits.'},
+    {q:'What Rw rating does our AcousticPro 45 system achieve?',opts:['32 dB','38 dB','45 dB','52 dB'],ans:2,exp:'AcousticPro 45 achieves 45 dB Rw reduction — roughly halving perceived loudness from highway noise levels.'},
+    {q:'PDLC technology in smart glass stands for?',opts:['Pressure Dispersed Liquid Crystal','Polymer Dispersed Liquid Crystal','Photo-Dynamic Light Control','Piezoelectric Display Light Crystal'],ans:1,exp:'PDLC = Polymer Dispersed Liquid Crystal. Liquid crystals align when voltage is applied (clear), randomly scatter light when off (frosted).'},
+  ],
+  products:[
+    {q:'What is the typical lead time for AIS Windows supply and installation?',opts:['15-30 days','30-45 days','45-60 days','60-90 days'],ans:2,exp:'Standard lead time is 45-60 days from date of final site measurement. Rush track is available for standard sizes.'},
+    {q:'What warranty period applies to uPVC profiles?',opts:['5 years','7 years','10 years','15 years'],ans:2,exp:'uPVC profiles carry a 10-year warranty from AIS Windows, covering manufacturing or quality defects.'},
+    {q:'How many times stronger is toughened glass vs standard annealed glass?',opts:['2x','3x','4-5x','8x'],ans:2,exp:'Toughened (tempered) glass is 4-5x stronger than annealed glass of the same thickness, and shatters into blunt pebbles when broken.'},
+    {q:'A tilt & turn window uses which hardware component to transfer movement around the frame corner?',opts:['Espag','Corner Drive','Fly Mullion','Friction Stay'],ans:1,exp:'The Corner Drive in tilt & turn hardware transfers the mechanical movement around the corner of the sash frame, enabling both tilt and turn operation from a single handle.'},
+    {q:'What is the warranty period for aluminium profiles?',opts:['10 years','12 years','15 years','20 years'],ans:2,exp:'Aluminium profiles carry a 15-year warranty — longer than uPVC because of aluminium\'s inherent structural longevity.'},
+  ],
+  sales:[
+    {q:'A customer says "your competitor is cheaper." What is the WRONG response?',opts:['"Let me see what discount I can offer"','"What does their price include? Let me compare specifications"','"Our warranty and service make the difference — here\'s why"','"Can I show you the 30-year total cost comparison?"'],ans:0,exp:'Never lead with a discount. It destroys margin, signals that your original price was wrong, and starts a race to the bottom. Always compare value first.'},
+    {q:'In the AIS consultation process, how many qualification steps does the buyer guide cover?',opts:['4 steps','5 steps','7 steps','9 steps'],ans:1,exp:'The AIS consultant uses a 5-step process: Property Type → Location/Climate → Priority → Budget → Design Preference.'},
+    {q:'Which window type is BEST for acoustic performance?',opts:['Sliding window','Fixed window','Casement window','Top hung window'],ans:2,exp:'Casement windows compress against a multi-point espag seal on all edges when closed — creating the best acoustic seal of any opening window type.'},
+    {q:'What is the first question to ask in an AIS consultation?',opts:['What is your budget?','What type of property is this for?','What colour do you want?','When do you need delivery?'],ans:1,exp:'Property type is the first qualification question — it determines the entire specification direction, from profile type to hardware grade.'},
+    {q:'When a customer says "I need to think about it," what is the most effective response?',opts:['Give them your card and leave','Offer an immediate discount','"Of course — what specific information would help you decide?"','"This offer expires soon"'],ans:2,exp:'Discover the real objection by asking what information they need. "I need to think about it" almost always means an unanswered objection or concern.'},
+  ],
+};
+
+let quizState = { questions:[], currentQ:0, score:0, category:'', answers:[] };
+
+function startQuiz(category) {
+  const bank = QUIZ_BANK[category] || QUIZ_BANK.glass;
+  quizState = { questions: [...bank].sort(()=>Math.random()-.5).slice(0,5), currentQ:0, score:0, category, answers:[] };
+  renderQuiz();
+}
+
+function renderQuiz() {
+  const sub = document.getElementById('practice-subpanel');
+  if (!sub) return;
+  const { questions, currentQ } = quizState;
+  if (currentQ >= questions.length) { renderQuizScore(); return; }
+  const q = questions[currentQ];
+  const progDots = questions.map((_,i) => `<div class="quiz-prog-dot ${i<currentQ?'done':i===currentQ?'active':''}"></div>`).join('');
+  sub.innerHTML = `
+    <div class="quiz-panel">
+      <div class="quiz-progress">${progDots}</div>
+      <div class="quiz-q-card">
+        <div class="quiz-q-num">Question ${currentQ+1} of ${questions.length} · ${quizState.category.toUpperCase()}</div>
+        <div class="quiz-q-text">${q.q}</div>
+        <div class="quiz-opts" id="quiz-opts">
+          ${q.opts.map((opt,i)=>`<button class="quiz-opt" onclick="answerQuiz(${i})">${opt}</button>`).join('')}
+        </div>
+        <div class="quiz-exp" id="quiz-exp">${q.exp}</div>
+      </div>
+    </div>`;
+}
+
+function answerQuiz(selectedIdx) {
+  const q = quizState.questions[quizState.currentQ];
+  const opts = document.querySelectorAll('.quiz-opt');
+  opts.forEach((opt, i) => {
+    opt.disabled = true;
+    if (i === q.ans) opt.classList.add('correct');
+    else if (i === selectedIdx) opt.classList.add('wrong');
+  });
+  const isCorrect = selectedIdx === q.ans;
+  if (isCorrect) { quizState.score++; playSound && playSound('notif'); }
+  quizState.answers.push({ q: quizState.currentQ, correct: isCorrect });
+  const expEl = document.getElementById('quiz-exp');
+  if (expEl) expEl.classList.add('show');
+  setTimeout(() => { quizState.currentQ++; renderQuiz(); }, 1800);
+}
+
+function renderQuizScore() {
+  const { score, questions, category } = quizState;
+  const pct = Math.round((score / questions.length) * 100);
+  const pass = pct >= 60;
+  const grade = pct >= 90 ? '🏆 Excellent!' : pct >= 70 ? '🎉 Well done!' : pct >= 60 ? '✅ Passed!' : '📚 Keep learning';
+  const sub = document.getElementById('practice-subpanel');
+  if (!sub) return;
+  KOS_PROGRESS.quizzes[category + '_' + Date.now()] = { pass, score: pct, category };
+  if (pass) KOS_PROGRESS.certs.push({ module: category, score: pct, date: new Date().toLocaleDateString('en-IN') });
+  saveProgress(); updateKOSStats();
+  sub.innerHTML = `
+    <div class="quiz-panel">
+      <div class="quiz-score-card">
+        <div class="quiz-score-ring">${grade.split(' ')[0]}</div>
+        <div class="quiz-score-pct">${pct}%</div>
+        <div class="quiz-score-lbl">${score} of ${questions.length} correct · ${grade.split(' ').slice(1).join(' ')}</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:16px">
+          <button class="cert-btn" onclick="openModule('quiz')" style="font-size:13px;padding:12px 20px">Try Another Quiz</button>
+          ${pass ? `<button class="cert-btn" style="background:linear-gradient(135deg,#ffaa00,#ff9500);font-size:13px;padding:12px 20px" onclick="openModule('certification')">View Certificate 🏆</button>` : ''}
+        </div>
+        <button onclick="document.getElementById('practice-subpanel').innerHTML=''" style="width:100%;margin-top:10px;padding:10px;border:none;background:none;color:var(--txt-3);font-size:12px;cursor:pointer">Back to Practice</button>
+      </div>
+    </div>`;
+}
+
+/* ---- OBJECTION HANDLING ---- */
+const OBJECTIONS_LIB = [
+  {id:'price',title:'Too Expensive / Price Objection',icon:'💰',reason:'Customer compares only upfront cost without total value or lifecycle',wrong:"\"Let me see what discount I can give you.\" — Never lead with discount. Destroys margin and signals your price was inflated.",correct:'"I understand price is important. Let me help you compare what\'s actually included. Our price covers [specification details]. What are you comparing this against?"',tip:'Reframe price to investment. Calculate 30-year TCO comparison. Show energy savings payback of 3–5 years.',script:'"What would you want to invest in a 30-year product for your home?" — anchor the conversation on value.'},
+  {id:'competitor',title:'Competitor is Cheaper',icon:'🔍',reason:'Customer has received a lower quote but may not be comparing like-for-like',wrong:'"Our quality is better." — Generic claim with no proof. Customer ignores it.',correct:'"That\'s really useful to know. Can you share the competitor quote? I\'d love to show you what\'s different in the specification — glass type, hardware grade, warranty terms."',tip:'Use the quotation checklist (8 points) to reveal specification gaps. Most cheap quotes use single-point locking, air-filled glass, and shorter warranties.',script:'"Is their glass DGU with argon or single glazed? Is the locking multipoint or single? Let\'s compare apples to apples."'},
+  {id:'delivery',title:'Delivery / Timeline Concern',icon:'📅',reason:'Customer has a tight construction programme and is worried about delays',wrong:'"We\'ll do our best." — Vague and unconvincing. Creates anxiety.',correct:'"Our standard lead time is 45-60 days from final site measurement. If you have apertures ready by [date], we can commit to delivery by [date]. We\'ll confirm this in writing."',tip:'Lead time starts from FINAL measurement, not order. Get apertures ready earlier = faster delivery. Offer rush track for standard sizes (28-35 days).',script:'"When exactly do you need installation complete? Let\'s work backwards and confirm if we can meet that. I\'d rather know now than later."'},
+  {id:'warranty',title:'Warranty Concern',icon:'📜',reason:'Customer worried about long-term support and claims process',wrong:'"Our warranty is very good." — Vague. Doesn\'t address the real concern.',correct:'"Let me walk you through exactly what our warranty covers: 10 years on uPVC profiles, 15 years on aluminium, 10 years on glass seals. Claims are assessed within 7 working days with a free on-site visit."',tip:'Most customers fear the claims process more than the duration. Emphasise: engineer visits you, 7-day response, factory-trained teams.',script:'"What\'s your main concern about warranty — the duration or what happens if something goes wrong? Let me address that specifically."'},
+  {id:'upvc_vs_alu',title:'uPVC vs Aluminium Confusion',icon:'🪟',reason:'Customer doesn\'t understand the difference and defaults to familiar material or lower price',wrong:'"It depends on your budget." — Lazy answer. Doesn\'t educate or build confidence.',correct:'"Great question — they serve different purposes. uPVC is thermally superior and costs less. Aluminium gives you slimmer profiles and larger openings. For your [villa/apartment/office], I\'d recommend [x] because [reason]."',tip:'Never just list features. Make a specific recommendation. Confident recommendations build trust. Sitting on the fence loses the sale.',script:'"For your specific project — [property type] in [location] with [priority] — I\'d recommend [frame] because it gives you [specific benefit]. Here\'s why."'},
+  {id:'service',title:'Service & After-Sales Concern',icon:'🔧',reason:'Customer has had bad experiences with window companies who disappeared after installation',wrong:'"We have good after-sales service." — Unverifiable claim. Same as every competitor.',correct:'"I completely understand this concern. Here\'s our service commitment: emergency response within 24 hours, operational issues within 48 hours, AMC from ₹2,500/year for ongoing professional care."',tip:'Turn the service conversation into a differentiator. Most competitors don\'t have AMC. Offer it proactively.',script:'"What happened with your previous window company? I want to make sure we address that specifically. Here\'s what we do differently."'},
+];
+
+function renderObjections(searchVal) {
+  const sub = document.getElementById('practice-subpanel');
+  if (!sub) return;
+  const filtered = searchVal ? OBJECTIONS_LIB.filter(o => o.title.toLowerCase().includes(searchVal.toLowerCase()) || o.wrong.toLowerCase().includes(searchVal.toLowerCase())) : OBJECTIONS_LIB;
+  sub.innerHTML = `
+    <div class="obj-search-wrap">
+      <input type="search" class="prod-search" placeholder="Search objections…" oninput="renderObjections(this.value)" value="${searchVal||''}">
+    </div>
+    ${filtered.map(obj => `
+    <div class="obj-card" id="obj-${obj.id}">
+      <div class="obj-card-header" onclick="toggleObj('${obj.id}')">
+        <div class="obj-icon">${obj.icon}</div>
+        <div class="obj-title">${obj.title}</div>
+        <div class="obj-expand-icon">›</div>
+      </div>
+      <div class="obj-body">
+        <div class="obj-section"><div class="obj-sec-label wrong">❌ Wrong Response (avoid)</div><div class="obj-sec-body wrong">${obj.wrong}</div></div>
+        <div class="obj-section"><div class="obj-sec-label correct">✅ Correct Response</div><div class="obj-sec-body correct">${obj.correct}</div></div>
+        <div class="obj-section"><div class="obj-sec-label tip">💡 Sales Tip</div><div class="obj-sec-body tip">${obj.tip}</div></div>
+        <div class="obj-section"><div class="obj-sec-label" style="color:var(--ac1)">📝 Script</div><div class="obj-sec-body" style="background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.15)">${obj.script}</div></div>
+        <button class="obj-practice-btn" onclick="practiceObjection('${obj.id}')">🎭 Practice this objection with AI</button>
+      </div>
+    </div>`).join('')}`;
+}
+
+function toggleObj(id) {
+  const card = document.getElementById('obj-' + id);
+  if (card) card.classList.toggle('expanded');
+  playSound && playSound('click');
+}
+
+function practiceObjection(objId) {
+  const obj = OBJECTIONS_LIB.find(o => o.id === objId);
+  if (!obj) return;
+  switchTab('ai');
+  setTimeout(() => {
+    const prompt = `Let's role-play. You are a customer saying: "${obj.title.replace('Objection','').trim()}". I am an AIS salesperson. Start the objection scenario, then after I respond, give me feedback on my answer. Begin now as the customer.`;
+    if (window.sendMsg) sendMsg(prompt);
+  }, 400);
+}
+
+/* ---- ROLE PLAY ENGINE ---- */
+const RP_PERSONAS = [
+  {id:'villa_owner',name:'Villa Owner',icon:'🏰',desc:'Wants premium, price is secondary',tone:'premium',budget:'ultra',priority:'luxury',opening:"I'm looking for windows for my new villa in Chandigarh. I want something that looks stunning and lasts a lifetime."},
+  {id:'architect',name:'Architect',icon:'📐',desc:'Technical, specification-driven',tone:'technical',opening:"I need technical specs for a 45-unit apartment complex. U-values, wind load ratings, and IS compliance documentation please."},
+  {id:'price_sensitive',name:'Price-Sensitive Buyer',icon:'💰',desc:'Every rupee matters, will push hard',tone:'budget',opening:"I've already got quotes from three other companies. You're the most expensive. Why should I choose you?"},
+  {id:'angry_customer',name:'Angry Customer',icon:'😠',desc:'Unhappy about service delay',tone:'complaint',opening:"I placed an order 3 months ago and nothing has happened. This is completely unacceptable. I want answers."},
+  {id:'builder',name:'Developer / Builder',icon:'🔨',desc:'Bulk buyer, wants best margin deal',tone:'commercial',opening:"I'm doing a 200-unit residential project. What's your best bulk pricing and what guarantees can you give on delivery timelines?"},
+  {id:'interior_designer',name:'Interior Designer',icon:'🎨',desc:'Aesthetic-focused, wants unique options',tone:'design',opening:"My client wants something very unique. Can you do custom shapes and colours? What's the most premium product you have?"},
+];
+
+let rpActive = false, rpPersona = null, rpHistory = [];
+
+function initRolePlay() {
+  const sub = document.getElementById('practice-subpanel');
+  if (!sub) return;
+  rpActive = false; rpPersona = null; rpHistory = [];
+  sub.innerHTML = `
+    <div style="padding:14px 16px 8px"><div style="font-size:14px;font-weight:700;color:var(--txt-1);margin-bottom:4px">Select a Customer Persona</div><div style="font-size:12px;color:var(--txt-2)">AI will play the customer. You are the AIS salesperson. AI evaluates your approach.</div></div>
+    <div class="rp-persona-grid">${RP_PERSONAS.map(p=>`<div class="rp-persona" onclick="startRolePlay('${p.id}')"><div class="rp-persona-emoji">${p.icon}</div><div class="rp-persona-name">${p.name}</div><div class="rp-persona-desc">${p.desc}</div></div>`).join('')}</div>`;
+}
+
+function startRolePlay(personaId) {
+  rpPersona = RP_PERSONAS.find(p => p.id === personaId);
+  if (!rpPersona) return;
+  rpActive = true; rpHistory = [];
+  /* Route to AI chat with role play context */
+  switchTab('ai');
+  setTimeout(() => {
+    const prompt = `You are now playing the role of "${rpPersona.name}" — ${rpPersona.desc}. Speak ONLY as this customer. After our conversation (minimum 6 exchanges), you will evaluate my sales performance on: Questions Asked, Product Knowledge, Confidence, Recommendation Accuracy, Sales Approach, and Closing Skills. Score each out of 10 and give a total score.\n\nStart now as the customer:\n\n"${rpPersona.opening}"`;
+    if (window.sendMsg) sendMsg(prompt);
+  }, 400);
+  toast(`🎭 Role Play started — you are talking to: ${rpPersona.name}`, 'i');
+}
+
+/* ---- SALES COACH ---- */
+const COACH_STEPS = [
+  {q:'What type of property is this for?',why:'Property type determines the entire specification — profile system, hardware grade, and glass performance requirements.'},
+  {q:'Where is the property located?',why:'City and climate zone dictate insulation, solar control, and weatherproofing specification. Delhi NCR needs anti-pollution. Coastal needs marine-grade.'},
+  {q:'Is this a new build or renovation?',why:'This affects how we measure, how long the project takes, and whether structural changes are possible.'},
+  {q:'What is the primary concern — noise, heat, security, aesthetics, or energy?',why:'The priority drives the glass recommendation entirely. Same frame, very different glass specification for noise vs heat vs security.'},
+  {q:'What is the approximate budget per square foot?',why:'Budget determines which product tier to recommend — standard (₹400-600), premium (₹600-1,000), or ultra luxury (₹1,000+).'},
+  {q:'When is the target installation date?',why:'Lead time is 45-60 days. Knowing the timeline immediately shows whether the project is feasible and creates urgency.'},
+  {q:'Who else is involved in the decision?',why:'Identifying all decision-makers prevents the deal from stalling after your meeting. Get all stakeholders in the room.'},
+  {q:'Have you visited an AIS Experience Centre?',why:'A showroom visit closes 40% more deals. The tactile experience — feeling hardware, seeing PDLC glass switch — is irreplaceable.'},
+];
+
+function initSalesCoach() {
+  const sub = document.getElementById('practice-subpanel');
+  if (!sub) return;
+  sub.innerHTML = `
+    <div style="padding:14px 16px 8px"><div style="font-size:14px;font-weight:700;color:var(--txt-1)">The 8-Question Qualification</div><div style="font-size:12px;color:var(--txt-2);margin-bottom:12px">Master these 8 questions to qualify every AIS customer. Click each to understand WHY it matters.</div></div>
+    ${COACH_STEPS.map((step, i) => `
+    <div class="coach-step" id="coach-step-${i}" onclick="toggleCoachStep(${i})">
+      <div class="coach-step-header">
+        <div class="coach-step-num">${i+1}</div>
+        <div class="coach-step-q">${step.q}</div>
+      </div>
+      <div class="coach-step-why">💡 <strong>Why this matters:</strong> ${step.why}</div>
+    </div>`).join('')}
+    <div style="padding:14px 16px">
+      <button style="width:100%;padding:16px;border-radius:var(--r-full);background:var(--grad1);border:none;color:#fff;font-size:14px;font-weight:700;cursor:pointer;box-shadow:var(--glow1)" onclick="startCoachRolePlay()">🎭 Practice with AI Customer</button>
+    </div>`;
+}
+
+function toggleCoachStep(i) {
+  document.getElementById('coach-step-'+i)?.classList.toggle('active');
+  playSound && playSound('click');
+}
+
+function startCoachRolePlay() {
+  switchTab('ai');
+  setTimeout(() => {
+    sendMsg && sendMsg("Let's practice a sales qualification. You are a customer — a homeowner building a new villa in Chandigarh. I am an AIS salesperson. After I ask all 8 qualification questions correctly, evaluate my technique and score me. Start the conversation as the customer saying hello.");
+  }, 400);
+}
+
+/* ---- MODULE ROUTER ---- */
+function openModule(moduleId) {
+  const sub = document.getElementById('practice-subpanel');
+  playSound && playSound('click');
+  if (navigator.vibrate) navigator.vibrate(8);
+  switch (moduleId) {
+    case 'quiz':
+      switchTab('practice');
+      if (sub) {
+        sub.innerHTML = `<div class="quiz-panel" style="padding-bottom:20px">
+          <div style="font-size:14px;font-weight:700;color:var(--txt-1);margin-bottom:4px">Choose a Quiz Topic</div>
+          <div style="font-size:12px;color:var(--txt-2);margin-bottom:16px">5 questions · 5 minutes · earn your certificate</div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            ${[['glass','💎','Glass Studio'],['products','🪟','Products & Systems'],['sales','🎯','Sales Excellence']].map(([cat,icon,name])=>`<button onclick="startQuiz('${cat}')" style="padding:16px;border-radius:var(--r-lg);border:1px solid var(--glass-b);background:var(--glass);color:var(--txt-1);font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:12px;transition:all var(--tn)"><span style="font-size:22px">${icon}</span>${name}</button>`).join('')}
+          </div>
+        </div>`;
+      }
+      break;
+    case 'objections':
+      switchTab('practice');
+      renderObjections('');
+      break;
+    case 'role-play':
+      switchTab('practice');
+      initRolePlay();
+      break;
+    case 'sales-coach':
+      switchTab('practice');
+      initSalesCoach();
+      break;
+    case 'ai-search':
+    case 'configurator':
+      switchTab('ai');
+      if (moduleId === 'configurator') setTimeout(() => openM && openM('config-modal'), 400);
+      break;
+    case 'comparison':
+      switchTab('ai');
+      setTimeout(() => openCompare && openCompare(), 400);
+      break;
+    case 'certification':
+      switchTab('practice');
+      renderCertification();
+      break;
+    case 'progress':
+      switchTab('profile');
+      break;
+    default:
+      /* Learning topics — route to AI */
+      switchTab('ai');
+      setTimeout(() => {
+        const mod = MODULES_DEF.find(m => m.id === moduleId);
+        if (mod && window.sendMsg) sendMsg(`As an AIS training expert, teach me everything about "${mod.name}". I am a ${ROLES[currentRole]?.name || 'Sales Executive'}. Start with the basics, give me examples, and end with the key sales message for this topic.`);
+      }, 400);
+      markModuleDone(moduleId);
+  }
+}
+
+function renderCertification() {
+  const sub = document.getElementById('practice-subpanel');
+  if (!sub) return;
+  const certs = KOS_PROGRESS.certs;
+  const role = ROLES[currentRole] || ROLES.sales;
+  sub.innerHTML = certs.length === 0 ? `
+    <div style="text-align:center;padding:40px 20px">
+      <div style="font-size:48px;margin-bottom:14px">🏆</div>
+      <div style="font-size:16px;font-weight:700;color:var(--txt-1);margin-bottom:6px">No Certificates Yet</div>
+      <div style="font-size:13px;color:var(--txt-2);margin-bottom:20px">Pass quizzes to earn your first certificate</div>
+      <button onclick="openModule('quiz')" style="padding:14px 28px;border-radius:var(--r-full);background:var(--grad1);border:none;color:#fff;font-size:14px;font-weight:700;cursor:pointer">Start a Quiz →</button>
+    </div>` :
+    certs.map(cert => `
+    <div class="cert-card" style="margin-bottom:12px">
+      <div class="cert-logo">🏆</div>
+      <div class="cert-title">Certificate of Completion</div>
+      <div class="cert-name">${role.name}</div>
+      <div class="cert-module">${cert.module.charAt(0).toUpperCase() + cert.module.slice(1)} Mastery</div>
+      <div class="cert-desc">Has successfully completed the AIS KnowledgeOS ${cert.module} module</div>
+      <span class="cert-score-badge">Score: ${cert.score}%</span>
+      <div class="cert-date">Awarded: ${cert.date} · AIS KnowledgeOS v8.0</div>
+      <button class="cert-share-btn" onclick="toast('Certificate download feature — available in Firebase-connected version','i')">⬇️ Download Certificate</button>
+    </div>`).join('');
+}
+
+/* ---- PATCH BOTTOM NAV & SWITCH TAB FOR ENTERPRISE ---- */
+const _ent_origSwitchTab = typeof switchTab === 'function' ? switchTab : null;
+window.switchTab = function(tab) {
+  /* Map enterprise tabs to existing system */
+  const PANEL_MAP = {
+    home: '#pwa-home',
+    learn: '#pwa-learn',
+    practice: '#pwa-practice',
+    profile: '#pwa-profile-ent',
+    ai: '#ca',
+    consult: '#pwa-consult',
+    products: '#pwa-products',
+    settings: '#pwa-settings',
+  };
+  activeTab = tab;
+  /* Hide all panels */
+  document.querySelectorAll('.pwa-panel').forEach(p => p.classList.remove('active'));
+  const ca = document.getElementById('ca');
+  if (ca) ca.style.display = 'none';
+  /* Show target panel */
+  const target = PANEL_MAP[tab];
+  if (target === '#ca') {
+    if (ca) { ca.style.display = 'flex'; setTimeout(() => document.getElementById('mi2')?.focus(), 200); }
+  } else if (target) {
+    const panel = document.querySelector(target);
+    if (panel) panel.classList.add('active');
+  }
+  /* Update bottom nav */
+  document.querySelectorAll('.bnav-btn').forEach(b => {
+    const id = b.id.replace('bnav-','');
+    b.classList.toggle('active', id === tab || (tab === 'ai' && id === 'home') );
+  });
+  /* Haptic */
+  if (navigator.vibrate) navigator.vibrate(8);
+  playSound && playSound('click');
+};
+
+/* ---- PATCH BOTTOM NAV LABELS ---- */
+function updateBnavLabels() {
+  const labels = { home:'Home', consult:'Learn', products:'Search', settings:'Profile' };
+  const icons = { home:'🏠', consult:'📚', products:'🤖', settings:'👤' };
+  document.querySelectorAll('.bnav-btn').forEach(btn => {
+    const id = btn.id.replace('bnav-','');
+    if (labels[id]) {
+      const ico = btn.querySelector('.bnav-icon');
+      const lbl = btn.querySelector('.bnav-lbl');
+      if (ico) ico.textContent = icons[id] || ico.textContent;
+      if (lbl) lbl.textContent = labels[id];
+    }
+  });
+  /* Remap button clicks */
+  const home = document.getElementById('bnav-home');
+  if (home) home.onclick = () => switchTab('home');
+  const consult = document.getElementById('bnav-consult');
+  if (consult) { consult.querySelector('.bnav-icon').textContent = '📚'; consult.querySelector('.bnav-lbl').textContent = 'Learn'; consult.onclick = () => switchTab('learn'); }
+  const products = document.getElementById('bnav-products');
+  if (products) { products.querySelector('.bnav-icon').textContent = '🤖'; products.querySelector('.bnav-lbl').textContent = 'AI'; products.onclick = () => switchTab('ai'); }
+  const settings = document.getElementById('bnav-settings');
+  if (settings) { settings.querySelector('.bnav-icon').textContent = '👤'; settings.querySelector('.bnav-lbl').textContent = 'Profile'; settings.onclick = () => switchTab('profile'); }
+  /* Mic button → practice */
+  const mic = document.getElementById('bnav-mic');
+  if (mic) mic.onclick = () => { switchTab('practice'); document.getElementById('kos-practice-grid') && !document.getElementById('practice-subpanel').innerHTML ? null : null; };
+}
+
+/* ---- PATCH MOBILE HEADER FOR ENTERPRISE ---- */
+function updateMobHeader() {
+  const title = document.querySelector('.mob-title');
+  if (title) title.textContent = 'AIS KnowledgeOS';
+  const sub = document.querySelector('#mob-aria-status, .mob-sub');
+  if (sub) sub.textContent = `${ROLES[currentRole]?.name || 'Sales Executive'} · Enterprise Edition`;
+  /* Remap header buttons */
+  const actions = document.querySelector('.mob-actions');
+  if (actions) {
+    actions.innerHTML = `
+      <button class="mob-action-btn" onclick="switchTab('ai')" aria-label="AI Search">🤖</button>
+      <button class="mob-action-btn" onclick="showRoleOverlay()" aria-label="Role">${ROLES[currentRole]?.icon || '👤'}</button>`;
+  }
+}
+
+/* ---- PATCH APP TITLE ---- */
+function patchAppTitle() {
+  document.title = 'AIS KnowledgeOS — Enterprise Learning Platform';
+  /* Also update the welcome card */
+  const wt = document.querySelector('.wt');
+  if (wt) wt.textContent = 'AIS KnowledgeOS';
+  const wsub = document.querySelector('.wsub');
+  if (wsub) wsub.innerHTML = 'AI Powered Learning, Product Knowledge & Sales Enablement<br><span style="font-size:11px;opacity:.7">Ask anything · Learn · Practice · Get Certified</span>';
+}
+
+/* ---- INIT ---- */
+function initKOS() {
+  updateBnavLabels();
+  updateMobHeader();
+  patchAppTitle();
+  initKOSDashboard();
+  /* Default to enterprise home */
+  switchTab('home');
+}
+
+function showAnnouncement() {
+  toast('📢 Lift & Slide Product Update: New specs and sales scripts available in the Learn Products module.', 'i');
+}
+
+/* ---- ENTERPRISE BOOT ---- */
+(function bootKOS() {
+  function run() {
+    patchAppTitle();
+    if (!currentRole) {
+      /* First launch — show role selection */
+      const overlay = document.getElementById('role-overlay');
+      if (overlay) { overlay.style.display = 'flex'; }
+    } else {
+      /* Returning user — go straight to dashboard */
+      setTimeout(initKOS, 200);
+    }
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run);
+  else setTimeout(run, 250);
+})();
 
 </script>
 </body>
