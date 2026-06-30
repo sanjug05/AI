@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
 <meta name="description" content="AIS Smart Assistant v3.0 — Neural Consultant Platform for premium doors and windows">
 <meta name="theme-color" content="#06060f">
-<title>AIS KnowledgeOS — Enterprise Learning & Sales Enablement Platform</title>
+<title>AIS KnowledgeOS — Enterprise AI Knowledge Operating System</title>
 <style>
 
 /* =====================================================
@@ -1261,6 +1261,145 @@ body.offline-mode #app{padding-top:36px}
   /* Role overlay still allowed (position:fixed — handled by JS) */
 }
 
+
+/* =====================================================
+   v9 ENTERPRISE CSS — Settings, AI Routing, Knowledge
+===================================================== */
+/* AI SOURCE BADGE */
+.ai-source-badge{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;
+  padding:3px 9px;border-radius:var(--r-full);margin-top:6px;letter-spacing:.3px}
+.ai-source-badge.kb{background:rgba(0,255,136,.1);color:var(--green-ent);border:1px solid rgba(0,255,136,.2)}
+.ai-source-badge.ext{background:rgba(123,47,255,.1);color:var(--ac2);border:1px solid rgba(123,47,255,.2)}
+.ai-source-badge.filter{background:rgba(255,170,0,.1);color:var(--gold);border:1px solid var(--gold-b)}
+.ai-conf-bar{height:2px;border-radius:var(--r-full);margin-top:4px;background:rgba(255,255,255,.06);overflow:hidden}
+.ai-conf-fill{height:100%;border-radius:var(--r-full);transition:width .8s ease}
+
+/* SETTINGS ENTERPRISE */
+.settings-ai-card{background:linear-gradient(135deg,rgba(123,47,255,.08),rgba(0,212,255,.04));
+  border:1px solid rgba(123,47,255,.2);border-radius:var(--r-lg);padding:16px;margin-bottom:12px}
+.settings-ai-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;
+  color:var(--ac2);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.settings-select{width:100%;padding:11px 14px;background:rgba(0,0,0,.25);border:1px solid var(--glass-b);
+  border-radius:var(--r-md);color:var(--txt-1);font-size:13px;outline:none;cursor:pointer;margin-bottom:10px;
+  transition:border-color var(--tn);font-family:inherit}
+.settings-select:focus{border-color:var(--ac2)}
+.settings-select option{background:#0c0c1e}
+.api-key-wrap{position:relative;margin-bottom:10px}
+.api-key-input{width:100%;padding:11px 44px 11px 14px;background:rgba(0,0,0,.25);border:1px solid var(--glass-b);
+  border-radius:var(--r-md);color:var(--txt-1);font-size:13px;outline:none;font-family:'SF Mono',monospace;
+  transition:border-color var(--tn)}
+.api-key-input:focus{border-color:var(--ac2)}
+.api-key-toggle{position:absolute;right:12px;top:50%;transform:translateY(-50%);
+  background:none;border:none;cursor:pointer;font-size:15px;color:var(--txt-3);padding:4px}
+.conn-status{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--txt-3);margin-bottom:10px}
+.conn-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.conn-dot.ok{background:var(--green-ent);animation:sp 2s ease-in-out infinite}
+.conn-dot.err{background:var(--ac3)}
+.conn-dot.idle{background:var(--glass-b)}
+.settings-btn-row{display:flex;gap:8px}
+.settings-action-btn{flex:1;padding:10px;border-radius:var(--r-md);font-size:12px;font-weight:600;
+  cursor:pointer;transition:all var(--tn);border:1px solid var(--glass-b);background:var(--glass);color:var(--txt-2)}
+.settings-action-btn:hover{border-color:var(--ac2);color:var(--ac2)}
+.settings-action-btn.primary{background:var(--grad2);border-color:transparent;color:#fff}
+.settings-action-btn.primary:hover{opacity:.88}
+
+/* KNOWLEDGE LIBRARY */
+.kl-category-tabs{display:flex;gap:6px;overflow-x:auto;padding:10px 16px 0;scrollbar-width:none}
+.kl-category-tabs::-webkit-scrollbar{display:none}
+.kl-tab{flex-shrink:0;padding:8px 16px;border-radius:var(--r-full);border:1px solid var(--glass-b);
+  background:var(--glass);color:var(--txt-2);font-size:12px;font-weight:600;cursor:pointer;
+  transition:all var(--tn);white-space:nowrap}
+.kl-tab.active{background:var(--grad1);color:#fff;border-color:transparent}
+.kl-grid{padding:12px 16px 16px;display:flex;flex-direction:column;gap:10px}
+.kl-card{background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r-lg);overflow:hidden;
+  transition:all var(--tn);cursor:pointer}
+.kl-card:hover{border-color:var(--ac1)}
+.kl-card-header{padding:16px;display:flex;align-items:center;gap:14px}
+.kl-icon{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+  font-size:22px;flex-shrink:0}
+.kl-info{flex:1}
+.kl-name{font-size:14px;font-weight:700;color:var(--txt-1);margin-bottom:3px}
+.kl-meta{font-size:11px;color:var(--txt-3);display:flex;gap:8px}
+.kl-chevron{font-size:18px;color:var(--txt-3);transition:transform .25s ease}
+.kl-card.expanded .kl-chevron{transform:rotate(90deg)}
+.kl-body{display:none;padding:0 16px 16px;animation:wi .3s ease}
+.kl-card.expanded .kl-body{display:block}
+.kl-section{margin-bottom:14px}
+.kl-section-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;
+  color:var(--ac1);margin-bottom:7px;display:flex;align-items:center;gap:6px}
+.kl-section-body{font-size:12px;color:var(--txt-2);line-height:1.65}
+.kl-tag-list{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.kl-tag{font-size:10px;padding:3px 9px;border-radius:var(--r-full);background:rgba(0,212,255,.08);
+  color:var(--ac1);border:1px solid rgba(0,212,255,.15)}
+.kl-actions{display:flex;gap:8px;margin-top:12px}
+.kl-btn{flex:1;padding:10px;border-radius:var(--r-md);font-size:11px;font-weight:600;cursor:pointer;
+  transition:all var(--tn);border:1px solid var(--glass-b);background:var(--glass);color:var(--txt-2)}
+.kl-btn:hover{border-color:var(--ac1);color:var(--ac1)}
+.kl-btn.primary{background:var(--grad1);border-color:transparent;color:#fff}
+
+/* KNOWLEDGE SEARCH */
+.ksearch-wrap{padding:14px 16px}
+.ksearch-input-row{display:flex;gap:8px;margin-bottom:12px}
+.ksearch-input{flex:1;padding:13px 16px;background:var(--glass);border:1px solid var(--glass-b);
+  border-radius:var(--r-full);color:var(--txt-1);font-size:15px;outline:none;font-family:inherit;
+  transition:border-color var(--tn)}
+.ksearch-input:focus{border-color:var(--ac1)}
+.ksearch-input::placeholder{color:var(--txt-3)}
+.ksearch-btn{width:46px;height:46px;border-radius:50%;background:var(--grad1);border:none;
+  color:#fff;font-size:20px;cursor:pointer;flex-shrink:0}
+.ksearch-filters{display:flex;gap:6px;overflow-x:auto;margin-bottom:14px;scrollbar-width:none}
+.ksearch-filters::-webkit-scrollbar{display:none}
+.ksearch-result{background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r-lg);
+  padding:14px 16px;margin-bottom:9px;cursor:pointer;transition:all var(--tn)}
+.ksearch-result:hover{border-color:var(--ac1)}
+.ksearch-result-title{font-size:13px;font-weight:700;color:var(--txt-1);margin-bottom:4px}
+.ksearch-result-snippet{font-size:11px;color:var(--txt-2);line-height:1.55}
+.ksearch-result-meta{display:flex;gap:6px;margin-top:7px}
+.ksearch-result-cat{font-size:9px;font-weight:700;padding:2px 8px;border-radius:var(--r-full);
+  background:rgba(0,212,255,.1);color:var(--ac1);border:1px solid rgba(0,212,255,.18)}
+.ksearch-result-src{font-size:9px;color:var(--txt-3)}
+.ksearch-empty{text-align:center;padding:40px 20px;font-size:13px;color:var(--txt-3)}
+
+/* ADMIN DASHBOARD */
+.admin-stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:12px 16px}
+.admin-stat-card{background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r-lg);padding:16px}
+.admin-stat-val{font-size:26px;font-weight:800;margin-bottom:4px}
+.admin-stat-lbl{font-size:11px;color:var(--txt-3)}
+.admin-table{margin:0 16px 16px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r-lg);overflow:hidden}
+.admin-table-head{background:rgba(255,255,255,.03);padding:10px 14px;font-size:10px;font-weight:700;
+  text-transform:uppercase;letter-spacing:1.5px;color:var(--txt-3);display:grid;grid-template-columns:1fr auto auto}
+.admin-table-row{padding:11px 14px;border-top:1px solid var(--glass-b);display:grid;grid-template-columns:1fr auto auto;
+  align-items:center;font-size:12px;gap:8px}
+.admin-table-row:hover{background:rgba(255,255,255,.02)}
+.admin-row-name{color:var(--txt-1);font-weight:600}
+.admin-row-val{color:var(--txt-2);text-align:right}
+.admin-row-badge{font-size:10px;padding:2px 8px;border-radius:var(--r-full);font-weight:700;text-align:center}
+
+/* COURSE / BUYING GUIDE */
+.course-progress-header{padding:14px 16px;background:linear-gradient(135deg,rgba(123,47,255,.06),rgba(0,212,255,.04));
+  border-bottom:1px solid var(--glass-b)}
+.course-prog-ring-wrap{display:flex;align-items:center;gap:14px;margin-bottom:10px}
+.course-title{font-size:16px;font-weight:800;color:var(--txt-1);margin-bottom:2px}
+.course-subtitle{font-size:11px;color:var(--txt-3)}
+.lesson-card{background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r-lg);
+  margin:0 16px 10px;overflow:hidden;cursor:pointer;transition:all var(--tn)}
+.lesson-card:hover{border-color:var(--ac1)}
+.lesson-card.completed{border-color:rgba(0,255,136,.25);background:var(--green-dim)}
+.lesson-card.locked{opacity:.45;cursor:not-allowed}
+.lesson-header{padding:14px 16px;display:flex;align-items:center;gap:12px}
+.lesson-num{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:700;flex-shrink:0;background:var(--glass-b);color:var(--txt-2)}
+.lesson-card.completed .lesson-num{background:rgba(0,255,136,.2);color:var(--green-ent)}
+.lesson-card.active .lesson-num{background:var(--grad1);color:#fff}
+.lesson-info{flex:1}
+.lesson-name{font-size:13px;font-weight:700;color:var(--txt-1);margin-bottom:2px}
+.lesson-meta{font-size:10px;color:var(--txt-3);display:flex;gap:8px}
+.lesson-status{font-size:11px;flex-shrink:0}
+
+@media(min-width:769px){
+  #pwa-settings-ent,#pwa-knowledge,#pwa-search,#pwa-admin,#pwa-course{display:none!important}
+}
+
 </style>
 </head>
 <body>
@@ -2102,6 +2241,143 @@ body.offline-mode #app{padding-top:36px}
     </div>
   </div>
   <div class="app-version">AIS KnowledgeOS v8.0 · Enterprise Edition · © Asahi India Glass Ltd.</div>
+</section>
+
+
+<!-- ===== ENTERPRISE SETTINGS PANEL ===== -->
+<section class="pwa-panel" id="pwa-settings-ent" aria-label="Enterprise Settings">
+  <div style="padding:16px 16px 8px">
+    <div style="font-size:18px;font-weight:800;color:var(--txt-1);margin-bottom:2px">Settings</div>
+    <div style="font-size:12px;color:var(--txt-3)">AIS KnowledgeOS Enterprise Edition</div>
+  </div>
+  <div style="padding:0 16px 16px">
+
+    <!-- Enterprise AI Section -->
+    <div class="settings-ai-card">
+      <div class="settings-ai-title">🤖 Enterprise AI Configuration</div>
+      <div style="font-size:11px;color:var(--txt-2);margin-bottom:10px">Connect to external AI for questions outside the AIS Knowledge Library.</div>
+      <label style="font-size:11px;color:var(--txt-3);display:block;margin-bottom:5px">AI Provider</label>
+      <select class="settings-select" id="ai-provider-select" onchange="onAIProviderChange()">
+        <option value="kb_only">📚 Offline Knowledge Only (Default)</option>
+        <option value="anthropic">🟣 Anthropic Claude</option>
+        <option value="openai">🟢 OpenAI GPT</option>
+        <option value="gemini">🔵 Google Gemini</option>
+      </select>
+      <label style="font-size:11px;color:var(--txt-3);display:block;margin-bottom:5px" id="api-key-label">API Key</label>
+      <div class="api-key-wrap" id="api-key-section">
+        <input type="password" class="api-key-input" id="ai-api-key" placeholder="Enter API key…" autocomplete="off" spellcheck="false">
+        <button class="api-key-toggle" onclick="toggleAPIKeyVisibility()" aria-label="Toggle API key visibility" id="api-key-eye">👁️</button>
+      </div>
+      <label style="font-size:11px;color:var(--txt-3);display:block;margin-bottom:5px">Knowledge Priority</label>
+      <select class="settings-select" id="ai-priority-select">
+        <option value="ais_first">1. AIS Knowledge First (Recommended)</option>
+        <option value="ai_always">2. Always AI</option>
+        <option value="hybrid">3. Hybrid Mode</option>
+      </select>
+      <div class="conn-status" id="conn-status">
+        <div class="conn-dot idle" id="conn-dot"></div>
+        <span id="conn-status-text">Not connected — select a provider and enter API key</span>
+      </div>
+      <div class="settings-btn-row">
+        <button class="settings-action-btn" onclick="testAIConnection()">🔌 Test Connection</button>
+        <button class="settings-action-btn primary" onclick="saveAISettings()">💾 Save Settings</button>
+      </div>
+    </div>
+
+    <!-- Knowledge Settings -->
+    <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--txt-3);margin:16px 0 8px">Knowledge Base</div>
+    <div class="settings-row"><div class="settings-row-left"><div class="settings-row-icon">📚</div><div><div class="settings-row-name">Knowledge Version</div><div class="settings-row-sub">AIS KnowledgeOS v8.0</div></div></div><div class="settings-row-right"><span class="settings-row-val">Current</span></div></div>
+    <div class="settings-row"><div class="settings-row-left"><div class="settings-row-icon">📅</div><div><div class="settings-row-name">Last Update</div><div class="settings-row-sub">Buying Guide — June 2026</div></div></div><div class="settings-row-right"><span class="settings-row-val">Up to date</span></div></div>
+    <div class="settings-row" onclick="clearKnowledgeCache()"><div class="settings-row-left"><div class="settings-row-icon">🗄️</div><div><div class="settings-row-name">Knowledge Cache</div><div class="settings-row-sub">Offline data stored locally</div></div></div><div class="settings-row-right"><span class="settings-chevron">›</span></div></div>
+    <div class="settings-row"><div class="settings-row-left"><div class="settings-row-icon">🔒</div><div><div class="settings-row-name">Context Filter</div><div class="settings-row-sub">Block non-AIS questions</div></div></div><div class="settings-row-right"><button class="sw-toggle on" id="sw-context-filter" onclick="toggleContextFilter(this)" aria-label="Toggle context filter"></button></div></div>
+    <div class="settings-row"><div class="settings-row-left"><div class="settings-row-icon">🛡️</div><div><div class="settings-row-name">Admin Override</div><div class="settings-row-sub">Allow general AI questions</div></div></div><div class="settings-row-right"><button class="sw-toggle off" id="sw-admin-override" onclick="toggleAdminOverride(this)" aria-label="Toggle admin override"></button></div></div>
+
+    <!-- General Settings -->
+    <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--txt-3);margin:16px 0 8px">General</div>
+    <div class="settings-row" onclick="toggleTheme&&toggleTheme()"><div class="settings-row-left"><div class="settings-row-icon">🌙</div><div><div class="settings-row-name">Theme</div><div class="settings-row-sub">Dark Mode</div></div></div><div class="settings-row-right"><button class="sw-toggle on" id="sw-theme-ent" onclick="event.stopPropagation();toggleTheme&&toggleTheme()" aria-label="Toggle theme"></button></div></div>
+    <div class="settings-row" onclick="toggleContinuousVoice&&toggleContinuousVoice()"><div class="settings-row-left"><div class="settings-row-icon">🎙️</div><div><div class="settings-row-name">Continuous Voice</div><div class="settings-row-sub">Auto-listen after AI speaks</div></div></div><div class="settings-row-right"><button class="sw-toggle off" id="sw-cv-ent" onclick="event.stopPropagation();toggleContinuousVoice&&toggleContinuousVoice()" aria-label="Toggle continuous voice"></button></div></div>
+    <div class="settings-row" onclick="triggerInstallFromSettings&&triggerInstallFromSettings()"><div class="settings-row-left"><div class="settings-row-icon">📲</div><div><div class="settings-row-name">Install App</div><div class="settings-row-sub">Add to Home Screen</div></div></div><div class="settings-row-right"><span class="settings-chevron">›</span></div></div>
+    <div class="settings-row" onclick="openModule('admin')"><div class="settings-row-left"><div class="settings-row-icon">📊</div><div><div class="settings-row-name">Admin Dashboard</div><div class="settings-row-sub">Usage and progress analytics</div></div></div><div class="settings-row-right"><span class="settings-chevron">›</span></div></div>
+    <div class="settings-row" onclick="showRoleOverlay&&showRoleOverlay()"><div class="settings-row-left"><div class="settings-row-icon">👤</div><div><div class="settings-row-name">Change Role</div><div class="settings-row-sub" id="settings-current-role">Sales Executive</div></div></div><div class="settings-row-right"><span class="settings-chevron">›</span></div></div>
+  </div>
+  <div class="app-version">AIS KnowledgeOS v9.0 · Enterprise Edition · © Asahi India Glass Ltd.</div>
+</section>
+
+<!-- ===== KNOWLEDGE LIBRARY PANEL ===== -->
+<section class="pwa-panel" id="pwa-knowledge" aria-label="Knowledge Library">
+  <div style="padding:14px 16px 8px;display:flex;align-items:center;justify-content:space-between">
+    <div><div style="font-size:18px;font-weight:800;color:var(--txt-1)">Knowledge Library</div><div style="font-size:11px;color:var(--txt-3)">Complete AIS product knowledge</div></div>
+    <button style="padding:8px 14px;border-radius:var(--r-full);border:1px solid var(--glass-b);background:var(--glass);color:var(--txt-2);font-size:11px;cursor:pointer" onclick="switchTab('search')">🔍 Search</button>
+  </div>
+  <div class="kl-category-tabs" id="kl-tabs">
+    <button class="kl-tab active" onclick="setKLCategory('all',this)">All</button>
+    <button class="kl-tab" onclick="setKLCategory('upvc',this)">uPVC</button>
+    <button class="kl-tab" onclick="setKLCategory('aluminium',this)">Aluminium</button>
+    <button class="kl-tab" onclick="setKLCategory('glass',this)">Glass</button>
+    <button class="kl-tab" onclick="setKLCategory('hardware',this)">Hardware</button>
+    <button class="kl-tab" onclick="setKLCategory('doors',this)">Doors</button>
+  </div>
+  <div class="kl-grid" id="kl-grid"></div>
+</section>
+
+<!-- ===== KNOWLEDGE SEARCH PANEL ===== -->
+<section class="pwa-panel" id="pwa-search" aria-label="Knowledge Search">
+  <div class="ksearch-wrap">
+    <div style="font-size:18px;font-weight:800;color:var(--txt-1);margin-bottom:4px">Knowledge Search</div>
+    <div style="font-size:12px;color:var(--txt-3);margin-bottom:14px">Search across all AIS knowledge — products, guides, SOPs, FAQs</div>
+    <div class="ksearch-input-row">
+      <input type="search" class="ksearch-input" id="ksearch-input" placeholder="Search anything…" onkeydown="if(event.key==='Enter')runKSearch()" aria-label="Knowledge search">
+      <button class="ksearch-btn" onclick="runKSearch()" aria-label="Search">🔍</button>
+    </div>
+    <div class="ksearch-filters">
+      <button class="prod-cat-chip active" onclick="setKSearchFilter('all',this)">All</button>
+      <button class="prod-cat-chip" onclick="setKSearchFilter('products',this)">Products</button>
+      <button class="prod-cat-chip" onclick="setKSearchFilter('glass',this)">Glass</button>
+      <button class="prod-cat-chip" onclick="setKSearchFilter('sales',this)">Sales</button>
+      <button class="prod-cat-chip" onclick="setKSearchFilter('technical',this)">Technical</button>
+      <button class="prod-cat-chip" onclick="setKSearchFilter('warranty',this)">Warranty</button>
+      <button class="prod-cat-chip" onclick="setKSearchFilter('installation',this)">Installation</button>
+    </div>
+    <div id="ksearch-results"></div>
+    <div id="ksearch-suggestions">
+      <div style="font-size:11px;color:var(--txt-3);margin-bottom:10px;font-weight:600;text-transform:uppercase;letter-spacing:1px">Popular Searches</div>
+      <div style="display:flex;flex-wrap:wrap;gap:7px" id="popular-search-tags"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ADMIN DASHBOARD PANEL ===== -->
+<section class="pwa-panel" id="pwa-admin" aria-label="Admin Dashboard">
+  <div style="padding:14px 16px 8px"><div style="font-size:18px;font-weight:800;color:var(--txt-1);margin-bottom:2px">Admin Dashboard</div><div style="font-size:11px;color:var(--txt-3)">Usage analytics and learning progress</div></div>
+  <div class="admin-stat-grid" id="admin-stats"></div>
+  <div style="padding:0 16px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--txt-3);margin-bottom:10px">Most Active Topics</div>
+  <div class="admin-table" id="admin-topics-table"></div>
+  <div style="padding:12px 16px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--txt-3);margin-bottom:8px">Quiz Performance</div>
+  <div class="admin-table" id="admin-quiz-table"></div>
+  <div style="padding:12px 16px;margin-bottom:80px">
+    <div style="background:linear-gradient(135deg,rgba(255,170,0,.08),rgba(0,0,0,0));border:1px solid var(--gold-b);border-radius:var(--r-lg);padding:16px;font-size:12px;color:var(--txt-2)">
+      <div style="font-weight:700;color:var(--gold);margin-bottom:6px">🚀 Firebase Integration Ready</div>
+      Connect Firebase to sync learning progress, quiz scores, and user data across your team. Configure in Settings → Enterprise AI.
+    </div>
+  </div>
+</section>
+
+<!-- ===== BUYING GUIDE COURSE PANEL ===== -->
+<section class="pwa-panel" id="pwa-course" aria-label="Buying Guide Course">
+  <div class="course-progress-header">
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:10px">
+      <div style="font-size:36px">📖</div>
+      <div><div class="course-title">Buying Guide Masterclass</div><div class="course-subtitle">9 lessons · Complete AIS buying process · Earn certificate</div></div>
+    </div>
+    <div style="height:4px;background:rgba(255,255,255,.07);border-radius:var(--r-full);overflow:hidden;margin-bottom:4px">
+      <div id="course-prog-fill" style="height:100%;background:var(--grad1);transition:width 1s ease;width:0%"></div>
+    </div>
+    <div style="font-size:10px;color:var(--txt-3);display:flex;justify-content:space-between">
+      <span id="course-lessons-done">0 of 9 lessons complete</span>
+      <span id="course-pct">0%</span>
+    </div>
+  </div>
+  <div style="padding:14px 0 16px" id="course-lesson-list"></div>
 </section>
 
 <script>
@@ -5312,6 +5588,7 @@ self.addEventListener('message',e=>{
    PWA — MANIFEST (inline data URI)
 ===================================================== */
 (function(){
+  try {
   /* Generate icon via Canvas */
   function makeIcon(size){
     const cv=document.createElement('canvas');cv.width=size;cv.height=size;
@@ -5368,6 +5645,7 @@ self.addEventListener('message',e=>{
   const link=document.createElement('link');
   link.rel='manifest';link.href=URL.createObjectURL(blob);
   document.head.appendChild(link);
+  } catch(e) { console.warn('[PWA] Manifest/icon generation skipped:', e.message); }
 })();
 
 /* =====================================================
@@ -5375,8 +5653,11 @@ self.addEventListener('message',e=>{
 ===================================================== */
 let deferredInstall=null;
 let installDismissed=localStorage.getItem('pwa_never')==='1';
-let isInstalled=window.matchMedia('(display-mode:standalone)').matches||
-  window.navigator.standalone||document.referrer.includes('android-app://');
+let isInstalled=false;
+try{
+  isInstalled=(typeof window.matchMedia==='function'&&window.matchMedia('(display-mode:standalone)').matches)||
+    window.navigator.standalone||document.referrer.includes('android-app://');
+}catch(e){console.warn('[PWA] Install-state detection skipped:',e.message);}
 
 window.addEventListener('beforeinstallprompt',e=>{
   e.preventDefault();deferredInstall=e;
@@ -7670,6 +7951,761 @@ function showAnnouncement() {
       switchTab(activeTab || 'home');
     }
   }, { passive: true });
+})();
+
+
+/* ============ v9 ENTERPRISE AI ROUTING + KNOWLEDGE LIBRARY ============ */
+
+/* =====================================================
+   v9 AI SETTINGS & ROUTING ENGINE
+===================================================== */
+const AI_CFG = {
+  provider: localStorage.getItem('kos_ai_provider') || 'kb_only',
+  apiKey:   localStorage.getItem('kos_ai_key')      || '',
+  priority: localStorage.getItem('kos_ai_priority') || 'ais_first',
+  contextFilter: localStorage.getItem('kos_ctx_filter') !== '0',
+  adminOverride: localStorage.getItem('kos_admin_override') === '1',
+  save() {
+    localStorage.setItem('kos_ai_provider', this.provider);
+    localStorage.setItem('kos_ai_key',      this.apiKey);
+    localStorage.setItem('kos_ai_priority', this.priority);
+    localStorage.setItem('kos_ctx_filter',  this.contextFilter ? '1' : '0');
+    localStorage.setItem('kos_admin_override', this.adminOverride ? '1' : '0');
+  },
+};
+
+/* AIS-relevance keywords for context filter */
+const AIS_KEYWORDS = ['window','door','upvc','aluminium','glass','frame','hardware','espag','casement','sliding','tilt','fixed','lift','slide','fold','acoustic','thermal','insulation','noise','security','warranty','installation','maintenance','seal','silicon','silicone','lowe','dgu','laminated','toughened','smart glass','pvb','argon','hinge','lock','roller','mullion','mesh','mosquito','screen','colour','color','ral','powder coat','wood grain','site survey','lead time','quotation','quote','price','cost','budget','dealer','partner','sales','customer','villa','apartment','office','hotel','hospital','school','commercial','coastal','climate','heat','cold','winter','summer','monsoon','energy','green','leed','griha','ecbc','bee','ais','asahi','india glass','product','specification','spec','u value','rw','shgc','rc2','installation','level','plumb','drainage','leakage','complaint','service','amc','annual maintenance'];
+
+function isAISRelevant(msg) {
+  if (!AI_CFG.contextFilter) return true;
+  if (AI_CFG.adminOverride) return true;
+  const lower = msg.toLowerCase();
+  return AIS_KEYWORDS.some(kw => lower.includes(kw));
+}
+
+const CONTEXT_BLOCK_MSG = `**This platform is designed for AIS product knowledge.**
+
+AIS KnowledgeOS is built exclusively for:
+- Product knowledge and specifications
+- Sales enablement and training
+- Technical installation guidance
+- Warranty and service support
+- Partner and dealer learning
+
+Please ask a question related to AIS products, installation, warranty, sales, technical support, or partner operations.
+
+*To enable general AI queries, ask your admin to enable the Admin Override in Settings.*`;
+
+/* Call external AI providers */
+async function callExternalAI(message) {
+  const key = AI_CFG.apiKey;
+  if (!key) return null;
+  const systemPrompt = `You are an expert consultant for AIS Windows — a division of Asahi India Glass Ltd. You specialise in uPVC and Aluminium doors and windows. Answer questions about AIS products, installation, sales, warranty, and technical specifications. Be concise, professional, and accurate. If a question is completely unrelated to windows, doors, or construction, politely redirect.`;
+
+  try {
+    if (AI_CFG.provider === 'anthropic') {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method:'POST',
+        headers:{'x-api-key':key,'anthropic-version':'2023-06-01','content-type':'application/json'},
+        body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1024,system:systemPrompt,messages:[{role:'user',content:message}]})
+      });
+      if (!res.ok) throw new Error('API error ' + res.status);
+      const d = await res.json();
+      return d.content?.[0]?.text || null;
+    }
+    if (AI_CFG.provider === 'openai') {
+      const res = await fetch('https://api.openai.com/v1/chat/completions', {
+        method:'POST',
+        headers:{'Authorization':'Bearer '+key,'Content-Type':'application/json'},
+        body:JSON.stringify({model:'gpt-3.5-turbo',messages:[{role:'system',content:systemPrompt},{role:'user',content:message}],max_tokens:1024})
+      });
+      if (!res.ok) throw new Error('API error ' + res.status);
+      const d = await res.json();
+      return d.choices?.[0]?.message?.content || null;
+    }
+    if (AI_CFG.provider === 'gemini') {
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${key}`,{
+        method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({contents:[{parts:[{text:systemPrompt+'\n\nUser: '+message}]}]})
+      });
+      if (!res.ok) throw new Error('API error ' + res.status);
+      const d = await res.json();
+      return d.candidates?.[0]?.content?.parts?.[0]?.text || null;
+    }
+  } catch(e) { console.warn('External AI error:', e); return null; }
+  return null;
+}
+
+/* Main AI routing function — wraps existing getResp */
+async function routeQuery(userMsg) {
+  /* Step 1: Context filter */
+  if (!isAISRelevant(userMsg)) {
+    return { text: CONTEXT_BLOCK_MSG, source: 'filter', confidence: 0 };
+  }
+  /* Step 2: Search AIS Knowledge Base via existing engine */
+  const kbRes = typeof _kbOrigGetResp === 'function' ? _kbOrigGetResp(userMsg) : (typeof getResp === 'function' ? getResp(userMsg) : null);
+  const kbConf = kbRes?.confidence || 0;
+  const priority = AI_CFG.priority;
+  if (priority === 'ais_first' || priority === 'hybrid') {
+    if (kbRes?.r && kbConf >= 65) {
+      return { text: kbRes.r, source: 'ais_kb', confidence: kbConf, intent: kbRes.intent };
+    }
+  }
+  if (priority === 'ai_always') {
+    /* Skip KB, go straight to AI if configured */
+    if (AI_CFG.provider !== 'kb_only' && AI_CFG.apiKey) {
+      const aiText = await callExternalAI(userMsg);
+      if (aiText) return { text: aiText, source: 'ext_ai', confidence: 85 };
+    }
+  }
+  /* Step 3: If KB confidence low and external AI available */
+  if (kbConf < 65 && AI_CFG.provider !== 'kb_only' && AI_CFG.apiKey) {
+    const aiText = await callExternalAI(userMsg);
+    if (aiText) return { text: aiText + (priority==='hybrid'?'\n\n*Hybrid: supplemented by Enterprise AI*':''), source: 'ext_ai', confidence: 85 };
+  }
+  /* Step 4: KB answer even if low confidence */
+  if (kbRes?.r) return { text: kbRes.r, source: 'ais_kb', confidence: kbConf, intent: kbRes.intent };
+  /* Step 5: No answer found */
+  if (AI_CFG.provider === 'kb_only') {
+    return { text: `**Topic not found in AIS Knowledge Library.**\n\nThis question may be outside the current knowledge base. Options:\n- Rephrase your question using AIS product names\n- Enable Enterprise AI in Settings for broader coverage\n- Contact your Product Team or Training Manager`, source: 'not_found', confidence: 0 };
+  }
+  return { text: kbRes?.r || 'I could not find a specific answer. Please try rephrasing your question.', source: 'ais_kb', confidence: 30 };
+}
+
+/* Render the AI source badge below a message */
+function renderSourceBadge(source, confidence) {
+  const configs = {
+    ais_kb:   { label:'✅ AIS Knowledge Base', cls:'kb' },
+    ext_ai:   { label:'🤖 Enterprise AI ('+AI_CFG.provider+')', cls:'ext' },
+    filter:   { label:'⚠️ Context Filter Active', cls:'filter' },
+    not_found:{ label:'📚 Not in Knowledge Base', cls:'filter' },
+  };
+  const cfg = configs[source] || configs.ais_kb;
+  const bar = source === 'ais_kb' ? `<div class="ai-conf-bar"><div class="ai-conf-fill" style="width:${confidence}%;background:${confidence>80?'var(--green-ent)':confidence>60?'var(--ac1)':'var(--ac3)'}"></div></div>` : '';
+  return `<span class="ai-source-badge ${cfg.cls}">${cfg.label}</span>${bar}`;
+}
+
+/* Settings panel functions */
+function onAIProviderChange() {
+  const prov = document.getElementById('ai-provider-select')?.value;
+  const keySection = document.getElementById('api-key-section');
+  const keyLabel = document.getElementById('api-key-label');
+  if (!prov || prov === 'kb_only') {
+    if (keySection) keySection.style.display = 'none';
+    if (keyLabel) keyLabel.style.display = 'none';
+  } else {
+    if (keySection) keySection.style.display = 'block';
+    if (keyLabel) { keyLabel.style.display = 'block'; keyLabel.textContent = {anthropic:'Anthropic API Key',openai:'OpenAI API Key',gemini:'Google Gemini API Key'}[prov]||'API Key'; }
+  }
+  setConnStatus('idle', 'Enter your API key and test the connection');
+}
+
+function toggleAPIKeyVisibility() {
+  const inp = document.getElementById('ai-api-key');
+  const eye = document.getElementById('api-key-eye');
+  if (!inp) return;
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+  if (eye) eye.textContent = inp.type === 'password' ? '👁️' : '🙈';
+}
+
+function setConnStatus(state, msg) {
+  const dot = document.getElementById('conn-dot');
+  const txt = document.getElementById('conn-status-text');
+  if (dot) dot.className = 'conn-dot ' + state;
+  if (txt) txt.textContent = msg;
+}
+
+async function testAIConnection() {
+  const prov = document.getElementById('ai-provider-select')?.value;
+  const key  = document.getElementById('ai-api-key')?.value?.trim();
+  if (!prov || prov === 'kb_only') { setConnStatus('ok','Offline mode — AIS Knowledge Base active'); return; }
+  if (!key) { setConnStatus('err','Please enter an API key first'); toast('Enter an API key first','e'); return; }
+  setConnStatus('idle','Testing connection…');
+  toast('Testing API connection…','i');
+  const saved = { provider: AI_CFG.provider, apiKey: AI_CFG.apiKey };
+  AI_CFG.provider = prov; AI_CFG.apiKey = key;
+  const result = await callExternalAI('Say "AIS Connected" in exactly 2 words.');
+  AI_CFG.provider = saved.provider; AI_CFG.apiKey = saved.apiKey;
+  if (result) { setConnStatus('ok', 'Connected ✓ — ' + prov); toast('✅ Connection successful!','s'); }
+  else { setConnStatus('err', 'Connection failed — check API key'); toast('❌ Connection failed — check API key','e'); }
+}
+
+function saveAISettings() {
+  AI_CFG.provider = document.getElementById('ai-provider-select')?.value || 'kb_only';
+  AI_CFG.apiKey   = document.getElementById('ai-api-key')?.value?.trim() || '';
+  AI_CFG.priority = document.getElementById('ai-priority-select')?.value || 'ais_first';
+  AI_CFG.save();
+  toast('✅ AI Settings saved','s');
+  playSound&&playSound('notif');
+}
+
+function toggleContextFilter(btn) {
+  AI_CFG.contextFilter = !AI_CFG.contextFilter;
+  btn.className = 'sw-toggle ' + (AI_CFG.contextFilter ? 'on' : 'off');
+  AI_CFG.save();
+  toast(AI_CFG.contextFilter ? 'Context filter enabled' : 'Context filter disabled — all questions allowed','i');
+}
+
+function toggleAdminOverride(btn) {
+  AI_CFG.adminOverride = !AI_CFG.adminOverride;
+  btn.className = 'sw-toggle ' + (AI_CFG.adminOverride ? 'on' : 'off');
+  AI_CFG.save();
+  toast(AI_CFG.adminOverride ? '🛡️ Admin override enabled — general AI queries allowed' : 'Admin override disabled','i');
+}
+
+function initSettingsPanel() {
+  const ps = document.getElementById('ai-provider-select');
+  const pk = document.getElementById('ai-api-key');
+  const pp = document.getElementById('ai-priority-select');
+  if (ps) ps.value = AI_CFG.provider;
+  if (pk) pk.value = AI_CFG.apiKey;
+  if (pp) pp.value = AI_CFG.priority;
+  const swCF = document.getElementById('sw-context-filter');
+  const swAO = document.getElementById('sw-admin-override');
+  if (swCF) swCF.className = 'sw-toggle ' + (AI_CFG.contextFilter ? 'on' : 'off');
+  if (swAO) swAO.className = 'sw-toggle ' + (AI_CFG.adminOverride ? 'on' : 'off');
+  onAIProviderChange();
+  if (AI_CFG.provider !== 'kb_only') setConnStatus('ok', 'Provider configured — ' + AI_CFG.provider);
+  const roleEl = document.getElementById('settings-current-role');
+  if (roleEl && typeof currentRole !== 'undefined') roleEl.textContent = ROLES[currentRole]?.name || 'Sales Executive';
+}
+
+function clearKnowledgeCache() {
+  if ('caches' in window) {
+    caches.keys().then(keys => Promise.all(keys.map(k => caches.delete(k)))).then(() => toast('Knowledge cache cleared','s'));
+  } else toast('Cache cleared','s');
+}
+
+/* Override sendMsg to use AI routing */
+const _aiRouteOrig = typeof window.sendMsg === 'function' ? window.sendMsg : null;
+window.sendMsg = async function(txt) {
+  const inp = document.getElementById('mi2');
+  const m = (txt || inp?.value || '').trim();
+  if (!m || (typeof typing !== 'undefined' && typing)) return;
+  if (!txt && inp) { inp.value = ''; autoR && autoR(inp); }
+  VOICE && VOICE.interrupt && VOICE.interrupt();
+  playSound && playSound('send');
+  document.getElementById('wc') && (document.getElementById('wc').style.display = 'none');
+  document.querySelectorAll('.fu-chips').forEach(el => el.remove());
+  const now = typeof ts === 'function' ? ts() : new Date().toLocaleTimeString();
+  typeof addMsg === 'function' && addMsg('u', m, now);
+  if (typeof history !== 'undefined') { history.push({r:'u',c:m,t:now}); typeof saveH === 'function' && saveH(); }
+  if (typeof ANL !== 'undefined') ANL.questionsAsked = (ANL.questionsAsked || 0) + 1;
+  typeof showTyp === 'function' && showTyp();
+
+  /* CE (consultant engine) check first — if CE active, use CE flow */
+  if (typeof CE !== 'undefined' && CE.sessionStarted) {
+    const ceResp = CE.process(m);
+    if (ceResp) {
+      typeof hideTyp === 'function' && hideTyp();
+      const rt = typeof ts === 'function' ? ts() : new Date().toLocaleTimeString();
+      const container = document.getElementById('mc');
+      if (container) {
+        const wrap = document.createElement('div'); wrap.className = 'msg a';
+        const av = document.createElement('div'); av.className = 'ma'; av.textContent = '🤖';
+        const mc2 = document.createElement('div'); mc2.className = 'mc2';
+        const bubble = document.createElement('div'); bubble.className = 'mb';
+        mc2.appendChild(bubble); wrap.appendChild(av); wrap.appendChild(mc2); container.appendChild(wrap);
+        playSound && playSound('recv');
+        typeof streamResponse === 'function' && streamResponse(bubble, ceResp.text, () => {
+          /* Source badge */
+          const badge = document.createElement('div');
+          badge.innerHTML = renderSourceBadge('ais_kb', 90);
+          mc2.appendChild(badge);
+          if (ceResp.card && typeof renderFullRecCard === 'function') mc2.appendChild(renderFullRecCard(ceResp.card));
+          if (ceResp.chips) {
+            const cr = document.createElement('div'); cr.className = 'fu-chips';
+            ceResp.chips.forEach(c => { const b = document.createElement('button'); b.className = 'fu-chip'; b.textContent = c; b.onclick = () => { cr.remove(); sendMsg(c); }; cr.appendChild(b); });
+            container.appendChild(cr);
+          }
+          typeof scrollBot === 'function' && scrollBot();
+        });
+        if (typeof history !== 'undefined') { history.push({r:'a',c:ceResp.text,t:rt}); typeof saveH === 'function' && saveH(); }
+      }
+      return;
+    }
+  }
+
+  /* Route through AI routing engine */
+  const delay = 900 + Math.random() * 600;
+  setTimeout(async () => {
+    typeof hideTyp === 'function' && hideTyp();
+    const result = await routeQuery(m);
+    const rt = typeof ts === 'function' ? ts() : new Date().toLocaleTimeString();
+    const container = document.getElementById('mc');
+    if (container) {
+      const wrap = document.createElement('div'); wrap.className = 'msg a';
+      const av = document.createElement('div'); av.className = 'ma'; av.textContent = '🤖';
+      const mc2 = document.createElement('div'); mc2.className = 'mc2';
+      const bubble = document.createElement('div'); bubble.className = 'mb';
+      mc2.appendChild(bubble); wrap.appendChild(av); wrap.appendChild(mc2); container.appendChild(wrap);
+      playSound && playSound('recv');
+      typeof streamResponse === 'function' && streamResponse(bubble, result.text, () => {
+        /* Source badge */
+        const badge = document.createElement('div');
+        badge.innerHTML = renderSourceBadge(result.source, result.confidence);
+        mc2.appendChild(badge);
+        /* Architect spec for relevant intents */
+        if (typeof currentPersona !== 'undefined' && currentPersona === 'architect' && result.intent && typeof generateArchitectSpec === 'function') {
+          const spec = generateArchitectSpec(result.intent, result.intent);
+          if (spec) mc2.appendChild(spec);
+        }
+        typeof scrollBot === 'function' && scrollBot();
+      });
+      if (typeof history !== 'undefined') { history.push({r:'a',c:result.text,t:rt}); typeof saveH === 'function' && saveH(); }
+      if (typeof MEM !== 'undefined' && typeof MEM.push === 'function') MEM.push(m, result.text, []);
+    }
+    if (typeof updateConfData === 'function') updateConfData(result.confidence || 70);
+    if (typeof continuousVoiceActive !== 'undefined' && continuousVoiceActive && document.getElementById('vwo')?.classList.contains('on')) {
+      setTimeout(() => VOICE && VOICE.speak && VOICE.speak(result.text), 350);
+    }
+  }, delay);
+};
+
+
+/* =====================================================
+   v9 KNOWLEDGE LIBRARY — PRODUCT CATALOG
+===================================================== */
+const PRODUCT_LIBRARY = [
+  /* uPVC SYSTEMS */
+  {id:'upvc_casement',cat:'upvc',name:'uPVC Casement Window',icon:'🪟',color:'#00d4ff',
+   description:'The most versatile window in the AIS uPVC range. Side-hinged, opens inward or outward, with multi-point espag locking on all edges.',
+   applications:['Bedrooms — controlled ventilation and acoustic seal','Living rooms — maximum light and airflow','Schools and hospitals — safe, easy operation','Any room where noise reduction is priority'],
+   advantages:['Best acoustic seal of any opening window — compression on all 4 sides','Multi-point espag locks simultaneously at 5–7 points','Thermally superior — multi-chamber uPVC profile','Tilt & Turn variant available for European-style dual mode','Easy interior cleaning — some versions open fully inward'],
+   limitations:['Requires external clearance for the opening sash','Wide single panel can feel heavy if oversized'],
+   sellingPoints:['No.1 choice for bedrooms near highways and busy roads','"Set and forget" locking — one handle turn locks everything','30-year profile life — never needs painting'],
+   customerBenefits:'Dramatically quieter home. Massive energy bill savings. Zero maintenance. Safe for children.',
+   installationNotes:'Ensure cavity is level and plumb within 2mm. Use colour-matched silicon. Clear drainage holes. Minimum 2 fixings per side.',
+   warranty:'10 years profile · 5 years hardware · 10 years glass seal',
+   faqs:['Q: Can I clean the outside from inside? A: With inward-opening variant, yes — the sash swings fully in.','Q: Can it be opened with security? A: Yes — tilt position opens 10cm securely from outside. Ideal for overnight ventilation.','Q: What colours are available? A: 200+ options including all RAL colours and wood grain foils.']},
+  {id:'upvc_sliding',cat:'upvc',name:'uPVC Sliding Window',icon:'↔️',color:'#00d4ff',
+   description:'Space-efficient sliding window ideal for balconies and rooms with limited clearance. Panels glide on precision stainless rollers.',
+   applications:['Balconies — no outward swing needed','Rooms with limited interior/exterior space','Wide openings needing multiple panels','Moderate noise environments'],
+   advantages:['Space-efficient — zero swing clearance required','Available in 2, 3, or 4-panel configurations','Easy operation — suitable for all ages','Fly mullion removable for full opening'],
+   limitations:['Lower acoustic performance vs casement — inherent gap at sliding rail','Not ideal as primary noise solution in very noisy environments'],
+   sellingPoints:['Ideal for any balcony or terrace','Child-safe — no hinged panel to catch fingers','Multiple locking espag — not just a catch'],
+   customerBenefits:'Maximises usable space. Easy to operate. Great value.',
+   installationNotes:'Ensure track is perfectly level — even 1mm tilt causes door to slide under gravity. Lubricate rollers at installation.',
+   warranty:'10 years profile · 5 years hardware',
+   faqs:['Q: Can I convert a sliding window to casement? A: No — different frame systems. Plan ahead.','Q: How do I clean the outer pane? A: Remove the sliding sash by lifting and tilting inward.']},
+  {id:'upvc_tilturn',cat:'upvc',name:'uPVC Tilt & Turn Window',icon:'↩️',color:'#7b2fff',
+   description:'European engineering masterpiece. One handle, two modes: tilt inward 10cm for secure ventilation, or swing fully open for maximum airflow and easy cleaning.',
+   applications:['High-rise apartments — safe night ventilation','Bedrooms — leave tilted securely while away','Any building where outside cleaning is impossible','Maximum weatherseal requirement'],
+   advantages:['Two modes from one handle position','Tilt position: 10cm gap — impossible to enter from outside','Full open position: entire sash swings inward for cleaning','Superior triple-gasket weatherseal in all positions','Anti-slam — wind cannot cause damage in tilt mode'],
+   limitations:['Sash opens inward — requires clear interior space','Slightly more complex hardware — specify GU or Siegenia only'],
+   sellingPoints:['The safest window for high-rise living','Leave tilted all night — 100% secure ventilation','Never go outside to clean — fully accessible from inside'],
+   customerBenefits:'Peace of mind at night. No cleaning hassle. Maximum security with ventilation.',
+   installationNotes:'GU or Siegenia hardware mandatory. Verify corner drive alignment before final silicon. Test both modes before handover.',
+   warranty:'10 years profile · 5 years hardware',
+   faqs:['Q: Can children accidentally open it from tilt to full? A: No — requires deliberate handle movement through distinct positions.','Q: Is it noisier than casement? A: No — compression seal is equal to casement.']},
+  /* ALUMINIUM SYSTEMS */
+  {id:'alu_casement',cat:'aluminium',name:'Aluminium Casement System',icon:'🏗️',color:'#7b2fff',
+   description:'The architect\'s premium casement — thermally broken aluminium profiles with ultra-slim sightlines and full RAL colour range.',
+   applications:['Luxury villas and premium residences','Commercial and office buildings','Any project where slim profiles and aesthetics matter','High-wind exposed locations — structural grade available'],
+   advantages:['Ultra-slim profiles from 45mm — maximises glass area','Full RAL colour range — any colour powder coated','Thermally broken — polyamide inserts eliminate cold bridging','Marine-grade specification for coastal installations','50+ year design life with correct maintenance'],
+   limitations:['Higher cost than uPVC','Thermal performance slightly lower than uPVC without thermal break — always specify thermal break'],
+   sellingPoints:['Any colour in the world — specify any RAL','50-year product life — longest on the market','Structural grade available for large-format openings'],
+   customerBenefits:'Premium aesthetics that last a lifetime. Any colour to match your vision. Structural strength for large openings.',
+   installationNotes:'Thermal break must be specified — never install without. Stainless fixings only. Sealant: neutral cure silicon, colour matched.',
+   warranty:'15 years profile · 5 years hardware',
+   faqs:['Q: Can aluminium be as thermally efficient as uPVC? A: Yes, with thermal break specification — polyamide inserts reduce conductivity by 80%.','Q: What is the thinnest available profile? A: 30mm SlimLine Pro — our most architectural option.']},
+  {id:'alu_liftslide',cat:'aluminium',name:'Lift & Slide Door System',icon:'🏰',color:'#ffaa00',
+   description:'The pinnacle of sliding door engineering. Panels lift 3–5mm onto precision rollers when the handle is turned — creating a compression seal when closed and effortless gliding when open.',
+   applications:['Luxury villas — defining statement feature','Living rooms to gardens or pools','Penthouses and high-end apartments','Any opening requiring panoramic spans'],
+   advantages:['Panels up to 7 metres wide in one continuous run','400 kg panels moved with a single finger','Near-perfect airtight seal when closed — equal to casement','Motorised automation available','Smart home integration — Alexa, Google, Apple HomeKit'],
+   limitations:['Premium cost — most expensive door system','Requires level, flat floor threshold (structural requirement)','Not suitable for very tight budget projects'],
+   sellingPoints:['The most impressive product in our entire range — show this in the Experience Centre','Panels up to 7m wide — the wall literally disappears','Motorised with one touch — pure luxury'],
+   customerBenefits:'Creates the luxury open-plan living experience. Transforms how you experience your home. Lasts a lifetime.',
+   installationNotes:'Floor must be perfectly level across entire run. Structural threshold beam required. Commissioning required after installation.',
+   warranty:'15 years profile · 5 years hardware',
+   faqs:['Q: Can it be motorised? A: Yes — motor housed in frame, voice or app controlled.','Q: How heavy can the panels be? A: Up to 400 kg per panel on our premium roller system.']},
+  /* GLASS SOLUTIONS */
+  {id:'glass_acoustic',cat:'glass',name:'Acoustic Laminated DGU',icon:'🔇',color:'#7b2fff',
+   description:'The complete acoustic solution — laminated glass with specialist acoustic PVB interlayer combined with argon-filled double glazing. Achieves 45 dB Rw in the right frame system.',
+   applications:['Highway-adjacent properties','Urban apartments with traffic noise','Properties near airports or railways','Recording studios and quiet offices'],
+   advantages:['45 dB Rw in AcousticPro system — more than halves perceived noise','PVB acoustic interlayer decouples vibration — not just mass','Argon gas fill improves both acoustic and thermal performance','Laminated inner pane stays in frame if broken — continued protection'],
+   limitations:['Heavier than standard glass — frame capacity must be verified','Higher cost — positioned as premium specification'],
+   sellingPoints:['10 dB reduction halves perceived loudness — 45 dB makes highway noise imperceptible','The PVB film works differently to thicker glass — it absorbs vibration','Clients near highways report being unable to tell if windows are open after installation'],
+   customerBenefits:'Sleep through the night. Concentrate at work. Genuinely life-changing if you live near a busy road.',
+   installationNotes:'Must be specified with casement or fixed frame — sliding windows cannot utilise the acoustic seal. Verify EPDM gasket compression.',
+   warranty:'10 years hermetic seal',
+   faqs:['Q: Does thicker glass always mean quieter? A: No — the PVB interlayer decouples vibration independently of thickness.','Q: Can I add this to a sliding window? A: The glass can be used, but the frame seal limits achievable dB.']},
+  {id:'glass_lowe',cat:'glass',name:'Low-E Argon Double Glazing',icon:'☀️',color:'#ff9500',
+   description:'Microscopically thin metallic oxide coating on face 2 or 3 of the DGU reflects infrared radiation while allowing visible light to pass. The most effective thermal and solar glass available.',
+   applications:['All south and west-facing facades in hot climates','Energy-efficiency priority projects','Cold climates — retains interior warmth','ECBC/LEED/GRIHA compliant specifications'],
+   advantages:['Blocks 65–70% of solar heat entering (hot climate spec)','Keeps interiors 4–5°C cooler without darkening the view','Reduces HVAC load by 30–50% — measurable energy bill savings','U-value 1.4 W/m²K in argon DGU — vs 5.8 for single clear glass','UV blocking — protects furniture, art, and flooring from fading'],
+   limitations:['Soft-coat must be enclosed in sealed DGU — cannot be used as single glass','Slightly higher cost than clear glass'],
+   sellingPoints:['ROI in 3–5 years from energy savings on a standard home','Invisible coating — no visual difference from the inside','BEE 5-star eligible — ticks the green building certification box'],
+   customerBenefits:'Noticeably cooler rooms. Lower electricity bills every month. Protection of furnishings from UV damage.',
+   installationNotes:'Soft-coat face must face into the gas gap (face 2 for solar control, face 3 for winter warmth). Verify coating orientation with supplier.',
+   warranty:'10 years hermetic seal',
+   faqs:['Q: What is face 2 vs face 3? A: Face 1=outside of outer pane, 2=inside of outer pane (solar control), 3=outside of inner pane (thermal retention), 4=room-side surface.','Q: Does Low-E change the glass colour? A: Very slightly — a faint bluish or neutral tint depending on specification. Visible in comparison, not in isolation.']},
+  /* HARDWARE */
+  {id:'hw_multipoint',cat:'hardware',name:'Multipoint Espag Locking',icon:'🔒',color:'#ff2d78',
+   description:'The espag (Espagnolette) is the most critical hardware component in any window or door. When the handle is turned, a steel rod simultaneously engages 5–7 locking mushrooms into the frame at distributed points.',
+   applications:['All external casement windows and doors','Tilt & turn windows','Any application requiring security + weatherseal'],
+   advantages:['Simultaneous multi-point locking from one handle turn','Distributes closing force across full height — eliminates air gaps','Essential for achieving maximum acoustic performance','RC2 certification available with correct cylinder'],
+   limitations:['Must be matched to profile — not interchangeable between systems','Requires correct espag size: 7.5mm BS (sliding), 15mm BS (sliding door), 32–35mm BS (casement/tilt&turn)'],
+   sellingPoints:['The difference between a secure home and a vulnerable one','Single-point locks can be defeated in seconds — multipoint requires 3+ minutes','Every AIS window includes this as standard — check competitor quotations'],
+   customerBenefits:'Real security for your family. Insurance compliance. Superior weather seal.',
+   installationNotes:'Verify espag size matches frame profile. Adjust all locking mushroom positions before final fixing. Test handle operation under load.',
+   warranty:'5 years',
+   faqs:['Q: What is the difference between espag sizes? A: BS dimension refers to backset — distance from face of door to centre of lock cylinder. Different profile systems require different sizes.','Q: Can I upgrade from single to multipoint later? A: No — requires full frame replacement. Always specify multipoint from the start.']},
+  {id:'hw_smartlock',cat:'hardware',name:'Smart Lock System',icon:'📱',color:'#ff2d78',
+   description:'Premium smart lock integrating fingerprint recognition, PIN code, Bluetooth, NFC, and remote app control — all in a single elegant unit compatible with Alexa, Google Home, and Apple HomeKit.',
+   applications:['Luxury villas and premium homes','Smart home integration projects','High-security commercial buildings','Any project with home automation brief'],
+   advantages:['5 access methods: fingerprint, PIN, Bluetooth, NFC, app','Real-time alerts when door is opened or forced','Auto-lock after configurable time delay','Works without internet (Bluetooth/fingerprint always available)','Compatible with all major smart home platforms'],
+   limitations:['Premium cost addition','Battery powered — requires annual replacement','App access requires internet connection'],
+   sellingPoints:['Never get locked out — 5 independent ways to enter','Your phone knows if someone tries to force the door','Works with your existing Alexa setup — one command locks everything'],
+   customerBenefits:'Total control of your home security from anywhere in the world. Peace of mind when traveling.',
+   installationNotes:'Verify door thickness compatibility. Configure all access methods before handover. Show customer app setup.',
+   warranty:'5 years hardware · 2 years electronics',
+   faqs:['Q: What if the battery dies? A: Emergency charging via USB-C on lock face. Always backup PIN.','Q: Can family members have separate codes? A: Yes — up to 100 unique fingerprints and 50 PINs.']},
+  /* DOORS */
+  {id:'door_pivot',cat:'doors',name:'Pivot Entrance Door',icon:'🚪',color:'#ffaa00',
+   description:'A dramatic statement entrance door pivoting on a top and bottom pin rather than hinges. Available up to 3.2m tall and 1.5m wide — impossible proportions with standard hinges.',
+   applications:['Luxury villa entrances','Premium commercial lobbies','Architectural statement requirements','Any project where the entrance IS the design brief'],
+   advantages:['Extraordinary proportions — up to 3.2m tall, 1.5m wide','Smooth pivot operation regardless of panel weight','Any material infill: glass, solid, aluminium panel, composite','RC2 security certification available','Soft-close mechanism standard'],
+   limitations:['Highest cost door in the range','Requires structural lintel to carry door weight','Both inside and outside swing space needed'],
+   sellingPoints:['No other product makes an entrance statement like a pivot door','When clients see it in the Experience Centre, they always want it','Photographs beautifully — important for villa marketing'],
+   customerBenefits:'An entrance that announces the quality of your home before anyone even steps inside.',
+   installationNotes:'Structural engineer sign-off required for lintel specification. Pivot floor plate must be embedded in concrete slab during construction — cannot retrofit.',
+   warranty:'15 years frame · 5 years hardware',
+   faqs:['Q: Can a pivot door be very wide? A: Yes — up to 1.5m wide in a single leaf, wider with paired configuration.','Q: Does it need to be balanced? A: Yes — pivot position can be offset from centre for visual effect, but balance affects closing effort.']},
+];
+
+let klCatFilter = 'all';
+
+function setKLCategory(cat, btn) {
+  klCatFilter = cat;
+  document.querySelectorAll('#kl-tabs .kl-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  renderKnowledgeLibrary();
+  playSound && playSound('click');
+}
+
+function renderKnowledgeLibrary() {
+  const grid = document.getElementById('kl-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  const filtered = klCatFilter === 'all' ? PRODUCT_LIBRARY : PRODUCT_LIBRARY.filter(p => p.cat === klCatFilter);
+  filtered.forEach(prod => {
+    const card = document.createElement('div');
+    card.className = 'kl-card';
+    card.id = 'kl-' + prod.id;
+    const prog = typeof getModuleProgress === 'function' ? getModuleProgress(prod.id) : 0;
+    card.innerHTML = `
+      <div class="kl-card-header" onclick="toggleKLCard('${prod.id}')">
+        <div class="kl-icon" style="background:${prod.color}18;border:1px solid ${prod.color}30">${prod.icon}</div>
+        <div class="kl-info">
+          <div class="kl-name">${prod.name}</div>
+          <div class="kl-meta">
+            <span>${prod.cat.toUpperCase()}</span>
+            ${prog === 100 ? '<span style="color:var(--green-ent)">✓ Reviewed</span>' : ''}
+          </div>
+        </div>
+        <div class="kl-chevron">›</div>
+      </div>
+      <div class="kl-body">
+        <div class="kl-section">
+          <div class="kl-section-title">📋 Description</div>
+          <div class="kl-section-body">${prod.description}</div>
+        </div>
+        <div class="kl-section">
+          <div class="kl-section-title">✅ Key Advantages</div>
+          <div class="kl-section-body">${prod.advantages.map(a=>`• ${a}`).join('<br>')}</div>
+        </div>
+        <div class="kl-section">
+          <div class="kl-section-title">🎯 Sales Selling Points</div>
+          <div class="kl-section-body">${prod.sellingPoints.map(s=>`• ${s}`).join('<br>')}</div>
+        </div>
+        <div class="kl-section">
+          <div class="kl-section-title">💡 Customer Benefit (tell the customer this)</div>
+          <div class="kl-section-body" style="background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.15);padding:10px;border-radius:var(--r-md)">${prod.customerBenefits}</div>
+        </div>
+        <div class="kl-section">
+          <div class="kl-section-title">⚠️ Limitations</div>
+          <div class="kl-section-body">${prod.limitations.map(l=>`• ${l}`).join('<br>')}</div>
+        </div>
+        <div class="kl-section">
+          <div class="kl-section-title">🔧 Installation Notes</div>
+          <div class="kl-section-body">${prod.installationNotes}</div>
+        </div>
+        <div class="kl-section">
+          <div class="kl-section-title">🛡️ Warranty</div>
+          <div class="kl-section-body">${prod.warranty}</div>
+        </div>
+        <div class="kl-section">
+          <div class="kl-section-title">❓ FAQs</div>
+          <div class="kl-section-body">${prod.faqs.map(f=>`<div style="margin-bottom:8px">${f}</div>`).join('')}</div>
+        </div>
+        <div class="kl-tag-list">${(prod.applications||[]).map(a=>`<span class="kl-tag">${a.split('—')[0].trim()}</span>`).join('')}</div>
+        <div class="kl-actions">
+          <button class="kl-btn primary" onclick="askAboutProduct('${prod.id}')">🤖 Ask AI</button>
+          <button class="kl-btn" onclick="practiceProduct('${prod.id}')">🎭 Role Play</button>
+          <button class="kl-btn" onclick="markModuleDone('${prod.id}');toast('Marked as reviewed','s')">✓ Mark Done</button>
+        </div>
+      </div>`;
+    grid.appendChild(card);
+  });
+}
+
+function toggleKLCard(id) {
+  const card = document.getElementById('kl-' + id);
+  if (!card) return;
+  card.classList.toggle('expanded');
+  playSound && playSound('click');
+}
+
+function askAboutProduct(id) {
+  const prod = PRODUCT_LIBRARY.find(p => p.id === id);
+  if (!prod) return;
+  switchTab('ai');
+  setTimeout(() => { if (typeof sendMsg === 'function') sendMsg('Tell me everything about ' + prod.name + ' — focus on how to sell it to a customer.'); }, 400);
+  typeof markModuleDone === 'function' && markModuleDone(id);
+}
+
+function practiceProduct(id) {
+  const prod = PRODUCT_LIBRARY.find(p => p.id === id);
+  if (!prod) return;
+  switchTab('ai');
+  setTimeout(() => {
+    if (typeof sendMsg === 'function') sendMsg(`Let's do a role play about ${prod.name}. You are a customer who needs windows for their home. I am the AIS salesperson. Ask me about this product and I will try to sell it to you. After 5 exchanges, evaluate my pitch. Start the role play.`);
+  }, 400);
+}
+
+
+/* =====================================================
+   v9 KNOWLEDGE SEARCH ENGINE
+===================================================== */
+const SEARCH_INDEX = [
+  ...PRODUCT_LIBRARY.map(p => ({title:p.name,snippet:p.description,cat:'products',action:()=>askAboutProduct(p.id)})),
+  {title:'What is an Espag?',snippet:'A multi-point locking mechanism that runs vertically along the door or window sash...',cat:'technical',action:()=>routeToAI('What is an espag?')},
+  {title:'Lead Time for Installation',snippet:'Typically 45-60 days from final site measurement to completed installation...',cat:'installation',action:()=>routeToAI('What is the lead time?')},
+  {title:'Warranty Coverage Details',snippet:'10 years uPVC profile, 15 years aluminium, 5 years hardware, 10 years glazing seal...',cat:'warranty',action:()=>routeToAI('What does the warranty cover?')},
+  {title:'Site Survey Process',snippet:'Professional measurement visit before any quotation is finalised...',cat:'installation',action:()=>routeToAI('What is a site survey?')},
+  {title:'Level and Plumb Importance',snippet:'Critical for proper window operation, drainage, and long-term performance...',cat:'technical',action:()=>routeToAI('Why does level and plumb matter?')},
+  {title:'Handling Price Objections',snippet:'Never lead with discount. Always compare value and specification first...',cat:'sales',action:()=>openModule('objections')},
+  {title:'uPVC vs Aluminium Comparison',snippet:'uPVC is thermally superior and costs less. Aluminium gives slimmer profiles...',cat:'sales',action:()=>routeToAI('Compare uPVC vs aluminium')},
+  {title:'DGU Explained',snippet:'Double Glazing Unit — two panes separated by argon-filled gap, hermetically sealed...',cat:'technical',action:()=>routeToAI('What is a DGU?')},
+  {title:'Silicon Colour Matching',snippet:'Always match silicon sealant colour to frame colour for professional finish...',cat:'installation',action:()=>routeToAI('Why match silicon colour?')},
+  {title:'Acoustic Performance Levels',snippet:'Standard DGU: 28-32dB, Acoustic Laminated: 40-45dB, Secondary glazing: 48-52dB...',cat:'technical',action:()=>routeToAI('Explain acoustic performance levels')},
+  {title:'AMC (Annual Maintenance Contract)',snippet:'Professional inspection, hardware servicing, seal checks from ₹2,500/year...',cat:'warranty',action:()=>routeToAI('What is an AMC?')},
+  {title:'Competitor Quote Red Flags',snippet:'Check for single-point locking, air-filled (not argon) glass, shorter warranty terms...',cat:'sales',action:()=>routeToAI('How to evaluate competitor quotes')},
+  {title:'Coastal / Marine Grade Specification',snippet:'Marine-grade aluminium with hard anodising, Grade 316 stainless hardware...',cat:'technical',action:()=>routeToAI('What is marine grade specification?')},
+  {title:'Smart Glass PDLC Technology',snippet:'Polymer Dispersed Liquid Crystal — switches from frosted to clear instantly...',cat:'products',action:()=>routeToAI('Explain smart glass PDLC')},
+  {title:'Experience Centre Locations',snippet:'Delhi South Extension and Bengaluru Residency Road showrooms...',cat:'sales',action:()=>routeToAI('Where are the experience centres?')},
+];
+
+let ksearchFilter = 'all';
+const POPULAR_SEARCHES = ['Acoustic glass','uPVC vs Aluminium','Lead time','Warranty terms','Price objection','Espag locking','Level and plumb','Smart lock'];
+
+function initKSearch() {
+  const tagWrap = document.getElementById('popular-search-tags');
+  if (tagWrap) {
+    tagWrap.innerHTML = POPULAR_SEARCHES.map(t => `<span class="lt-pill blue" style="cursor:pointer;padding:6px 12px" onclick="document.getElementById('ksearch-input').value='${t}';runKSearch()">${t}</span>`).join('');
+  }
+}
+
+function setKSearchFilter(cat, btn) {
+  ksearchFilter = cat;
+  document.querySelectorAll('.ksearch-filters .prod-cat-chip').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  runKSearch();
+}
+
+function runKSearch() {
+  const q = document.getElementById('ksearch-input')?.value?.trim().toLowerCase();
+  const resultsEl = document.getElementById('ksearch-results');
+  const suggEl = document.getElementById('ksearch-suggestions');
+  if (!resultsEl) return;
+  if (!q) { resultsEl.innerHTML = ''; if (suggEl) suggEl.style.display = 'block'; return; }
+  if (suggEl) suggEl.style.display = 'none';
+  const filtered = SEARCH_INDEX.filter(item => {
+    const catMatch = ksearchFilter === 'all' || item.cat === ksearchFilter;
+    const textMatch = item.title.toLowerCase().includes(q) || item.snippet.toLowerCase().includes(q);
+    return catMatch && textMatch;
+  });
+  if (!filtered.length) {
+    resultsEl.innerHTML = `<div class="ksearch-empty">No results for "${q}". <br>Try asking the AI directly →</div>
+      <button style="width:100%;padding:14px;border-radius:var(--r-full);background:var(--grad1);border:none;color:#fff;font-weight:700;cursor:pointer" onclick="routeToAI('${q.replace(/'/g,"\\'")}')">🤖 Ask AI: "${q}"</button>`;
+    return;
+  }
+  resultsEl.innerHTML = filtered.map((item, i) => `
+    <div class="ksearch-result" onclick="(${item.action ? 'window._ksearchActions['+i+']' : 'null'})()">
+      <div class="ksearch-result-title">${item.title}</div>
+      <div class="ksearch-result-snippet">${item.snippet}</div>
+      <div class="ksearch-result-meta"><span class="ksearch-result-cat">${item.cat.toUpperCase()}</span><span class="ksearch-result-src">AIS Knowledge Base</span></div>
+    </div>`).join('');
+  window._ksearchActions = filtered.map(item => item.action);
+  playSound && playSound('click');
+}
+
+function routeToAI(query) {
+  switchTab('ai');
+  setTimeout(() => { if (typeof sendMsg === 'function') sendMsg(query); }, 400);
+}
+
+/* =====================================================
+   v9 ADMIN DASHBOARD
+===================================================== */
+function renderAdminDashboard() {
+  const statsEl = document.getElementById('admin-stats');
+  const topicsEl = document.getElementById('admin-topics-table');
+  const quizEl = document.getElementById('admin-quiz-table');
+  if (!statsEl) return;
+
+  const totalModules = Object.keys(KOS_PROGRESS.modules || {}).length;
+  const totalQuizzes = Object.keys(KOS_PROGRESS.quizzes || {}).length;
+  const totalCerts = (KOS_PROGRESS.certs || []).length;
+  const avgQuizScore = totalQuizzes ? Math.round(Object.values(KOS_PROGRESS.quizzes).reduce((s,q)=>s+(q.score||0),0)/totalQuizzes) : 0;
+
+  statsEl.innerHTML = `
+    <div class="admin-stat-card"><div class="admin-stat-val" style="color:var(--ac1)">${totalModules}</div><div class="admin-stat-lbl">Modules Reviewed</div></div>
+    <div class="admin-stat-card"><div class="admin-stat-val" style="color:var(--green-ent)">${totalQuizzes}</div><div class="admin-stat-lbl">Quizzes Taken</div></div>
+    <div class="admin-stat-card"><div class="admin-stat-val" style="color:var(--gold)">${avgQuizScore}%</div><div class="admin-stat-lbl">Avg Quiz Score</div></div>
+    <div class="admin-stat-card"><div class="admin-stat-val" style="color:var(--ac2)">${totalCerts}</div><div class="admin-stat-lbl">Certificates Earned</div></div>`;
+
+  const topicCounts = {};
+  Object.keys(KOS_PROGRESS.modules || {}).forEach(id => { topicCounts[id] = (topicCounts[id]||0) + 1; });
+  const topTopics = Object.entries(topicCounts).slice(0, 5);
+  topicsEl.innerHTML = `<div class="admin-table-head"><span>Topic</span><span>Views</span><span></span></div>` +
+    (topTopics.length ? topTopics.map(([id, count]) => {
+      const mod = PRODUCT_LIBRARY.find(p=>p.id===id) || LEARN_TOPICS?.find?.(t=>t.id===id) || {name:id};
+      return `<div class="admin-table-row"><span class="admin-row-name">${mod.name||id}</span><span class="admin-row-val">${count}</span><span></span></div>`;
+    }).join('') : `<div class="admin-table-row"><span class="admin-row-name" style="color:var(--txt-3)">No data yet — start learning to populate</span><span></span><span></span></div>`);
+
+  const quizEntries = Object.entries(KOS_PROGRESS.quizzes || {}).slice(-5).reverse();
+  quizEl.innerHTML = `<div class="admin-table-head"><span>Category</span><span>Score</span><span>Status</span></div>` +
+    (quizEntries.length ? quizEntries.map(([key, q]) => `
+      <div class="admin-table-row">
+        <span class="admin-row-name">${(q.category||'').charAt(0).toUpperCase()+(q.category||'').slice(1)}</span>
+        <span class="admin-row-val">${q.score}%</span>
+        <span class="admin-row-badge" style="background:${q.pass?'var(--green-dim)':'var(--red-dim)'};color:${q.pass?'var(--green-ent)':'var(--ac3)'}">${q.pass?'PASS':'RETRY'}</span>
+      </div>`).join('') : `<div class="admin-table-row"><span class="admin-row-name" style="color:var(--txt-3)">No quizzes taken yet</span><span></span><span></span></div>`);
+}
+
+/* =====================================================
+   v9 BUYING GUIDE COURSE
+===================================================== */
+const COURSE_LESSONS = [
+  {id:'course_intro',num:1,name:'A Window to Your Dream',mins:5,desc:'Introduction to doors and windows in architecture'},
+  {id:'course_glossary',num:2,name:'Windows Glossary',mins:8,desc:'Essential hardware and performance terminology'},
+  {id:'course_frames',num:3,name:'Frame Systems — Aluminium vs uPVC',mins:10,desc:'Complete comparison and applications'},
+  {id:'course_typology',num:4,name:'Window & Door Typologies',mins:12,desc:'Casement, sliding, fixed, French, tilt & turn and more'},
+  {id:'course_system',num:5,name:'What is a System Window?',mins:6,desc:'Profiles, hardware, and glazing as integrated systems'},
+  {id:'course_solutions',num:6,name:'Solutions for a Better Life',mins:10,desc:'Acoustic, privacy, energy, anti-pollution, security'},
+  {id:'course_glass',num:7,name:'Glass Solutions Deep Dive',mins:14,desc:'Toughened, laminated, DGU, Low-E, smart glass'},
+  {id:'course_process',num:8,name:'Buying Process — Survey to Installation',mins:8,desc:'Site survey, lead time, quotation, warranty'},
+  {id:'course_maintenance',num:9,name:'Lifespan & Maintenance',mins:7,desc:'Operation, cleaning, and maximising product life'},
+];
+
+function initCourse() {
+  renderCourseLessons();
+}
+
+function renderCourseLessons() {
+  const list = document.getElementById('course-lesson-list');
+  if (!list) return;
+  let doneCount = 0;
+  list.innerHTML = COURSE_LESSONS.map((lesson, i) => {
+    const isDone = getModuleProgress(lesson.id) === 100;
+    if (isDone) doneCount++;
+    const prevDone = i === 0 || getModuleProgress(COURSE_LESSONS[i-1].id) === 100;
+    const isLocked = !prevDone && !isDone;
+    const statusCls = isDone ? 'completed' : (!isLocked ? 'active' : 'locked');
+    return `<div class="lesson-card ${statusCls}" onclick="${isLocked?'':'openCourseLesson(\''+lesson.id+'\')'}">
+      <div class="lesson-header">
+        <div class="lesson-num">${isDone?'✓':lesson.num}</div>
+        <div class="lesson-info">
+          <div class="lesson-name">${lesson.name}</div>
+          <div class="lesson-meta"><span>⏱ ${lesson.mins} mins</span><span>Lesson ${lesson.num} of ${COURSE_LESSONS.length}</span></div>
+        </div>
+        <div class="lesson-status">${isLocked?'🔒':isDone?'✅':'▶️'}</div>
+      </div>
+    </div>`;
+  }).join('');
+  const pct = Math.round((doneCount / COURSE_LESSONS.length) * 100);
+  const fillEl = document.getElementById('course-prog-fill');
+  const doneEl = document.getElementById('course-lessons-done');
+  const pctEl = document.getElementById('course-pct');
+  if (fillEl) fillEl.style.width = pct + '%';
+  if (doneEl) doneEl.textContent = `${doneCount} of ${COURSE_LESSONS.length} lessons complete`;
+  if (pctEl) pctEl.textContent = pct + '%';
+}
+
+function openCourseLesson(lessonId) {
+  const lesson = COURSE_LESSONS.find(l => l.id === lessonId);
+  if (!lesson) return;
+  switchTab('ai');
+  setTimeout(() => {
+    if (typeof sendMsg === 'function') sendMsg(`Teach me Lesson ${lesson.num} of the Buying Guide course: "${lesson.name}". Explain it like a 20-year AIS expert, give me a real example, then ask me one quiz question to check my understanding at the end.`);
+  }, 400);
+  markModuleDone(lessonId);
+  saveProgress();
+  setTimeout(renderCourseLessons, 600);
+}
+
+/* =====================================================
+   v9 PANEL_MAP EXTENSION — wire new tabs into switchTab
+===================================================== */
+const _v9_origSwitchTab = window.switchTab;
+window.switchTab = function(tab) {
+  const EXTRA_MAP = { knowledge:'#pwa-knowledge', search:'#pwa-search', admin:'#pwa-admin', course:'#pwa-course', settingsent:'#pwa-settings-ent' };
+  if (EXTRA_MAP[tab]) {
+    const isDesktop = window.innerWidth > 768;
+    if (isDesktop) { const ca=document.getElementById('ca'); if(ca) ca.style.display='flex'; return; }
+    activeTab = tab;
+    document.querySelectorAll('.pwa-panel').forEach(p => p.classList.remove('active'));
+    const ca = document.getElementById('ca'); if (ca) ca.style.display = 'none';
+    const panel = document.querySelector(EXTRA_MAP[tab]);
+    if (panel) panel.classList.add('active');
+    if (tab === 'knowledge') renderKnowledgeLibrary();
+    if (tab === 'search') initKSearch();
+    if (tab === 'admin') renderAdminDashboard();
+    if (tab === 'course') initCourse();
+    if (tab === 'settingsent') initSettingsPanel();
+    if (navigator.vibrate) navigator.vibrate(8);
+    playSound && playSound('click');
+    return;
+  }
+  if (typeof _v9_origSwitchTab === 'function') _v9_origSwitchTab(tab);
+  /* Hook settings tab to also init enterprise settings */
+  if (tab === 'settings') setTimeout(initSettingsPanel, 50);
+};
+
+/* =====================================================
+   v9 MODULE ROUTER EXTENSION
+===================================================== */
+const _v9_origOpenModule = typeof openModule === 'function' ? openModule : null;
+window.openModule = function(moduleId) {
+  const NEW_MODULES = { 'learn-products':'knowledge', 'buying-guide':'course', 'admin':'admin', 'ai-search':'search' };
+  if (NEW_MODULES[moduleId]) { switchTab(NEW_MODULES[moduleId]); return; }
+  if (_v9_origOpenModule) _v9_origOpenModule(moduleId);
+};
+
+/* =====================================================
+   v9 INIT
+===================================================== */
+(function bootV9() {
+  function run() {
+    initKSearch();
+    /* Add Knowledge/Search/Admin quick links to dashboard tools grid if present */
+    setTimeout(() => {
+      const toolsGrid = document.getElementById('kos-tools-grid');
+      if (toolsGrid && !document.getElementById('kos-mod-knowledge')) {
+        const klCard = buildModuleCard({id:'knowledge',name:'Knowledge Library',icon:'📚',color:'#00d4ff',glow:'rgba(0,212,255,.15)',desc:'Browse all products in depth'});
+        klCard.id = 'kos-mod-knowledge'; klCard.onclick = () => switchTab('knowledge');
+        toolsGrid.appendChild(klCard);
+        const searchCard = buildModuleCard({id:'search',name:'Knowledge Search',icon:'🔍',color:'#7b2fff',glow:'rgba(123,47,255,.15)',desc:'Search everything instantly'});
+        searchCard.id = 'kos-mod-search'; searchCard.onclick = () => switchTab('search');
+        toolsGrid.appendChild(searchCard);
+      }
+    }, 600);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run);
+  else setTimeout(run, 400);
 })();
 
 </script>
