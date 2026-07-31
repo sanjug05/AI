@@ -6,6 +6,14 @@
 <meta name="description" content="AIS Smart Assistant v3.0 — Neural Consultant Platform for premium doors and windows">
 <meta name="theme-color" content="#06060f">
 <title>AIS KnowledgeOS — Enterprise AI Knowledge Operating System</title>
+<!-- PWA: real manifest + icon files (a service worker CANNOT be a blob/data URI
+     per spec — it must be independently fetchable in the background — so these
+     ship as small real files alongside index.html; see manifest.json / sw.js /
+     icon-*.png in the same repo folder). -->
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" type="image/png" sizes="32x32" href="./icon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="./icon-16.png">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
 <!-- Quote Decoder + QA module deps (pdf.js@3.11.174, xlsx@0.18.5 — pinned) are
      lazy-loaded on first actual use (see ensurePdfJs/ensureXlsx below), not here,
      so the ~1.3MB combined library weight isn't paid by every page load. -->
@@ -6164,57 +6172,29 @@ window.initApp=function(){
 /* ============ PWA ENGINE ============ */
 
 /* =====================================================
-   PWA — SERVICE WORKER (inline Blob registration)
+   PWA — SERVICE WORKER
+   NOTE: service workers cannot be registered from a blob:/data: URI — the
+   spec requires an independently (re-)fetchable same-origin script, since the
+   browser needs to check it for updates in the background even with no page
+   open. A blob URL only lives as long as the page that created it, so the
+   previous inline-Blob registration here always failed silently (swallowed
+   by the trailing .catch), meaning no service worker was ever active — which
+   is why beforeinstallprompt never fired and the install prompt below never
+   appeared. Fixed by registering the real ./sw.js file shipped alongside
+   this index.html (see sw.js in the same repo folder).
 ===================================================== */
 (function(){
   if(!('serviceWorker' in navigator))return;
-  const CACHE='ais-pwa-v5-1';
-  const swCode=`
-const CACHE='ais-pwa-v5-1';
-const URLS=['${location.href}'];
-self.addEventListener('install',e=>{
-  self.skipWaiting();
-  e.waitUntil(caches.open(CACHE).then(c=>c.addAll(URLS).catch(()=>{})));
-});
-self.addEventListener('activate',e=>{
-  e.waitUntil(caches.keys().then(keys=>Promise.all(
-    keys.filter(k=>k!==CACHE).map(k=>caches.delete(k))
-  )));
-  self.clients.claim();
-});
-self.addEventListener('fetch',e=>{
-  if(e.request.method!=='GET')return;
-  e.respondWith(
-    caches.match(e.request).then(cached=>{
-      const fresh=fetch(e.request).then(res=>{
-        if(res&&res.status===200){
-          const r=res.clone();
-          caches.open(CACHE).then(c=>c.put(e.request,r));
+  navigator.serviceWorker.register('./sw.js').then(reg=>{
+    reg.addEventListener('updatefound',()=>{
+      const nw=reg.installing;
+      nw.addEventListener('statechange',()=>{
+        if(nw.state==='installed'&&navigator.serviceWorker.controller){
+          showUpdateToast();
         }
-        return res;
-      }).catch(()=>cached||new Response('Offline',{status:503}));
-      return cached||fresh;
-    })
-  );
-});
-self.addEventListener('message',e=>{
-  if(e.data==='skipWaiting')self.skipWaiting();
-});
-`;
-  try{
-    const blob=new Blob([swCode],{type:'application/javascript'});
-    const url=URL.createObjectURL(blob);
-    navigator.serviceWorker.register(url,{scope:'/'}).then(reg=>{
-      reg.addEventListener('updatefound',()=>{
-        const nw=reg.installing;
-        nw.addEventListener('statechange',()=>{
-          if(nw.state==='installed'&&navigator.serviceWorker.controller){
-            showUpdateToast();
-          }
-        });
       });
-    }).catch(()=>{});
-  }catch(e){}
+    });
+  }).catch(err=>console.warn('[PWA] Service worker registration failed:',err.message));
   /* Online/offline detection */
   function showOffline(){
     document.body.classList.add('offline-mode');
@@ -6229,69 +6209,11 @@ self.addEventListener('message',e=>{
   window.addEventListener('offline',showOffline);
 })();
 
-/* =====================================================
-   PWA — MANIFEST (inline data URI)
-===================================================== */
-(function(){
-  try {
-  /* Generate icon via Canvas */
-  function makeIcon(size){
-    const cv=document.createElement('canvas');cv.width=size;cv.height=size;
-    const cx=cv.getContext('2d');
-    /* Background gradient */
-    const g=cx.createLinearGradient(0,0,size,size);
-    g.addColorStop(0,'#00d4ff');g.addColorStop(1,'#7b2fff');
-    cx.fillStyle=g;
-    const r=size*0.22;
-    cx.beginPath();cx.moveTo(r,0);cx.lineTo(size-r,0);
-    cx.quadraticCurveTo(size,0,size,r);cx.lineTo(size,size-r);
-    cx.quadraticCurveTo(size,size,size-r,size);cx.lineTo(r,size);
-    cx.quadraticCurveTo(0,size,0,size-r);cx.lineTo(0,r);
-    cx.quadraticCurveTo(0,0,r,0);cx.fill();
-    /* Letter A */
-    cx.fillStyle='#ffffff';cx.font=`bold ${size*.55}px -apple-system,sans-serif`;
-    cx.textAlign='center';cx.textBaseline='middle';
-    cx.fillText('A',size/2,size/2+size*.03);
-    return cv.toDataURL('image/png');
-  }
-  const icons=[48,72,96,128,144,152,192,384,512].map(s=>({
-    src:makeIcon(s),sizes:`${s}x${s}`,type:'image/png',
-    purpose:s>=192?'any maskable':'any'
-  }));
-  /* Apple touch icon */
-  const appleLink=document.createElement('link');
-  appleLink.rel='apple-touch-icon';appleLink.href=makeIcon(180);
-  document.head.appendChild(appleLink);
-  /* Splash screen icons */
-  const splash=document.createElement('link');
-  splash.rel='apple-touch-startup-image';splash.href=makeIcon(512);
-  document.head.appendChild(splash);
-  const manifest={
-    name:'AIS Smart Assistant',
-    short_name:'AIS ARIA',
-    description:'Premium Doors & Windows AI Consultant — Neural Consultant Platform',
-    start_url:location.href,
-    id:location.href,
-    display:'standalone',
-    display_override:['window-controls-overlay','standalone','fullscreen'],
-    orientation:'portrait-primary',
-    theme_color:'#06060f',
-    background_color:'#06060f',
-    categories:['business','productivity'],
-    lang:'en',
-    icons,
-    screenshots:[],
-    shortcuts:[
-      {name:'Start Consultation',short_name:'Consult',url:location.href+'#consult',description:'Start AI Consultation'},
-      {name:'View Catalogue',short_name:'Catalogue',url:location.href+'#products',description:'Browse Products'},
-    ]
-  };
-  const blob=new Blob([JSON.stringify(manifest)],{type:'application/manifest+json'});
-  const link=document.createElement('link');
-  link.rel='manifest';link.href=URL.createObjectURL(blob);
-  document.head.appendChild(link);
-  } catch(e) { console.warn('[PWA] Manifest/icon generation skipped:', e.message); }
-})();
+/* Manifest and icons are now real files (./manifest.json, ./icon-*.png,
+   ./apple-touch-icon.png — linked in <head>) rather than generated at
+   runtime — a manifest fetched from a stable file is what every documented
+   working installability example uses, and it's one less thing that can
+   silently fail. */
 
 /* =====================================================
    PWA — INSTALL PROMPT MANAGER
